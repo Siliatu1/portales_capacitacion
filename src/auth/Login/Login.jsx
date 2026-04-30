@@ -1,6 +1,7 @@
 import React, {useState} from "react";
 import {useNavigate} from "react-router-dom";
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import "./login.css";
 import { loginByDocumento } from "../services/apiService";
 import { useAuth } from "../shared/context/AuthContext";
@@ -26,7 +27,7 @@ const Login = () => {
     try {
       const rawData = await loginByDocumento(documento);
         
-      
+        // La API puede retornar { data: {...} } o directamente {...}
         const data = rawData;
         
         const validationResult = validateUserAccess(data);
@@ -65,7 +66,42 @@ const Login = () => {
   
   return (
     <div className="login-container">
+      <div className="decoration-circle circle-1"></div>
+      <div className="decoration-circle circle-2"></div>
+      <div className="decoration-circle circle-3"></div>
       
+      <div className="login-card">
+        <p className="login-subtitle">PORTAL CREPES & WAFFLES</p>
+        
+        <div className="login-form">
+          <label className="login-label">NÚMERO DE DOCUMENTO</label>
+          <div className="input-wrapper">
+            <input
+              type="text"
+              placeholder="Ingresa tu documento"
+              value={documento}
+              onChange={(e) => setDocumento(e.target.value)}
+              onKeyPress={handleKeyPress}
+              className="login-input"
+            />
+            <span className="input-icon"> </span>
+          </div>
+          
+          {mensaje.texto && (
+            <div className={`mensaje ${mensaje.tipo}`}>
+              {mensaje.texto}
+            </div>
+          )}
+          
+          <button
+            className="login-button"
+            onClick={handleLogin}
+            disabled={loading}
+          >
+            {loading ? "VALIDANDO..." : "INGRESAR"}
+          </button>
+        </div>
+      </div>
     </div>
   );
 };
