@@ -1,7 +1,6 @@
 import React, {useState} from "react";
 import {useNavigate} from "react-router-dom";
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import "./login.css";
 import { loginByDocumento } from "../services/apiService";
 import { useAuth } from "../shared/context/AuthContext";
@@ -27,7 +26,7 @@ const Login = () => {
     try {
       const rawData = await loginByDocumento(documento);
         
-        // La API puede retornar { data: {...} } o directamente {...}
+      
         const data = rawData;
         
         const validationResult = validateUserAccess(data);
