@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Login from "./auth/Login/Login";
+import MenuPrincipal from "./Menu_principal/componente/MenuPrincipal";
 
 
 function App() {
@@ -10,6 +11,9 @@ function App() {
       <Routes>
         {/* Ruta pública */}
         <Route path="/" element={<Login />} />
+
+        {/* Menú principal */}
+        <Route path="/menu" element={<MenuPrincipal />} />
 
         {/* Ruta protegida (ejemplo) */}
         <Route

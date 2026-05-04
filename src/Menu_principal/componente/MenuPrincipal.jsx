@@ -12,10 +12,14 @@ const MenuPrincipal = () => {
       {/* HEADER */}
       <header className="menu-header">
         <div className="user-info">
-          <div className="avatar"></div>
+          <div className="avatar">
+            {user?.foto && (
+              <img src={user.foto} alt="Avatar" />
+            )}
+          </div>
           <div>
-            <h4>{user?.full_name || "Usuario"}</h4>
-            <span>{user?.position || "Cargo"}</span>
+            <h4>{user?.nombre || "Usuario"}</h4>
+            <span>{user?.cargo_general || "Cargo"}</span>
           </div>
         </div>
 
