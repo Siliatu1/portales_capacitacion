@@ -1,8 +1,8 @@
 const BASE_URL = "https://apialohav2.crepesywaffles.com/buk";
 
-export const getEmpleados = async (docummento) => {
+export const getEmpleados = async (documento) => {
   try {
-    const response = await fetch(`${BASE_URL}/empleados2/${docummento}`);
+    const response = await fetch(`${BASE_URL}/empleados2/${documento}`);
     if (!response.ok) throw new Error("Error al consultar la API");
 
     const data = await response.json();
@@ -12,3 +12,5 @@ export const getEmpleados = async (docummento) => {
     return [];
   }
 };
+
+export default getEmpleados ;

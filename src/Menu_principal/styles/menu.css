@@ -1,0 +1,145 @@
+* {
+  box-sizing: border-box;
+}
+
+.menu-container {
+  min-height: 100vh;
+  font-family: "Segoe UI", sans-serif;
+  background: linear-gradient(135deg, #5a3825, #7b4b2a);
+  color: #fff;
+}
+
+/* 🔝 HEADER */
+.menu-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #f4efe8;
+  padding: 15px 40px;
+  color: #5a3825;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.avatar {
+  width: 55px;
+  height: 55px;
+  border-radius: 50%;
+  background: #ddd;
+  border: 2px solid #c7a17a;
+}
+
+.user-info h4 {
+  margin: 0;
+  font-size: 14px;
+}
+
+.user-info span {
+  font-size: 12px;
+  opacity: 0.7;
+}
+
+.menu-header h2 {
+  font-size: 18px;
+  letter-spacing: 1px;
+}
+
+.logout {
+  background: none;
+  border: none;
+  color: #5a3825;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.logout:hover {
+  opacity: 0.7;
+}
+
+.menu-body {
+  text-align: center;
+  margin-top: 80px;
+}
+
+.menu-body h3 {
+  font-weight: 500;
+  margin-bottom: 40px;
+}
+
+.menu-cards {
+  display: flex;
+  justify-content: center;
+  gap: 40px;
+  flex-wrap: wrap;
+}
+
+.menu-card {
+  width: 320px;
+  background: #f4efe8;
+  color: #5a3825;
+  padding: 30px;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.menu-card:hover {
+  transform: translateY(-8px) scale(1.02);
+}
+
+/* 🔲 ICONO */
+.menu-card .icon {
+  width: 50px;
+  height: 50px;
+  background: #c7a17a;
+  border-radius: 12px;
+  margin-bottom: 20px;
+}
+
+/* 📝 TEXTOS */
+.menu-card h4 {
+  margin: 0 0 10px 0;
+  font-size: 16px;
+}
+
+.menu-card p {
+  font-size: 13px;
+  opacity: 0.8;
+  line-height: 1.4;
+}
+
+.arrow {
+  position: absolute;
+  right: 20px;
+  bottom: 20px;
+  font-size: 18px;
+  opacity: 0.7;
+  transition: 0.2s;
+}
+
+.menu-card:hover .arrow {
+  transform: translateX(5px);
+}
+
+/* 📱 RESPONSIVE */
+@media (max-width: 768px) {
+  .menu-header {
+    flex-direction: column;
+    gap: 10px;
+    text-align: center;
+  }
+
+  .menu-cards {
+    flex-direction: column;
+    align-items: center;
+  }
+}

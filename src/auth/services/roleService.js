@@ -1,5 +1,3 @@
-// Servicio simple de permisos. En producción consultar DB.
-
 const rolePermissions = {
   SuperAdmin: ['*'],
   Admin: ['users:view','restaurants:manage','analytics:view','settings:update'],

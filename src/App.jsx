@@ -16,7 +16,7 @@ function App() {
           path="/dashboard"
           element={
             user ? (
-              <div>Bienvenido </div> // reemplaza luego
+              <div>Bienvenido </div> 
             ) : (
               <Navigate to="/" />
             )
