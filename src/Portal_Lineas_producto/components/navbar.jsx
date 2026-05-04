@@ -1,0 +1,45 @@
+import { useNavigate } from "react-router-dom";
+import "./navbar.css";
+
+const Navbar = () => {
+  const navigate = useNavigate();
+  const user = JSON.parse(localStorage.getItem("user"));
+
+  const handleLogout = () => {
+    localStorage.removeItem("user");
+    navigate("/");
+  };
+
+  return (
+    <header className="navbar">
+      <div className="navbar-left">
+        <button className="back-btn" onClick={() => navigate(-1)}>
+          ←
+        </button>
+
+        <div className="user-info">
+          <div className="avatar">
+            {user?.foto ? (
+              <img src={user.foto} alt="user" />
+            ) : (
+              <div className="avatar-fallback">
+                {user?.nombre?.charAt(0) || "U"}
+              </div>
+            )}
+          </div>
+
+          <div>
+            <h4>{user?.nombre || "Usuario"}</h4>
+            <span>{user?.cargo_general || ""}</span>
+          </div>
+        </div>
+      </div>
+      <h2>Portal Líneas de Producto</h2>
+      <button className="logout-btn" onClick={handleLogout}>
+        Salir
+      </button>
+    </header>
+  );
+};
+
+export default Navbar;
