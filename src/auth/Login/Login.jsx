@@ -33,8 +33,6 @@ const Login = () => {
       <div className="login-card">
         <h3>PORTAL CREPES & WAFFLES</h3>
 
-        <label>NÚMERO DE DOCUMENTO</label>
-
         <input
           type="text"
           placeholder="Ingresa tu documento"

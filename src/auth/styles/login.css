@@ -14,10 +14,11 @@
 }
 
 .login-card {
-  background: var(--secondary);
+  background-color: var(--secondary);
+  border-color: var(--primary);
   padding: 40px;
   border-radius: 20px;
-  width: 320px;
+  width: 420px;
   text-align: center;
 }
 
@@ -25,14 +26,6 @@
   font-size: 12px;
   margin-bottom: 20px;
   color: var(--primary);
-}
-
-.login-card label {
-  font-size: 11px;
-  color: var(--primary);
-  display: block;
-  text-align: left;
-  margin-bottom: 5px;
 }
 
 .login-card input {
