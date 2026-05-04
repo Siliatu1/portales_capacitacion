@@ -2,7 +2,6 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Login from "./auth/Login/Login";
 import MenuPrincipal from "./Menu_principal/componente/MenuPrincipal";
 
-
 function App() {
   const user = null;
 

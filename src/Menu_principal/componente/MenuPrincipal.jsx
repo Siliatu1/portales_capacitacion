@@ -14,7 +14,7 @@ const MenuPrincipal = () => {
         <div className="user-info">
           <div className="avatar">
             {user?.foto && (
-              <img src={user.foto} alt="Avatar" />
+              <img src={user.foto} alt="Avatar" className="foto" />
             )}
           </div>
           <div>
@@ -22,8 +22,6 @@ const MenuPrincipal = () => {
             <span>{user?.cargo_general || "Cargo"}</span>
           </div>
         </div>
-
-        <h2>PORTAL CREPES & WAFFLES</h2>
 
         <button
           className="logout"
