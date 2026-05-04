@@ -1,0 +1,172 @@
+/* CONTENEDOR PRINCIPAL */
+.inscripcion-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #3d2817 0%, #5c4033 50%, #3d2817 100%);
+  padding: 40px 20px;
+}
+
+/* CARD */
+.inscripcion-card {
+  width: 100%;
+  max-width: 600px;
+  border-radius: 20px;
+  background: #fff9f0;
+  padding: 40px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+}
+
+/* TITULOS */
+.inscripcion-subtitle {
+  text-align: center;
+  font-size: 20px;
+  color: #8b7355;
+  margin-bottom: 30px;
+  letter-spacing: 2px;
+}
+
+/* FORM */
+.inscripcion-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* INPUTS */
+.form-section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.form-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: #8b7355;
+}
+
+.form-input {
+  padding: 14px;
+  border-radius: 10px;
+  border: 2px solid #e8ded0;
+  outline: none;
+  transition: 0.3s;
+}
+
+.form-input:focus {
+  border-color: #8b7355;
+  box-shadow: 0 0 0 3px rgba(139, 115, 85, 0.1);
+}
+
+/* BUSCADOR */
+.search-input-container {
+  display: flex;
+  gap: 10px;
+}
+
+.search-button {
+  background: #563c28;
+  color: white;
+  border: none;
+  padding: 14px 20px;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.search-button:hover {
+  background: #3f2c1f;
+}
+
+/* MENSAJES */
+.mensaje {
+  padding: 12px;
+  border-radius: 10px;
+  text-align: center;
+}
+
+.mensaje.success {
+  background: #d4edda;
+  color: #155724;
+}
+
+.mensaje.error {
+  background: #f8d7da;
+  color: #721c24;
+}
+
+/* EMPLEADO */
+.employee-info-container {
+  border: 2px solid #e8ded0;
+  border-radius: 15px;
+  padding: 15px;
+}
+
+/* FOTO */
+.employee-photo {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+/* BOTONES */
+.form-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.cancel-button {
+  flex: 1;
+  border: 2px solid #8b7355;
+  background: transparent;
+  padding: 12px;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.submit-button {
+  flex: 1;
+  background: #563c28;
+  color: white;
+  border: none;
+  padding: 12px;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.submit-button:hover {
+  background: #3f2c1f;
+}
+
+/* FECHAS */
+.fechas-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 15px;
+}
+
+.fecha-card {
+  padding: 15px;
+  border-radius: 12px;
+  border: 2px solid #e0d5c7;
+  cursor: pointer;
+  text-align: center;
+}
+
+.fecha-card.selected {
+  background: #8b7355;
+  color: white;
+}
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+  .inscripcion-card {
+    padding: 25px;
+  }
+
+  .fechas-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
