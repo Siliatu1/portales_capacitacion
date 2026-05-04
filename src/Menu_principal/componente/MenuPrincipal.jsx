@@ -1,5 +1,6 @@
 import { useMenu } from "../hooks/useMenu";
 import "../styles/menu.css";
+import { ArrowRight, Camera } from 'lucide-react';
 
 const MenuPrincipal = () => {
   const { menu, loading, goTo } = useMenu();
@@ -17,7 +18,7 @@ const MenuPrincipal = () => {
               <img src={user.foto} alt="Avatar" className="foto" />
             )}
           </div>
-          <div>
+          <div className="info">
             <h4>{user?.nombre || "Usuario"}</h4>
             <span>{user?.cargo_general || "Cargo"}</span>
           </div>
@@ -48,12 +49,12 @@ const MenuPrincipal = () => {
                 className="menu-card"
                 onClick={() => goTo(item.route)}
               >
-                <div className="icon"></div>
+                <div className="icon">
+                  <Camera size={24} color="#462e24" />
+                </div>
 
                 <h4>{item.title}</h4>
                 <p>{item.description}</p>
-
-                <span className="arrow">→</span>
               </div>
             ))}
           </div>
@@ -62,5 +63,23 @@ const MenuPrincipal = () => {
     </div>
   );
 };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 export default MenuPrincipal;

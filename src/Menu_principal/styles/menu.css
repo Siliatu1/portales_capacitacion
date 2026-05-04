@@ -1,10 +1,12 @@
 :root {
-  --primary: #462e24;
-  --secondary: #FDF8F1;
+  --primary: #FDF8F1;
+  --secondary: #462e24;
   --tertiary: #f8f8f7;
 }
 
 * {
+  margin: 0;
+  padding: 0;
   box-sizing: border-box;
 }
 
@@ -31,11 +33,8 @@
 }
 
 .avatar {
-  width: 55px;
-  height: 55px;
+  width: 10%;
   border-radius: 50%;
-  background: #ddd;
-  border: 2px solid #c7a17a;
 }
 
 .foto {
@@ -47,37 +46,29 @@
 
 .user-info h4 {
   margin: 0;
-  font-size: 14px;
+  font-size: 1rem;
 }
 
 .user-info span {
-  font-size: 12px;
-  opacity: 0.7;
+  font-size: 1rem;
+  opacity: 0.5;
 }
-
-
 
 .logout {
   background: none;
   border: none;
-  color: #5a3825;
-  font-weight: 600;
+  color: var(--primary);
   cursor: pointer;
-  transition: 0.2s;
-}
-
-.logout:hover {
-  opacity: 0.7;
+  font-size: 1rem;
 }
 
 .menu-body {
   text-align: center;
-  margin-top: 80px;
+  margin-top: 3rem;
 }
 
 .menu-body h3 {
-  font-weight: 500;
-  margin-bottom: 40px;
+  font-size: 2rem;
 }
 
 .menu-cards {
@@ -85,57 +76,41 @@
   justify-content: center;
   gap: 40px;
   flex-wrap: wrap;
+  padding: 3rem;
 }
 
 .menu-card {
   width: 320px;
-  background: #f4efe8;
-  color: #5a3825;
+  background: var(--secondary);
+  color: var(--primary);
   padding: 30px;
   border-radius: 20px;
   cursor: pointer;
-  transition: all 0.3s ease;
   position: relative;
-
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
 }
 
-.menu-card:hover {
-  transform: translateY(-8px) scale(1.02);
-}
-
-/* 🔲 ICONO */
 .menu-card .icon {
   width: 50px;
   height: 50px;
-  background: #c7a17a;
+  background: var(--primary);
   border-radius: 12px;
   margin-bottom: 20px;
 }
 
-/* 📝 TEXTOS */
 .menu-card h4 {
   margin: 0 0 10px 0;
-  font-size: 16px;
+  font-size: 1rem;
 }
 
 .menu-card p {
-  font-size: 13px;
-  opacity: 0.8;
-  line-height: 1.4;
+  font-size: 1rem;
+  opacity: 0.5;
 }
 
-.arrow {
-  position: absolute;
-  right: 20px;
-  bottom: 20px;
-  font-size: 18px;
-  opacity: 0.7;
-  transition: 0.2s;
-}
-
-.menu-card:hover .arrow {
-  transform: translateX(5px);
+.icon {
+  justify-content: center;
+  align-items: center;
+  display: flex;
 }
 
 /* 📱 RESPONSIVE */
