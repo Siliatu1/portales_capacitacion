@@ -1,0 +1,165 @@
+/* CONTENEDOR GENERAL */
+.admin-container {
+  min-height: 100vh;
+  background: #f5f7fa;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* CONTENIDO */
+.admin-content {
+  padding: 24px;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+/* TITULO */
+.admin-title {
+  font-size: 24px;
+  font-weight: 600;
+  color: #2c3e50;
+  margin-bottom: 20px;
+}
+
+/* CARD GENERAL */
+.card {
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  margin-bottom: 20px;
+}
+
+/* FILTROS */
+.filters-container {
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 16px 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.04);
+}
+
+.filters-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: #6c757d;
+  margin-bottom: 12px;
+  letter-spacing: 0.5px;
+}
+
+/* INPUTS */
+.ant-input {
+  border-radius: 8px !important;
+}
+
+.ant-select-selector {
+  border-radius: 8px !important;
+}
+
+/* BOTONES */
+.ant-btn {
+  border-radius: 8px !important;
+}
+
+.ant-btn-primary {
+  background: #52b788 !important;
+  border-color: #52b788 !important;
+}
+
+.ant-btn-primary:hover {
+  background: #40916c !important;
+  border-color: #40916c !important;
+}
+
+/* TABLA */
+.table-card {
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 16px;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+}
+
+.table-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.table-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: #34495e;
+}
+
+.table-count {
+  font-size: 13px;
+  color: #7f8c8d;
+}
+
+/* TABLA ANT */
+.ant-table {
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.ant-table-thead > tr > th {
+  background: #f1f3f5 !important;
+  font-weight: 600;
+  color: #2c3e50;
+}
+
+.ant-table-tbody > tr:hover > td {
+  background: #f8f9fa !important;
+}
+
+/* PAGINACION */
+.ant-pagination {
+  margin-top: 16px;
+}
+
+
+.navbar {
+  height: 60px;
+  background: #2c3e50;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
+}
+
+.navbar-title {
+  font-weight: 600;
+  font-size: 16px;
+}
+
+.navbar-user {
+  font-size: 14px;
+}
+
+/* SCROLL BONITO */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #ced4da;
+  border-radius: 4px;
+}
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+  .admin-content {
+    padding: 16px;
+  }
+
+  .filters-container {
+    padding: 12px;
+  }
+
+  .table-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+}
