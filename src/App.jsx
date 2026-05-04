@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Login from "./auth/Login/Login";
 import MenuPrincipal from "./Menu_principal/componente/MenuPrincipal";
+import Panel from "./Portal_Lineas_producto/pages/Panel";
 
 function App() {
   const user = null;
@@ -13,6 +14,9 @@ function App() {
 
         {/* Menú principal */}
         <Route path="/menu" element={<MenuPrincipal />} />
+
+        {/* Portal Líneas de Producto */}
+        <Route path="/lineas-producto" element={<Panel />} />
 
         {/* Ruta protegida (ejemplo) */}
         <Route
