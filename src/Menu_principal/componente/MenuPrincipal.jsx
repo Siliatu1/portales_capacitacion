@@ -1,6 +1,5 @@
 import { useMenu } from "../hooks/useMenu";
 import "../styles/menu.css";
-import { ArrowRight, Camera } from 'lucide-react';
 
 const MenuPrincipal = () => {
   const { menu, loading, goTo } = useMenu();
@@ -37,8 +36,6 @@ const MenuPrincipal = () => {
 
       {/* BODY */}
       <div className="menu-body">
-        <h3>Selecciona un portal</h3>
-
         {loading ? (
           <p>Cargando menú...</p>
         ) : (
@@ -49,12 +46,8 @@ const MenuPrincipal = () => {
                 className="menu-card"
                 onClick={() => goTo(item.route)}
               >
-                <div className="icon">
-                  <Camera size={24} color="#462e24" />
-                </div>
-
-                <h4>{item.title}</h4>
-                <p>{item.description}</p>
+                <h1>{item.title}</h1>
+                <h2>{item.description}</h2>
               </div>
             ))}
           </div>
