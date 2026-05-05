@@ -32,6 +32,7 @@ const Login = () => {
 <div className="login-wrapper">
   <div className="login-container">
     <div className="login-card">
+      <h3>PORTAL CREPES & WAFFLES</h3>
       <div className="input-group">
         <label htmlFor="documento">NÚMERO DE DOCUMENTO</label>
         <input
