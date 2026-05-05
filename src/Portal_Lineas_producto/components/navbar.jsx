@@ -35,9 +35,25 @@ const Navbar = () => {
         </div>
       </div>
       <h2>Portal Líneas de Producto</h2>
-      <button className="logout-btn" onClick={handleLogout}>
-        Salir
-      </button>
+      <div className="navbar-actions">
+        <button
+          className="action-btn"
+          onClick={() => navigate("/lineas-producto/form-heladeria")}
+        >
+          Form Heladería
+        </button>
+
+        <button
+          className="action-btn"
+          onClick={() => navigate("/lineas-producto/form-restaurante")}
+        >
+          Form Restaurante
+        </button>
+
+        <button className="logout-btn" onClick={handleLogout}>
+          Salir
+        </button>
+      </div>
     </header>
   );
 };

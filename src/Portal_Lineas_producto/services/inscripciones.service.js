@@ -12,7 +12,7 @@ export const getInscripciones = async () => {
     nombres: item.attributes?.nombre || '',
     telefono: item.attributes?.telefono || '',
     cargo: item.attributes?.cargo || '',
-    puntoVenta: item.attributes?.pdv || '',
+    area_nombre: item.attributes?.area_nombre || '',
     dia: item.attributes?.fecha || '',
     asistencia: item.attributes?.confirmado ?? null
   }));

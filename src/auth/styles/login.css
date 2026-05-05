@@ -1,57 +1,103 @@
 :root {
-  --primary: #462e24;
-  --secondary: #FDF8F1;
-  --tertiary: #f8f8f7;
+  --color-cafe-oscuro: #3e2723;
+  --color-cafe-medio: #5d4037;
+  --color-crema: #fdfaf5;
+  --color-borde: #e0d7cc;
+  --color-acento: #a67c52;
 }
 
-.login-container {
-  min-height: 100vh;
-  font-family: Arial, Helvetica, sans-serif;
+.login-wrapper {
+  height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
-  background: var(--primary)
+  background-color: var(--color-crema);
+  font-family: 'Inter', -apple-system, sans-serif;
+}
+
+.login-container {
+  width: 100%;
+  max-width: 400px;
+  padding: 20px;
+  animation: fadeIn 0.8s ease-out;
 }
 
 .login-card {
-  background-color: var(--secondary);
-  border-color: var(--primary);
-  padding: 40px;
+  background: white;
+  padding: 45px 35px;
   border-radius: 20px;
-  width: 420px;
-  text-align: center;
 }
 
-.login-card h3 {
-  font-size: 12px;
-  margin-bottom: 20px;
-  color: var(--primary);
+.input-group {
+  margin-bottom: 10px;
+}
+
+.input-group label {
+  display: block;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  color: var(--color-cafe-medio);
+  margin-bottom: 10px;
 }
 
 .login-card input {
   width: 100%;
-  padding: 12px;
-  border-radius: 10px;
-  border: 1px solid var(--primary);
-  margin-bottom: 20px;
-  outline: none;
-  background-color: transparent;
-}
-
-.login-card button {
-  width: 100%;
-  padding: 12px;
+  box-sizing: border-box;
+  padding: 15px 0;
   border: none;
-  border-radius: 10px;
-  background: var(--primary);
-  color: var(--secondary);
-  font-weight: bold;
-  cursor: pointer;
-  transition: 0.3s;
+  border: 1px solid var(--color-borde);
+  border-radius: 20px;
+  font-size: 16px;
+  transition: all 0.3s;
+  color: var(--color-cafe-oscuro);
+  background: transparent;
+  padding-left: 15px;
 }
 
-.error {
-  color: red;
-  margin-top: 10px;
+.login-card input:focus {
+  outline: none;
+  border: 1px solid var(--color-cafe-oscuro);
+}
+
+.login-card input::placeholder {
+  color: #ccc;
+  font-weight: 300;
+}
+
+.btn-ingresar {
+  width: 100%;
+  padding: 16px;
+  background: var(--color-cafe-oscuro);
+  color: white;
+  border: none;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.2s, background 0.3s;
+}
+
+.btn-ingresar:hover {
+  background: var(--color-cafe-medio);
+  transform: translateY(-2px);
+}
+
+.btn-ingresar:active {
+  transform: translateY(0);
+}
+
+.error-message {
+  color: #d32f2f;
   font-size: 12px;
+  margin-top: 20px;
+  text-align: center;
+  background: #ffebee;
+  padding: 10px;
+  border-radius: 20px;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
 }
