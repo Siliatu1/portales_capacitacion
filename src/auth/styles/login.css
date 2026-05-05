@@ -1,64 +1,103 @@
-.login-container {
+:root {
+  --color-cafe-oscuro: #3e2723;
+  --color-cafe-medio: #5d4037;
+  --color-crema: #fdfaf5;
+  --color-borde: #e0d7cc;
+  --color-acento: #a67c52;
+}
+
+.login-wrapper {
   height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
+  background-color: var(--color-crema);
+  font-family: 'Inter', -apple-system, sans-serif;
+}
 
-  background: linear-gradient(135deg, #5a3825, #7b4b2a);
-  font-family: "Segoe UI", sans-serif;
+.login-container {
+  width: 100%;
+  max-width: 400px;
+  padding: 20px;
+  animation: fadeIn 0.8s ease-out;
 }
 
 .login-card {
-  background: #f4efe8;
-  padding: 40px;
+  background: white;
+  padding: 45px 35px;
   border-radius: 20px;
-  width: 320px;
-  text-align: center;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.2);
 }
 
-.login-card h3 {
-  font-size: 12px;
-  letter-spacing: 2px;
-  margin-bottom: 20px;
-  color: #6b4a2b;
+.input-group {
+  margin-bottom: 10px;
 }
 
-.login-card label {
-  font-size: 11px;
-  color: #6b4a2b;
+.input-group label {
   display: block;
-  text-align: left;
-  margin-bottom: 5px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  color: var(--color-cafe-medio);
+  margin-bottom: 10px;
 }
 
 .login-card input {
   width: 100%;
-  padding: 12px;
-  border-radius: 10px;
-  border: 1px solid #cbbba7;
-  margin-bottom: 20px;
-  outline: none;
-}
-
-.login-card button {
-  width: 100%;
-  padding: 12px;
+  box-sizing: border-box;
+  padding: 15px 0;
   border: none;
-  border-radius: 10px;
-  background: #5a3825;
+  border: 1px solid var(--color-borde);
+  border-radius: 20px;
+  font-size: 16px;
+  transition: all 0.3s;
+  color: var(--color-cafe-oscuro);
+  background: transparent;
+  padding-left: 15px;
+}
+
+.login-card input:focus {
+  outline: none;
+  border: 1px solid var(--color-cafe-oscuro);
+}
+
+.login-card input::placeholder {
+  color: #ccc;
+  font-weight: 300;
+}
+
+.btn-ingresar {
+  width: 100%;
+  padding: 16px;
+  background: var(--color-cafe-oscuro);
   color: white;
-  font-weight: bold;
+  border: none;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 600;
   cursor: pointer;
-  transition: 0.3s;
+  transition: transform 0.2s, background 0.3s;
 }
 
-.login-card button:hover {
-  background: #3e2618;
+.btn-ingresar:hover {
+  background: var(--color-cafe-medio);
+  transform: translateY(-2px);
 }
 
-.error {
-  color: red;
-  margin-top: 10px;
+.btn-ingresar:active {
+  transform: translateY(0);
+}
+
+.error-message {
+  color: #d32f2f;
   font-size: 12px;
+  margin-top: 20px;
+  text-align: center;
+  background: #ffebee;
+  padding: 10px;
+  border-radius: 20px;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
 }

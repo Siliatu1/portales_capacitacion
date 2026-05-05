@@ -29,26 +29,27 @@ const Login = () => {
   };
 
   return (
-    <div className="login-container">
-      <div className="login-card">
-        <h3>PORTAL CREPES & WAFFLES</h3>
-
-        <label>NÚMERO DE DOCUMENTO</label>
-
+<div className="login-wrapper">
+  <div className="login-container">
+    <div className="login-card">
+      <div className="input-group">
+        <label htmlFor="documento">NÚMERO DE DOCUMENTO</label>
         <input
+          id="documento"
           type="text"
-          placeholder="Ingresa tu documento"
+          placeholder="Ej: 1023456789"
           value={documento}
           onChange={(e) => setDocumento(e.target.value)}
+          className={error ? "input-error" : ""}
         />
-
-        <button onClick={handleLogin} disabled={loading}>
-          {loading ? "Cargando..." : "INGRESAR"}
-        </button>
-
-        {error && <p className="error">{error}</p>}
       </div>
+      <button className="btn-ingresar" onClick={handleLogin} disabled={loading}>
+        {loading ? <span className="loader"></span> : "INGRESAR AL PORTAL"}
+      </button>
+      {error && <p className="error-message">{error}</p>}
     </div>
+  </div>
+</div>
   );
 };
 
