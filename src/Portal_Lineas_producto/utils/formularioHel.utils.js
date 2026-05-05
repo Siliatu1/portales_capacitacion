@@ -33,7 +33,18 @@ export const buildInscripcionAttributes = (formData, empleado) => {
     cargo: empleado?.cargo_general || formData.cargo || '',
     pdv: formData.area_nombre || formData.puntoVenta || empleado?.area_nombre || empleado?.pdv || '',
     fecha: formData.fecha || null,
-    lider: empleado?.lider || formData.nombreLider || '',
+    lider:
+      formData.lider ||
+      empleado?.lider ||
+      (() => {
+        try {
+          const u = JSON.parse(localStorage.getItem('user'));
+          return u?.nombre || '';
+        } catch (e) {
+          return '';
+        }
+      })() ||
+      formData.nombreLider || '',
     tipo_formulario: 'heladeria',
   };
 };

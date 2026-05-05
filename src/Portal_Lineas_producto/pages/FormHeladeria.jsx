@@ -33,6 +33,7 @@ const FormHeladeria = () => {
 
   const [showDetails, setShowDetails] = useState(true);
   const [message, setMessage] = useState(null);
+  const [lider, setLider] = useState("");
 
   const onSearch = async () => {
     setMessage(null);
@@ -97,6 +98,15 @@ const FormHeladeria = () => {
   const onSelectFecha = (f) => {
     setFormData((prev) => ({ ...prev, fecha: f.fecha }));
   };
+
+  useEffect(() => {
+    try {
+      const user = JSON.parse(localStorage.getItem("user"));
+      setLider(user?.nombre || "");
+    } catch (err) {
+      setLider("");
+    }
+  }, []);
 
   return (
     <div className="inscripcion-container">
@@ -170,6 +180,10 @@ const FormHeladeria = () => {
                     value={formData.area_nombre|| ""}
                     onChange={handleChange}
                   />
+                </div>
+                <div className="detail-row">
+                  <label>Líder</label>
+                  <input className="form-input" value={lider || ""} readOnly />
                 </div>
               </div>
             )}

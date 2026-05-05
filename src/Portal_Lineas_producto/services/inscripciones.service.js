@@ -13,6 +13,7 @@ export const getInscripciones = async () => {
     telefono: item.attributes?.telefono || '',
     cargo: item.attributes?.cargo || '',
     area_nombre: item.attributes?.area_nombre || '',
+    lider: item.attributes?.lider || '',
     dia: item.attributes?.fecha || '',
     asistencia: item.attributes?.confirmado ?? null
   }));
