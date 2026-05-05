@@ -25,5 +25,7 @@ export const useFormulario = (config) => {
     loading,
     setLoading,
     reset,
+    // alias para compatibilidad en componentes
+    resetForm: reset,
   };
 };

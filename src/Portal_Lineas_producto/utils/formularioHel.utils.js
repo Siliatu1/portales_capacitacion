@@ -5,3 +5,35 @@ export const formatearFecha = (year, month, dia) => {
 export const esDisponible = ({ inscripciones, esFestivo, bloqueada }) => {
   return inscripciones < 3 && !esFestivo && !bloqueada;
 };
+
+/**
+ * Estado inicial del formulario de inscripción (centralizado)
+ */
+export const getInitialFormState = () => ({
+  documento: "",
+  telefono: "",
+  fecha: "",
+  puntoVenta: "",
+  area_nombre: "",
+  nombres: "",
+  nombreLider: "",
+});
+
+/**
+ * Construye los atributos que se enviarán a la API para la inscripción
+ * @param {Object} formData
+ * @param {Object} empleado
+ * @returns {Object} attributes
+ */
+export const buildInscripcionAttributes = (formData, empleado) => {
+  return {
+    documento: formData.documento || empleado?.raw?.document_number || '',
+    nombre: formData.nombres || empleado?.nombre || '',
+    telefono: formData.telefono || formData.celular || empleado?.celular || empleado?.telefono || '',
+    cargo: empleado?.cargo_general || formData.cargo || '',
+    pdv: formData.area_nombre || formData.puntoVenta || empleado?.area_nombre || empleado?.pdv || '',
+    fecha: formData.fecha || null,
+    lider: empleado?.lider || formData.nombreLider || '',
+    tipo_formulario: 'heladeria',
+  };
+};
