@@ -12,10 +12,10 @@
 .inscripcion-card {
   width: 100%;
   max-width: 600px;
-  border-radius: 20px;
-  background: #fff9f0;
-  padding: 40px;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  border-radius: 14px;
+  background: linear-gradient(180deg, #fff9f0 0%, #fffdf9 100%);
+  padding: 30px;
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.35);
 }
 
 /* TITULOS */
@@ -66,18 +66,23 @@
   gap: 10px;
 }
 
+.search-input {
+  padding: 12px 14px;
+  border-radius: 8px;
+  border: 2px solid #e8ded0;
+  flex: 1;
+}
+
 .search-button {
-  background: #563c28;
-  color: white;
+  background: #8b7355;
+  color: #fff;
   border: none;
-  padding: 14px 20px;
-  border-radius: 10px;
+  padding: 10px 12px;
+  border-radius: 8px;
   cursor: pointer;
 }
 
-.search-button:hover {
-  background: #3f2c1f;
-}
+.search-button:hover { background:#6b4b35 }
 
 /* MENSAJES */
 .mensaje {
@@ -99,8 +104,9 @@
 /* EMPLEADO */
 .employee-info-container {
   border: 2px solid #e8ded0;
-  border-radius: 15px;
-  padding: 15px;
+  border-radius: 12px;
+  padding: 12px;
+  margin: 12px 0;
 }
 
 /* FOTO */
@@ -110,6 +116,22 @@
   border-radius: 50%;
   object-fit: cover;
 }
+
+.employee-top {
+  display:flex;
+  gap:12px;
+  align-items:center;
+}
+
+.employee-meta { font-size:14px }
+.employee-name { font-weight:700; color:#5a3825 }
+.employee-role { font-size:12px; color:#8b7355 }
+.employee-phone { font-size:13px; color:#777 }
+
+.toggle-details { margin-top:10px; background:#f1e9df; border:1px solid #e8ded0; padding:8px 12px; border-radius:18px; cursor:pointer }
+
+.employee-details { margin-top:12px; display:flex; flex-direction:column; gap:10px }
+.detail-row label { font-size:11px; color:#8b7355; margin-bottom:6px; display:block }
 
 /* BOTONES */
 .form-actions {
@@ -144,15 +166,17 @@
 .fechas-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 15px;
+  gap: 12px;
 }
 
 .fecha-card {
-  padding: 15px;
+  padding: 14px;
   border-radius: 12px;
   border: 2px solid #e0d5c7;
   cursor: pointer;
   text-align: center;
+  background: #fff;
+  position: relative;
 }
 
 .fecha-card.selected {
@@ -160,13 +184,15 @@
   color: white;
 }
 
+.fecha-badge { position:absolute; top:8px; right:8px; background:#ff6b6b; color:white; font-size:10px; padding:4px 6px; border-radius:10px }
+.fecha-day { font-weight:700; font-size:18px; margin-top:8px }
+.fecha-desc { font-size:12px; color:#8b7355; margin-top:6px }
+
 /* RESPONSIVE */
 @media (max-width: 768px) {
   .inscripcion-card {
     padding: 25px;
   }
 
-  .fechas-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
+  .fechas-grid { grid-template-columns: repeat(2, 1fr) }
 }

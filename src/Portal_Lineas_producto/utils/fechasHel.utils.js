@@ -1,33 +1,101 @@
-export const obtenerMeses = () => {
+/**
+ * Determina qué meses deben mostrarse para la inscripción
+ * Lógica: Del 1-14 del mes se muestra solo el mes actual
+ *         Del 15 en adelante se muestra el mes actual y el siguiente
+ * @returns Array de objetos {year, month} con los meses a mostrar
+ */
+export const obtenerMesesAMostrar = () => {
   const hoy = new Date();
-  const dia = hoy.getDate();
-  const mes = hoy.getMonth();
-  const year = hoy.getFullYear();
+  const diaActual = hoy.getDate();
+  const mesActual = hoy.getMonth();
+  const yearActual = hoy.getFullYear();
 
-  if (dia >= 15) {
-    return [
-      { year, month: mes },
-      { year, month: mes + 1 > 11 ? 0 : mes + 1 },
-    ];
+  const meses = [];
+  
+  if (diaActual >= 15) {
+    meses.push({ year: yearActual, month: mesActual });
+    
+    if (mesActual === 11) {
+      meses.push({ year: yearActual + 1, month: 0 });
+    } else {
+      meses.push({ year: yearActual, month: mesActual + 1 });
+    }
+  } else {
+    meses.push({ year: yearActual, month: mesActual });
   }
 
-  return [{ year, month: mes }];
+  return meses;
 };
 
-export const generarFechasDisponibles = (year, month) => {
+/**
+ * Obtiene la lista de festivos colombianos para un año
+ * @param {number} year
+ * @returns Promise<string[]> array de fechas en formato YYYY-MM-DD
+ */
+export const fetchFestivosColombia = async (year) => {
+  try {
+    const res = await fetch(`https://date.nager.at/api/v3/PublicHolidays/${year}/CO`);
+    if (!res.ok) return [];
+
+    const json = await res.json();
+    return json.map((h) => h.date);
+  } catch (err) {
+    console.error('Error fetch festivos', err);
+    return [];
+  }
+};
+
+/**
+ * Obtiene todos los lunes y viernes de un mes específico
+ * Verifica disponibilidad: máximo 3 inscripciones por fecha
+ * Excluye: festivos colombianos y fechas bloqueadas manualmente
+ * @param {number} year - Año
+ * @param {number} month - Mes (0-11)
+ * @param {string[]} festivosColombianos - fechas YYYY-MM-DD
+ * @param {string[]} fechasBloqueadas - fechas YYYY-MM-DD
+ * @param {Object} inscripcionesPorFecha - map { 'YYYY-MM-DD': number }
+ * @returns Array de objetos con información de cada fecha disponible
+ */
+export const obtenerFechasPorDias = (year, month, diasPermitidos = [1,5], festivosColombianos = [], fechasBloqueadas = [], inscripcionesPorFecha = {}) => {
   const fechas = [];
-  const lastDay = new Date(year, month + 1, 0).getDate();
-
-  for (let i = 1; i <= lastDay; i++) {
-    const d = new Date(year, month, i);
-
-    if ([2, 3, 4].includes(d.getDay())) {
+  const ultimoDia = new Date(year, month + 1, 0).getDate();
+  
+  const meses = [
+    "enero", "febrero", "marzo", "abril", "mayo", "junio",
+    "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"
+  ];
+  
+  const diasSemana = ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"];
+  
+  for (let dia = 1; dia <= ultimoDia; dia++) {
+    const fecha = new Date(year, month, dia);
+    const diaSemana = fecha.getDay();
+    
+    if (diasPermitidos.includes(diaSemana)) {
+      const fechaStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(dia).padStart(2, '0')}`;
+      
+      const esFestivo = festivosColombianos.includes(fechaStr);
+      const estaBloqueada = fechasBloqueadas.includes(fechaStr);
+      const numInscripciones = inscripcionesPorFecha[fechaStr] || 0;
+      const disponible = numInscripciones < 3 && !esFestivo && !estaBloqueada;
+      const estado = disponible ? 'disponible' : 'completo';
+      
       fechas.push({
-        fecha: d.toISOString().split("T")[0],
-        dia: i,
+        fecha: fechaStr,
+        dia,
+        mes: meses[month],
+        texto: `${diasSemana[diaSemana]} ${dia} de ${meses[month]}`,
+        disponible,
+        inscripciones: numInscripciones,
+        esFestivo,
+        estaBloqueada,
+        estado
       });
     }
   }
-
+  
   return fechas;
 };
+
+// wrapper for backward compatibility
+export const obtenerLunesYViernes = (...args) => obtenerFechasPorDias(...args);
