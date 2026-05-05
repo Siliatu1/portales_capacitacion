@@ -13,8 +13,23 @@ export const getInscripciones = async () => {
     telefono: item.attributes?.telefono || '',
     cargo: item.attributes?.cargo || '',
     area_nombre: item.attributes?.area_nombre || '',
+    puntoVenta: item.attributes?.pdv || item.attributes?.puntoVenta || item.attributes?.area_nombre || '',
+    tipo_formulario: item.attributes?.tipo_formulario || item.attributes?.tipoFormulario || 'heladeria',
     lider: item.attributes?.lider || '',
     dia: item.attributes?.fecha || '',
     asistencia: item.attributes?.confirmado ?? null
   }));
+};
+
+export const deleteInscripcion = async (id) => {
+  const res = await fetch(`${API_URL}/cap-cafes/${id}`, {
+    method: 'DELETE',
+  });
+
+  if (!res.ok) {
+    const text = await res.text();
+    throw new Error(`Error al eliminar inscripcion: ${res.status} ${text}`);
+  }
+
+  return res.json();
 };

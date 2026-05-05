@@ -1,8 +1,19 @@
-import { Input, Space, Button } from "antd";
+import { Input, Space, Button, Select } from "antd";
 
 export default function FiltrosInscripciones({ filtros, setFiltros }) {
   return (
     <Space>
+      <Select
+        value={filtros.formulario || 'todos'}
+        style={{ width: 160 }}
+        onChange={(val) => setFiltros({ ...filtros, formulario: val })}
+      >
+        <Select.Option value="todos">Todos los formularios</Select.Option>
+        <Select.Option value="heladeria">Heladería</Select.Option>
+        <Select.Option value="restaurante">PDV / Restaurante</Select.Option>
+        <Select.Option value="todera">Todera</Select.Option>
+      </Select>
+
       <Input
         placeholder="Cédula"
         value={filtros.cedula}

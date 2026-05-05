@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { getInscripciones } from "../services/inscripciones.service";
+import { getInscripciones, deleteInscripcion } from "../services/inscripciones.service";
 
 export const useInscripciones = () => {
   const [data, setData] = useState([]);
@@ -18,6 +18,18 @@ export const useInscripciones = () => {
     }
   };
 
+  const remove = async (id) => {
+    setLoading(true);
+    try {
+      await deleteInscripcion(id);
+      await fetchData();
+    } catch (err) {
+      console.error('Error eliminando inscripcion', err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
     fetchData();
   }, []);
@@ -25,6 +37,7 @@ export const useInscripciones = () => {
   return {
     data,
     loading,
-    refetch: fetchData
+    refetch: fetchData,
+    deleteInscripcion: remove
   };
 };

@@ -7,17 +7,23 @@ import InscripcionesTable from "../components/InscripcionesTable";
 import FiltrosInscripciones from "../components/FiltrosInscripciones";
 
 export default function Panel ({ userData, onLogout }) {
-  const { data, loading, refetch } = useInscripciones();
+  const { data, loading, refetch, deleteInscripcion } = useInscripciones();
 
   const [filtros, setFiltros] = useState({
     cedula: "",
     puntoVenta: "",
-    fecha: ""
+    fecha: "",
+    formulario: 'todos'
   });
 
   const dataFiltrada = useMemo(() => {
     return filtrarInscripciones(data, filtros);
   }, [data, filtros]);
+
+  const formTypes = useMemo(() => {
+    const set = new Set((dataFiltrada || []).map(i => (i.tipo_formulario || 'heladeria')));
+    return Array.from(set);
+  }, [dataFiltrada]);
 
   return (
     <>
@@ -33,11 +39,20 @@ export default function Panel ({ userData, onLogout }) {
           setFiltros={setFiltros}
         />
 
-        {/* TABLA */}
-        <InscripcionesTable
-          data={dataFiltrada}
-          loading={loading}
-        />
+        {/* TABLAS POR FORMULARIO */}
+        {formTypes.map((ft) => (
+          <div className="table-card" key={ft} style={{ marginBottom: 18 }}>
+            <div className="table-header">
+              <div className="table-title">{ft.charAt(0).toUpperCase() + ft.slice(1)} ({dataFiltrada.filter(i => (i.tipo_formulario || 'heladeria') === ft).length})</div>
+            </div>
+            <InscripcionesTable
+              data={dataFiltrada.filter(i => (i.tipo_formulario || 'heladeria') === ft)}
+              loading={loading}
+              formType={ft}
+              onDelete={deleteInscripcion}
+            />
+          </div>
+        ))}
       </div>
     </>
   );
