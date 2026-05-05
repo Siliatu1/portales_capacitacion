@@ -1,19 +1,8 @@
 import { Input, Space, Button, Select } from "antd";
 
-export default function FiltrosInscripciones({ filtros, setFiltros }) {
+export default function FiltrosInscripciones({ filtros, setFiltros, fechasDisponibles = [] }) {
   return (
     <Space>
-      <Select
-        value={filtros.formulario || 'todos'}
-        style={{ width: 160 }}
-        onChange={(val) => setFiltros({ ...filtros, formulario: val })}
-      >
-        <Select.Option value="todos">Todos los formularios</Select.Option>
-        <Select.Option value="heladeria">Heladería</Select.Option>
-        <Select.Option value="restaurante">PDV / Restaurante</Select.Option>
-        <Select.Option value="todera">Todera</Select.Option>
-      </Select>
-
       <Input
         placeholder="Cédula"
         value={filtros.cedula}
@@ -26,7 +15,16 @@ export default function FiltrosInscripciones({ filtros, setFiltros }) {
         onChange={e => setFiltros({ ...filtros, puntoVenta: e.target.value })}
       />
 
-      <Button onClick={() => setFiltros({ cedula: "", puntoVenta: "", fecha: "" })}>
+      <Select
+        placeholder="Fecha"
+        style={{ minWidth: 160 }}
+        value={filtros.fecha || undefined}
+        onChange={value => setFiltros({ ...filtros, fecha: value || "" })}
+        options={(fechasDisponibles || []).map(f => ({ label: f, value: f }))}
+        allowClear
+      />
+
+      <Button onClick={() => setFiltros({ cedula: "", puntoVenta: "", fecha: "", formulario: 'todos' })}>
         Limpiar
       </Button>
     </Space>

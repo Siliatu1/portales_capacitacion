@@ -25,6 +25,11 @@ export default function Panel ({ userData, onLogout }) {
     return Array.from(set);
   }, [dataFiltrada]);
 
+  const fechasDisponibles = useMemo(() => {
+    const set = new Set((data || []).map(i => i.dia).filter(Boolean));
+    return Array.from(set).sort((a, b) => a.localeCompare(b));
+  }, [data]);
+
   return (
     <>
       {/* NAVBAR */}
@@ -37,6 +42,7 @@ export default function Panel ({ userData, onLogout }) {
         <FiltrosInscripciones
           filtros={filtros}
           setFiltros={setFiltros}
+          fechasDisponibles={fechasDisponibles}
         />
 
         {/* TABLAS POR FORMULARIO */}
