@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { getInscripciones, deleteInscripcion } from "../services/inscripciones.service";
+import { getInscripciones, deleteInscripcion, updateAsistencia } from "../services/inscripciones.service";
 
 export const useInscripciones = () => {
   const [data, setData] = useState([]);
@@ -30,6 +30,18 @@ export const useInscripciones = () => {
     }
   };
 
+  const setAsistencia = async (id, confirmado) => {
+    setLoading(true);
+    try {
+      await updateAsistencia(id, confirmado);
+      await fetchData();
+    } catch (err) {
+      console.error('Error actualizando asistencia', err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
     fetchData();
   }, []);
@@ -39,5 +51,6 @@ export const useInscripciones = () => {
     loading,
     refetch: fetchData,
     deleteInscripcion: remove
+    , setAsistencia
   };
 };
