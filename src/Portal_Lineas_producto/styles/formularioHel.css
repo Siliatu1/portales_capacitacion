@@ -1,198 +1,378 @@
-/* CONTENEDOR PRINCIPAL */
-.inscripcion-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 100vh;
-  background: linear-gradient(135deg, #3d2817 0%, #5c4033 50%, #3d2817 100%);
-  padding: 40px 20px;
-}
-
-/* CARD */
-.inscripcion-card {
-  width: 100%;
-  max-width: 600px;
-  border-radius: 14px;
-  background: linear-gradient(180deg, #fff9f0 0%, #fffdf9 100%);
-  padding: 30px;
-  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.35);
-}
-
-/* TITULOS */
-.inscripcion-subtitle {
-  text-align: center;
-  font-size: 20px;
-  color: #8b7355;
-  margin-bottom: 30px;
-  letter-spacing: 2px;
-}
-
-/* FORM */
-.inscripcion-form {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-}
-
-/* INPUTS */
-.form-section {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.form-label {
-  font-size: 11px;
-  font-weight: 600;
-  color: #8b7355;
-}
-
-.form-input {
-  padding: 14px;
-  border-radius: 10px;
-  border: 2px solid #e8ded0;
-  outline: none;
-  transition: 0.3s;
-}
-
-.form-input:focus {
-  border-color: #8b7355;
-  box-shadow: 0 0 0 3px rgba(139, 115, 85, 0.1);
-}
-
-/* BUSCADOR */
-.search-input-container {
-  display: flex;
-  gap: 10px;
-}
-
-.search-input {
-  padding: 12px 14px;
-  border-radius: 8px;
-  border: 2px solid #e8ded0;
-  flex: 1;
-}
-
-.search-button {
-  background: #8b7355;
-  color: #fff;
-  border: none;
-  padding: 10px 12px;
-  border-radius: 8px;
-  cursor: pointer;
-}
-
-.search-button:hover { background:#6b4b35 }
-
-/* MENSAJES */
-.mensaje {
-  padding: 12px;
-  border-radius: 10px;
-  text-align: center;
-}
-
-.mensaje.success {
-  background: #d4edda;
-  color: #155724;
-}
-
-.mensaje.error {
-  background: #f8d7da;
-  color: #721c24;
-}
-
-/* EMPLEADO */
-.employee-info-container {
-  border: 2px solid #e8ded0;
-  border-radius: 12px;
-  padding: 12px;
-  margin: 12px 0;
-}
-
-/* FOTO */
-.employee-photo {
-  width: 100px;
-  height: 100px;
-  border-radius: 50%;
-  object-fit: cover;
-}
-
-.employee-top {
-  display:flex;
-  gap:12px;
-  align-items:center;
-}
-
-.employee-meta { font-size:14px }
-.employee-name { font-weight:700; color:#5a3825 }
-.employee-role { font-size:12px; color:#8b7355 }
-.employee-phone { font-size:13px; color:#777 }
-
-.toggle-details { margin-top:10px; background:#f1e9df; border:1px solid #e8ded0; padding:8px 12px; border-radius:18px; cursor:pointer }
-
-.employee-details { margin-top:12px; display:flex; flex-direction:column; gap:10px }
-.detail-row label { font-size:11px; color:#8b7355; margin-bottom:6px; display:block }
-
-/* BOTONES */
-.form-actions {
-  display: flex;
-  gap: 10px;
-}
-
-.cancel-button {
-  flex: 1;
-  border: 2px solid #8b7355;
-  background: transparent;
-  padding: 12px;
-  border-radius: 10px;
-  cursor: pointer;
-}
-
-.submit-button {
-  flex: 1;
-  background: #563c28;
-  color: white;
-  border: none;
-  padding: 12px;
-  border-radius: 10px;
-  cursor: pointer;
-}
-
-.submit-button:hover {
-  background: #3f2c1f;
-}
-
-/* FECHAS */
-.fechas-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 12px;
-}
-
-.fecha-card {
-  padding: 14px;
-  border-radius: 12px;
-  border: 2px solid #e0d5c7;
-  cursor: pointer;
-  text-align: center;
-  background: #fff;
-  position: relative;
-}
-
-.fecha-card.selected {
-  background: #8b7355;
-  color: white;
-}
-
-.fecha-badge { position:absolute; top:8px; right:8px; background:#ff6b6b; color:white; font-size:10px; padding:4px 6px; border-radius:10px }
-.fecha-day { font-weight:700; font-size:18px; margin-top:8px }
-.fecha-desc { font-size:12px; color:#8b7355; margin-top:6px }
-
-/* RESPONSIVE */
-@media (max-width: 768px) {
-  .inscripcion-card {
-    padding: 25px;
+:root {
+    --primary: #2563eb;
+    --primary-light: #eff6ff;
+    --success: #10b981;
+    --error: #ef4444;
+    --warning: #f59e0b;
+    --text-main: #1e293b;
+    --text-muted: #64748b;
+    --bg-main: #f8fafc;
+    --card-bg: #ffffff;
+    --border: #e2e8f0;
+    --radius: 12px;
+    --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
   }
 
-  .fechas-grid { grid-template-columns: repeat(2, 1fr) }
-}
+  .inscripcion-container {
+    min-height: 100vh;
+    padding: 2rem 1rem;
+    background: var(--bg-main);
+    display: flex;
+    justify-content: center;
+    font-family: 'Inter', system-ui, sans-serif;
+  }
+
+  .inscripcion-card {
+    background: var(--card-bg);
+    width: 100%;
+    max-width: 800px;
+    border-radius: 20px;
+    box-shadow: var(--shadow);
+    border: 1px solid var(--border);
+    padding: 2.5rem;
+    overflow: hidden;
+  }
+
+  .inscripcion-title {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: var(--text-main);
+    margin-bottom: 2rem;
+    text-align: center;
+    letter-spacing: -0.025em;
+    text-transform: uppercase;
+    background: linear-gradient(to right, var(--primary), #3b82f6);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .search-row {
+    margin-bottom: 2rem;
+  }
+
+  .search-input-container {
+    display: flex;
+    gap: 0.5rem;
+    background: #f1f5f9;
+    padding: 0.5rem;
+    border-radius: 14px;
+    border: 1px solid var(--border);
+    transition: all 0.2s;
+  }
+
+  .search-input-container:focus-within {
+    border-color: var(--primary);
+    background: white;
+    box-shadow: 0 0 0 4px var(--primary-light);
+  }
+
+  .form-input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    padding: 0.75rem 1rem;
+    font-size: 1rem;
+    outline: none;
+    color: var(--text-main);
+  }
+
+  .search-button {
+    background: var(--primary);
+    color: white;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 10px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: all 0.2s;
+  }
+
+  .search-button:hover {
+    background: #1d4ed8;
+    transform: translateY(-1px);
+  }
+
+  .employee-info-container {
+    background: #f8fafc;
+    border-radius: 16px;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+    border: 1px solid var(--border);
+    animation: fadeIn 0.3s ease-out;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .employee-top {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .employee-photo {
+    width: 70px;
+    height: 70px;
+    border-radius: 14px;
+    object-fit: cover;
+    border: 3px solid white;
+    box-shadow: var(--shadow);
+  }
+
+  .employee-meta .employee-name {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--text-main);
+  }
+
+  .employee-meta .employee-role {
+    color: var(--text-muted);
+    font-size: 0.875rem;
+  }
+
+  .toggle-details {
+    width: 100%;
+    padding: 0.5rem;
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--primary);
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    margin-bottom: 1rem;
+  }
+
+  .employee-details {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+  }
+
+  .detail-row {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+
+  .detail-row label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase;
+  }
+
+  .detail-row .form-input {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 0.6rem 0.8rem;
+    font-size: 0.9rem;
+  }
+
+  .fechas-section {
+    margin-top: 2rem;
+  }
+
+  .fechas-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .fecha-card {
+    aspect-ratio: 1/1.1;
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    padding: 1rem;
+  }
+
+  .fecha-card:hover:not(:disabled) {
+    border-color: var(--primary);
+    transform: translateY(-4px);
+    box-shadow: 0 10px 15px -3px rgba(37, 99, 235, 0.1);
+  }
+
+  .fecha-card.selected {
+    background: var(--primary-light);
+    border-color: var(--primary);
+    box-shadow: 0 0 0 2px var(--primary);
+  }
+
+  .fecha-card.no-disponible {
+    background: #f1f5f9;
+    opacity: 0.7;
+    cursor: not-allowed;
+    border-style: dashed;
+  }
+
+  .fecha-no-disponible-label {
+    position: absolute;
+    top: 6px;
+    font-size: 0.6rem;
+    font-weight: 800;
+    padding: 2px 6px;
+    border-radius: 4px;
+    background: #64748b;
+    color: white;
+  }
+
+  .fecha-mes {
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: var(--text-muted);
+    margin-bottom: 2px;
+  }
+
+  .fecha-dia {
+    font-size: 1.75rem;
+    font-weight: 800;
+    color: var(--text-main);
+    line-height: 1;
+  }
+
+  .fecha-texto {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    margin-top: 4px;
+  }
+
+  .fecha-contador {
+    margin-top: 8px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    background: #f1f5f9;
+    padding: 2px 8px;
+    border-radius: 10px;
+  }
+
+  .selected .fecha-contador {
+    background: var(--primary);
+    color: white;
+  }
+
+  .fechas-pagination-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1.5rem;
+    margin-top: 1rem;
+  }
+
+  .pagination-button {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: 1px solid var(--border);
+    background: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .pagination-button:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+  }
+
+  .pagination-button:hover:not(:disabled) {
+    background: var(--primary-light);
+    color: var(--primary);
+    border-color: var(--primary);
+  }
+
+  .pagination-info {
+    font-size: 0.875rem;
+    color: var(--text-muted);
+    font-weight: 500;
+  }
+
+  .mensaje {
+    padding: 1rem;
+    border-radius: 12px;
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 0.9rem;
+    font-weight: 500;
+  }
+
+  .mensaje.success {
+    background: #ecfdf5;
+    color: #065f46;
+    border: 1px solid #a7f3d0;
+  }
+
+  .mensaje.error {
+    background: #fef2f2;
+    color: #991b1b;
+    border: 1px solid #fecaca;
+  }
+
+  .form-actions {
+    display: flex;
+    gap: 1rem;
+    margin-top: 2.5rem;
+    border-top: 1px solid var(--border);
+    padding-top: 2rem;
+  }
+
+  .form-actions button {
+    flex: 1;
+    padding: 1rem;
+    border-radius: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+    border: none;
+  }
+
+  .cancel-button {
+    background: #f1f5f9;
+    color: #64748b;
+  }
+
+  .cancel-button:hover {
+    background: #e2e8f0;
+  }
+
+  .submit-button {
+    background: var(--primary);
+    color: white;
+    box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.2);
+  }
+
+  .submit-button:hover:not(:disabled) {
+    background: #1d4ed8;
+    transform: translateY(-2px);
+    box-shadow: 0 10px 15px -3px rgba(37, 99, 235, 0.3);
+  }
+
+  .submit-button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  @media (max-width: 640px) {
+    .employee-details { grid-template-columns: 1fr; }
+    .inscripcion-card { padding: 1.5rem; }
+    .fechas-grid { grid-template-columns: repeat(2, 1fr); }
+  }
