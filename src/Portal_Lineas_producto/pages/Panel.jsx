@@ -4,7 +4,7 @@ import { useInscripciones } from "../hooks/useInscripciones";
 import { filtrarInscripciones } from "../utils/filters";
 import "../styles/panel.css";
 import InscripcionesTable from "../components/InscripcionesTable";
-import FiltrosInscripciones from "../components/FiltrosInscripciones";
+import FiltrosInscripciones from "../components/FiltrosInscripciones"; 
 
 export default function Panel ({ userData, onLogout }) {
   const { data, loading, refetch, deleteInscripcion } = useInscripciones();

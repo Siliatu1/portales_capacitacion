@@ -5,6 +5,7 @@ import Panel from "./Portal_Lineas_producto/pages/Panel";
 import FormHeladeria from "./Portal_Lineas_producto/pages/FormHeladeria";
 import FormRestaurante from "./Portal_Lineas_producto/pages/FromRestaurante";
 import ControlAsistencia from "./Portal_Lineas_producto/pages/ControlAsistencia";
+import FormTodera from "./Portal_Lineas_producto/pages/FormTodera";
 
 function App() {
   const user = null;
@@ -23,6 +24,7 @@ function App() {
         <Route path="/lineas-producto/form-heladeria" element={<FormHeladeria />} />
         <Route path="/lineas-producto/form-restaurante" element={<FormRestaurante />} />
         <Route path="/lineas-producto/control-asistencia" element={<ControlAsistencia />} />
+        <Route path="/lineas-producto/form-todera" element={<FormTodera />} />
 
         {/* Ruta protegida (ejemplo) */}
         <Route

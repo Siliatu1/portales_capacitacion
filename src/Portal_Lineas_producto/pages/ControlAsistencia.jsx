@@ -1,5 +1,5 @@
 import { useState, useMemo } from "react";
-import NavbarCompact from "../components/NavbarCompact";
+import NavbarCompact from "../components/NavbarB";
 import { useInscripciones } from "../hooks/useInscripciones";
 import { filtrarInscripciones } from "../utils/filters";
 import "../styles/panel.css";

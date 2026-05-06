@@ -1,5 +1,5 @@
 import { useFormulario } from "../hooks/useFormulario";
-import { useEmpleado } from "../hooks/useEmpleado";
+import { useEmpleadoForm } from "../hooks/useEmpleado";
 import { useFechas } from "../hooks/useFechas";
 import { guardarInscripcion } from "../services/formulario.service";
 import { getInitialFormState, buildInscripcionAttributes } from "../utils/formularioHel.utils";
@@ -12,7 +12,7 @@ const FormHeladeria = () => {
     initialState: getInitialFormState(),
   });
 
-  const { empleado, buscarEmpleado, loading, clearEmpleado } = useEmpleado(setFormData);
+  const { empleado, buscarEmpleado, loading, clearEmpleado } = useEmpleadoForm(setFormData);
 
   const { fechas } = useFechas([1, 5]);
 
