@@ -1,5 +1,5 @@
 import { useFormulario } from "../hooks/useFormulario";
-import { useEmpleado } from "../hooks/useEmpleado";
+import { useEmpleadoForm } from "../hooks/useEmpleado";
 import { useFechas } from "../hooks/useFechas";
 import { guardarInscripcion } from "../services/formulario.service";
 import { getInitialFormState, buildInscripcionAttributes } from "../utils/formularioHel.utils";
@@ -12,7 +12,7 @@ const FormRestaurante = () => {
     initialState: getInitialFormState(),
   });
 
-  const { empleado, buscarEmpleado, clearEmpleado } = useEmpleado(setFormData);
+  const { empleado, buscarEmpleado, clearEmpleado } = useEmpleadoForm(setFormData);
 
   // martes(2), miércoles(3), jueves(4)
   const { fechas } = useFechas([2, 3, 4]);

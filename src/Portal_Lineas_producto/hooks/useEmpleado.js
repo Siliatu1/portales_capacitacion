@@ -1,9 +1,80 @@
-import { useState } from "react";
-import { getEmpleado } from "../services/empleado.service";
+import { useState } from 'react';
+import { getEmpleado } from '../services/empleado.service';
+
+const empleadosCache = {};
+
+export default function useEmpleado(initialPdv = '') {
+  const [documento, setDocumento] = useState('');
+  const [empleado, setEmpleado] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [mensaje, setMensaje] = useState({ texto: '', tipo: '' });
+
+  const limpiarEmpleado = () => {
+    setDocumento('');
+    setEmpleado(null);
+    setMensaje({ texto: '', tipo: '' });
+    setLoading(false);
+  };
+
+  const buscarEmpleado = async (docBusqueda = documento, puntoVentaCoordinadora = initialPdv) => {
+    const docTrim = String(docBusqueda || '').trim();
+
+    if (!docTrim) {
+      setMensaje({ texto: 'Por favor ingrese un documento', tipo: 'error' });
+      return null;
+    }
+
+    if (empleadosCache[docTrim]) {
+      const empleadoData = empleadosCache[docTrim];
+      setEmpleado(empleadoData);
+      setMensaje({ texto: '✓ Empleado encontrado', tipo: 'success' });
+      return empleadoData;
+    }
+
+    setLoading(true);
+    setMensaje({ texto: '', tipo: '' });
+
+    try {
+      const data = await getEmpleado(docTrim);
+      const empleados = data?.data || data;
+      const empleadoData = Array.isArray(empleados)
+        ? empleados.find(emp => String(emp.document_number) === docTrim)
+        : null;
+
+      if (empleadoData) {
+        empleadosCache[docTrim] = empleadoData;
+        setEmpleado(empleadoData);
+        setMensaje({ texto: '✓ Empleado encontrado', tipo: 'success' });
+        return empleadoData;
+      }
+
+      setEmpleado(null);
+      setMensaje({ texto: 'No se encontró empleado con ese documento', tipo: 'error' });
+      return null;
+    } catch (error) {
+      setEmpleado(null);
+      setMensaje({ texto: 'Error de conexión con la API', tipo: 'error' });
+      return null;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return {
+    documento,
+    setDocumento,
+    empleado,
+    buscarEmpleado,
+    loading,
+    mensaje,
+    setMensaje,
+    limpiarEmpleado
+  };
+}
 
 const cache = {};
 
-export const useEmpleado = (setFormData) => {
+export const useEmpleadoForm = (setFormData) => {
   const [empleado, setEmpleado] = useState(null);
   const [loading, setLoading] = useState(false);
 
