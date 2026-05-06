@@ -4,6 +4,7 @@ import MenuPrincipal from "./Menu_principal/componente/MenuPrincipal";
 import Panel from "./Portal_Lineas_producto/pages/Panel";
 import FormHeladeria from "./Portal_Lineas_producto/pages/FormHeladeria";
 import FormRestaurante from "./Portal_Lineas_producto/pages/FromRestaurante";
+import ControlAsistencia from "./Portal_Lineas_producto/pages/ControlAsistencia";
 
 function App() {
   const user = null;
@@ -21,6 +22,7 @@ function App() {
         <Route path="/lineas-producto" element={<Panel />} />
         <Route path="/lineas-producto/form-heladeria" element={<FormHeladeria />} />
         <Route path="/lineas-producto/form-restaurante" element={<FormRestaurante />} />
+        <Route path="/lineas-producto/control-asistencia" element={<ControlAsistencia />} />
 
         {/* Ruta protegida (ejemplo) */}
         <Route

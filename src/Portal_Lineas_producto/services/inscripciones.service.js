@@ -33,3 +33,42 @@ export const deleteInscripcion = async (id) => {
 
   return res.json();
 };
+
+export const updateAsistencia = async (id, confirmado) => {
+  const payload = JSON.stringify({ data: { confirmado } });
+  const headers = { 'Content-Type': 'application/json' };
+  try {
+    const raw = localStorage.getItem('user');
+    const maybeToken = raw ? (() => {
+      try { const u = JSON.parse(raw); return u?.token || u?.jwt || u?.accessToken || null; } catch(e) { return null; }
+    })() : null;
+    const altToken = localStorage.getItem('token');
+    const token = maybeToken || altToken;
+    if (token) headers['Authorization'] = `Bearer ${token}`;
+  } catch (e) {
+   
+  }
+
+  let res = await fetch(`${API_URL}/cap-cafes/${id}`, {
+    method: 'PATCH',
+    headers,
+    body: payload,
+  });
+
+  if (!res.ok) {
+    res = await fetch(`${API_URL}/cap-cafes/${id}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: payload,
+    });
+  }
+
+  if (!res.ok) {
+    const text = await res.text();
+    throw new Error(`Error actualizando asistencia: ${res.status} ${text}`);
+  }
+
+  return res.json();
+};

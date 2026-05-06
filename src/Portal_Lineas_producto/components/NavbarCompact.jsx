@@ -1,12 +1,13 @@
 import { useNavigate } from "react-router-dom";
 import "../styles/navbar.css";
 
-const Navbar = () => {
+const NavbarCompact = ({ onLogout }) => {
   const navigate = useNavigate();
   const user = JSON.parse(localStorage.getItem("user"));
 
   const handleLogout = () => {
     localStorage.removeItem("user");
+    if (typeof onLogout === 'function') onLogout();
     navigate("/");
   };
 
@@ -36,27 +37,6 @@ const Navbar = () => {
       </div>
       <h2>Portal Líneas de Producto</h2>
       <div className="navbar-actions">
-        <button
-          className="action-btn"
-          onClick={() => navigate("/lineas-producto/form-heladeria")}
-        >
-          Form Heladería
-        </button>
-
-        <button
-          className="action-btn"
-          onClick={() => navigate("/lineas-producto/form-restaurante")}
-        >
-          Form Restaurante
-        </button>
-
-        <button
-          className="action-btn"
-          onClick={() => navigate("/lineas-producto/control-asistencia")}
-        >
-          Control Asistencia
-        </button>
-
         <button className="logout-btn" onClick={handleLogout}>
           Salir
         </button>
@@ -65,4 +45,4 @@ const Navbar = () => {
   );
 };
 
-export default Navbar;
+export default NavbarCompact;
