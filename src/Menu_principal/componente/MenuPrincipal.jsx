@@ -3,76 +3,53 @@ import "../styles/menu.css";
 
 const MenuPrincipal = () => {
   const { menu, loading, goTo } = useMenu();
-
   const user = JSON.parse(localStorage.getItem("user"));
 
   return (
     <div className="menu-container">
-      
-      {/* HEADER */}
+      {/* HEADER / NAVBAR */}
       <header className="menu-header">
-        <div className="user-info">
-          <div className="avatar">
-            {user?.foto && (
-              <img src={user.foto} alt="Avatar" className="foto" />
-            )}
-          </div>
-          <div className="info">
+        <div className="header-content">
+          <div className="user-info">
+            {user?.foto && <img src={user.foto} alt="Perfil" />}
             <h4>{user?.nombre || "Usuario"}</h4>
-            <span>{user?.cargo_general || "Cargo"}</span>
           </div>
         </div>
-
-        <button
-          className="logout"
-          onClick={() => {
-            localStorage.removeItem("user");
-            window.location.href = "/";
-          }}
-        >
-          Salir
-        </button>
       </header>
 
-      {/* BODY */}
-      <div className="menu-body">
+      {/* MAIN CONTENT */}
+      <main className="menu-body">
+        <header className="menu-title-section">
+          <h1>Panel Principal</h1>
+          <p style={{textAlign: 'left', color: '#7C6F64', letterSpacing: 'normal'}}>
+            Selecciona una opción para comenzar a trabajar.
+          </p>
+        </header>
+
         {loading ? (
-          <p>Cargando menú...</p>
+          <div className="loading-container">
+            <p>Cargando opciones del sistema...</p>
+          </div>
         ) : (
           <div className="menu-cards">
             {menu.map((item) => (
-              <div
+              <article
                 key={item.id}
                 className="menu-card"
                 onClick={() => goTo(item.route)}
               >
-                <h1>{item.title}</h1>
-                <h2>{item.description}</h2>
-              </div>
+                <h3>
+                  {item.title}
+                  <span className="arrow-icon">→</span>
+                </h3>
+                <p>{item.description}</p>
+              </article>
             ))}
           </div>
         )}
-      </div>
+      </main>
     </div>
   );
 };
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 export default MenuPrincipal;

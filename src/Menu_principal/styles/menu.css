@@ -1,114 +1,156 @@
 :root {
-  --primary: #FDF8F1;
-  --secondary: #462e24;
-  --tertiary: #f8f8f7;
-}
-
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+  --primary: #A64B2A;
+  --bg-color: #F8F7F5;
+  --text-main: #2D241E;
+  --text-muted: #7C6F64;
+  --card-bg: #ffffff;
+  --border: #E8E4E1;
+  --shadow: 0 4px 20px rgba(61, 43, 31, 0.05);
+  --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
 }
 
 .menu-container {
   min-height: 100vh;
-  font-family: Arial, Helvetica, sans-serif;
-  background: var(--primary);
-  color: var(--secondary);
+  background-color: var(--bg-color);
+  font-family: 'Inter', system-ui, sans-serif;
+  color: var(--text-main);
 }
 
+/* Navbar de usuario */
 .menu-header {
+  padding: 1rem 2rem;
+}
+
+.header-content {
+  width: 100%;
+  max-width: 1100px;
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background: var(--secondary);
-  padding: 15px 40px;
-  color: var(--primary);
+  justify-content: flex-end; /* Alineado a la derecha como un dashboard */
 }
 
 .user-info {
   display: flex;
   align-items: center;
   gap: 12px;
+  padding: 6px 14px;
+  background: var(--bg-color);
+  border-radius: 50px;
+  border: 1px solid var(--border);
 }
 
-.avatar {
-  width: 10%;
+.user-info img {
+  width: 32px;
+  height: 32px;
   border-radius: 50%;
-}
-
-.foto {
-  width: 100%;
-  height: 100%;
   object-fit: cover;
-  border-radius: 50%;
+  border: 2px solid white;
 }
 
 .user-info h4 {
   margin: 0;
-  font-size: 1rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-main);
 }
 
-.user-info span {
-  font-size: 1rem;
-  opacity: 0.5;
-}
-
-.logout {
-  background: none;
-  border: none;
-  color: var(--primary);
-  cursor: pointer;
-  font-size: 1rem;
-}
-
+/* Cuerpo del Menú */
 .menu-body {
-  text-align: center;
-  margin-top: 3rem;
+  padding: 3rem 2rem;
+  max-width: 1100px;
+  margin: 0 auto;
 }
 
-.menu-body h3 {
+.menu-title-section {
+  margin-bottom: 2.5rem;
+  text-align: left;
+}
+
+.menu-title-section h1 {
   font-size: 2rem;
+  margin-bottom: 0.5rem;
+  font-weight: 800;
 }
 
 .menu-cards {
-  display: flex;
-  justify-content: center;
-  gap: 40px;
-  flex-wrap: wrap;
-  padding: 3rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 1.5rem;
 }
 
+/* Tarjeta Rediseñada */
 .menu-card {
-  width: 320px;
-  background: var(--secondary);
-  color: var(--primary);
-  padding: 30px;
-  border-radius: 20px;
+  background: var(--card-bg);
+  padding: 2rem;
+  border-radius: 16px;
+  border: 1px solid var(--border);
   cursor: pointer;
+  transition: var(--transition);
   position: relative;
+  overflow: hidden;
 }
 
-.menu-card h2 {
-  opacity: 0.5;
+.menu-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; width: 4px; height: 100%;
+  background: var(--primary);
+  opacity: 0;
+  transition: var(--transition);
 }
 
-.icon {
-  justify-content: center;
-  align-items: center;
+.menu-card:hover {
+  border-color: transparent;
+  box-shadow: 0 15px 30px rgba(61, 43, 31, 0.1);
+  transform: translateY(-5px);
+}
+
+.menu-card:hover::before {
+  opacity: 1;
+}
+
+.card-icon {
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+  display: block;
+}
+
+.menu-card h3 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin: 0 0 10px 0;
   display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
-/* 📱 RESPONSIVE */
-@media (max-width: 768px) {
-  .menu-header {
-    flex-direction: column;
-    gap: 10px;
-    text-align: center;
-  }
+.arrow-icon {
+  color: var(--primary);
+  opacity: 0.3;
+  transition: var(--transition);
+}
 
-  .menu-cards {
-    flex-direction: column;
-    align-items: center;
-  }
+.menu-card:hover .arrow-icon {
+  opacity: 1;
+  transform: translateX(5px);
+}
+
+.menu-card p {
+  font-size: 0.95rem;
+  line-height: 1.5;
+  color: var(--text-muted);
+  margin: 0;
+}
+
+/* Loading State */
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 4rem;
+  color: var(--text-muted);
+}
+
+@media (max-width: 768px) {
+  .menu-body { padding: 1.5rem; }
+  .menu-cards { grid-template-columns: 1fr; }
 }
