@@ -6,6 +6,7 @@ import FormHeladeria from "./Portal_Lineas_producto/pages/FormHeladeria";
 import FormRestaurante from "./Portal_Lineas_producto/pages/FromRestaurante";
 import ControlAsistencia from "./Portal_Lineas_producto/pages/ControlAsistencia";
 import FormTodera from "./Portal_Lineas_producto/pages/FormTodera";
+import ProtectedViewRoute from "./auth/components/ProtectedViewRoute";
 
 function App() {
   const user = null;
@@ -20,11 +21,11 @@ function App() {
         <Route path="/menu" element={<MenuPrincipal />} />
 
         {/* Portal Líneas de Producto */}
-        <Route path="/lineas-producto" element={<Panel />} />
-        <Route path="/lineas-producto/form-heladeria" element={<FormHeladeria />} />
-        <Route path="/lineas-producto/form-restaurante" element={<FormRestaurante />} />
-        <Route path="/lineas-producto/control-asistencia" element={<ControlAsistencia />} />
-        <Route path="/lineas-producto/form-todera" element={<FormTodera />} />
+        <Route path="/lineas-producto" element={<ProtectedViewRoute view="PANEL"><Panel /></ProtectedViewRoute>} />
+        <Route path="/lineas-producto/form-heladeria" element={<ProtectedViewRoute view="FORM_HELADERIA"><FormHeladeria /></ProtectedViewRoute>} />
+        <Route path="/lineas-producto/form-restaurante" element={<ProtectedViewRoute view="FORM_RESTAURANTE"><FormRestaurante /></ProtectedViewRoute>} />
+        <Route path="/lineas-producto/control-asistencia" element={<ProtectedViewRoute view="CONTROL_ASISTENCIA"><ControlAsistencia /></ProtectedViewRoute>} />
+        <Route path="/lineas-producto/form-todera" element={<ProtectedViewRoute view="FORM_TODERA"><FormTodera /></ProtectedViewRoute>} />
 
         {/* Ruta protegida (ejemplo) */}
         <Route

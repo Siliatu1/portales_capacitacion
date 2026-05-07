@@ -1,12 +1,13 @@
 import { useNavigate } from "react-router-dom";
 import "../styles/navbar.css";
+import { useAuth } from "../../auth/hooks/useAuth";
 
 const NavbarCompact = ({ onLogout }) => {
   const navigate = useNavigate();
-  const user = JSON.parse(localStorage.getItem("user"));
+  const { user, logout } = useAuth();
 
   const handleLogout = () => {
-    localStorage.removeItem("user");
+    logout();
     if (typeof onLogout === 'function') onLogout();
     navigate("/");
   };

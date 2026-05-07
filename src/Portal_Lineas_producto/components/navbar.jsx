@@ -1,12 +1,36 @@
 import { useNavigate } from "react-router-dom";
 import "../styles/navbar.css";
+import { useAuth } from "../../auth/hooks/useAuth";
+
+const NAV_ITEMS = [
+  {
+    view: "FORM_HELADERIA",
+    label: "Form Heladeria",
+    route: "/lineas-producto/form-heladeria",
+  },
+  {
+    view: "FORM_RESTAURANTE",
+    label: "Form Restaurante",
+    route: "/lineas-producto/form-restaurante",
+  },
+  {
+    view: "CONTROL_ASISTENCIA",
+    label: "Control Asistencia",
+    route: "/lineas-producto/control-asistencia",
+  },
+  {
+    view: "FORM_TODERA",
+    label: "Form Todera",
+    route: "/lineas-producto/form-todera",
+  },
+];
 
 const Navbar = () => {
   const navigate = useNavigate();
-  const user = JSON.parse(localStorage.getItem("user"));
+  const { user, logout, canAccessView } = useAuth();
 
   const handleLogout = () => {
-    localStorage.removeItem("user");
+    logout();
     navigate("/");
   };
 
@@ -14,7 +38,7 @@ const Navbar = () => {
     <header className="navbar">
       <div className="navbar-left">
         <button className="back-btn" onClick={() => navigate(-1)}>
-          ←
+          &larr;
         </button>
 
         <div className="user-info">
@@ -34,35 +58,17 @@ const Navbar = () => {
           </div>
         </div>
       </div>
-      <h2>Portal Líneas de Producto</h2>
+      <h2>Portal Lineas de Producto</h2>
       <div className="navbar-actions">
-        <button
-          className="action-btn"
-          onClick={() => navigate("/lineas-producto/form-heladeria")}
-        >
-          Form Heladería
-        </button>
-
-        <button
-          className="action-btn"
-          onClick={() => navigate("/lineas-producto/form-restaurante")}
-        >
-          Form Restaurante
-        </button>
-
-        <button
-          className="action-btn"
-          onClick={() => navigate("/lineas-producto/control-asistencia")}
-        >
-          Control Asistencia
-        </button>
-         
-        <button
-          className="action-btn"
-          onClick={() => navigate("/lineas-producto/form-todera")}
-        >
-          Form Todera
-        </button>
+        {NAV_ITEMS.filter((item) => canAccessView(item.view)).map((item) => (
+          <button
+            key={item.view}
+            className="action-btn"
+            onClick={() => navigate(item.route)}
+          >
+            {item.label}
+          </button>
+        ))}
 
         <button className="logout-btn" onClick={handleLogout}>
           Salir

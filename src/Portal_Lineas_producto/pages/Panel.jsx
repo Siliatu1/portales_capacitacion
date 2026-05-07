@@ -5,9 +5,17 @@ import { filtrarInscripciones } from "../utils/filters";
 import "../styles/panel.css";
 import InscripcionesTable from "../components/InscripcionesTable";
 import FiltrosInscripciones from "../components/FiltrosInscripciones"; 
+import { useAuth } from "../../auth/hooks/useAuth";
+
+const FORM_TYPE_VIEW_MAP = {
+  heladeria: "FORM_HELADERIA",
+  restaurante: "FORM_RESTAURANTE",
+  todera: "FORM_TODERA",
+};
 
 export default function Panel ({ userData, onLogout }) {
-  const { data, loading, refetch, deleteInscripcion } = useInscripciones();
+  const { data, loading, deleteInscripcion } = useInscripciones();
+  const { canAccessView } = useAuth();
 
   const [filtros, setFiltros] = useState({
     cedula: "",
@@ -17,8 +25,12 @@ export default function Panel ({ userData, onLogout }) {
   });
 
   const dataFiltrada = useMemo(() => {
-    return filtrarInscripciones(data, filtros);
-  }, [data, filtros]);
+    return filtrarInscripciones(data, filtros).filter((inscripcion) => {
+      const formType = inscripcion.tipo_formulario || "heladeria";
+      const view = FORM_TYPE_VIEW_MAP[formType];
+      return view ? canAccessView(view) : false;
+    });
+  }, [canAccessView, data, filtros]);
 
   const formTypes = useMemo(() => {
     const set = new Set((dataFiltrada || []).map(i => (i.tipo_formulario || 'heladeria')));

@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { getEmpleados } from "../api/api";
-import { validarUsuario } from "../utils/validacion.utils";
 import "../styles/login.css";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../hooks/useAuth";
 
 const Login = () => {
   const [documento, setDocumento] = useState("");
@@ -10,6 +10,7 @@ const Login = () => {
   const [error, setError] = useState("");
 
   const navigate = useNavigate();
+  const { login } = useAuth();
 
   const handleLogin = async () => {
     setLoading(true);
@@ -18,7 +19,7 @@ const Login = () => {
     const empleados = await getEmpleados(documento);
     console.log("Empleados obtenidos:", empleados);
     if (empleados?.ok && empleados?.data) {
-      localStorage.setItem("user", JSON.stringify(empleados.data));
+      login(empleados.data);
       navigate("/menu");
     } else {
       setError("No tienes acceso o documento inválido");
