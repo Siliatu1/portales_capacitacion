@@ -56,12 +56,7 @@ const Navbar = () => {
         >
           Control Asistencia
         </button>
-         <button
-          className="action-btn"
-          onClick={() => navigate("/lineas-producto/form-restaurante")}
-        >
-          Form Restaurante
-        </button>
+         
         <button
           className="action-btn"
           onClick={() => navigate("/lineas-producto/form-todera")}
