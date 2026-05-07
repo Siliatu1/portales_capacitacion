@@ -5,6 +5,26 @@ const EMPTY_PROFILE_CONFIG = {
   permissions: {},
 };
 
+const PROFILE_ALIASES = {
+  "CAPACITADORA(A)": "CAPACITADORA",
+};
+
+const getRawProfile = (rawUser) => {
+  return String(
+    rawUser.perfil ||
+      rawUser.profile ||
+      rawUser.cargo_general ||
+      rawUser.cargo ||
+      ""
+  )
+    .trim()
+    .toUpperCase();
+};
+
+const normalizeProfile = (rawProfile) => {
+  return PROFILE_ALIASES[rawProfile] || rawProfile;
+};
+
 export const getProfileConfig = (profile) => {
   return PROFILE_CONFIG[profile] || EMPTY_PROFILE_CONFIG;
 };
@@ -12,7 +32,7 @@ export const getProfileConfig = (profile) => {
 export const buildAuthenticatedUser = (rawUser) => {
   if (!rawUser) return null;
 
-  const profile = String(rawUser.perfil || rawUser.profile || "").trim().toUpperCase();
+  const profile = normalizeProfile(getRawProfile(rawUser));
   const hasConfiguredProfile = Object.prototype.hasOwnProperty.call(PROFILE_CONFIG, profile);
   const profileConfig = getProfileConfig(profile);
   const views = hasConfiguredProfile ? profileConfig.views : rawUser.views || [];
