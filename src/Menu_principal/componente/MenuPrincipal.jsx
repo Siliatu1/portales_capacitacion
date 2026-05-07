@@ -11,40 +11,43 @@ const MenuPrincipal = () => {
       <header className="menu-header">
         <div className="header-content">
           <div className="user-info">
-            {user?.foto && <img src={user.foto} alt="Perfil" />}
-            <h4>{user?.nombre || "Usuario"}</h4>
+            {user?.foto && <img src={user.foto} alt="Perfil" className="user-avatar" />}
+            <div className="user-details">
+              <p className="user-name">{user?.nombre || "Usuario"}</p>
+            </div>
           </div>
         </div>
       </header>
 
       {/* MAIN CONTENT */}
       <main className="menu-body">
-        <header className="menu-title-section">
-          <h1>Panel Principal</h1>
-          <p style={{textAlign: 'left', color: '#7C6F64', letterSpacing: 'normal'}}>
-            Selecciona una opción para comenzar a trabajar.
-          </p>
-        </header>
-
         {loading ? (
           <div className="loading-container">
+            <div className="loader"></div>
             <p>Cargando opciones del sistema...</p>
           </div>
         ) : (
-          <div className="menu-cards">
-            {menu.map((item) => (
-              <article
-                key={item.id}
-                className="menu-card"
-                onClick={() => goTo(item.route)}
-              >
-                <h3>
-                  {item.title}
-                  <span className="arrow-icon">→</span>
-                </h3>
-                <p>{item.description}</p>
-              </article>
-            ))}
+          <div className="menu-wrapper">
+            <div className="menu-header-section">
+              <h2>Bienvenido</h2>
+              <p>Selecciona una opción para continuar</p>
+            </div>
+            <div className="menu-cards">
+              {menu.map((item, index) => (
+                <article
+                  key={item.id}
+                  className="menu-card animate-fade-in"
+                  style={{ animationDelay: `${index * 0.1}s` }} /* Detalle extra para entrada escalonada */
+                  onClick={() => goTo(item.route)}
+                >
+                  <div className="card-header">
+                    <h3>{item.title}</h3>
+                    <span className="arrow-icon">›</span>
+                  </div>
+                  <p className="card-description">{item.description}</p>
+                </article>
+              ))}
+            </div>
           </div>
         )}
       </main>

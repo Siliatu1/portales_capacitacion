@@ -1,50 +1,49 @@
 :root {
-    --primary: #2563eb;
-    --primary-light: #eff6ff;
-    --success: #10b981;
-    --error: #ef4444;
-    --warning: #f59e0b;
-    --text-main: #1e293b;
-    --text-muted: #64748b;
-    --bg-main: #f8fafc;
-    --card-bg: #ffffff;
-    --border: #e2e8f0;
-    --radius: 12px;
-    --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-  }
+  --primary: #503629;
+  --primary-dark: #3d2820;
+  --bg-color: #fafaf8;
+  --bg-light: #FFF5E4;
+  --bg-gradient: linear-gradient(135deg, #fafaf8 0%, #f5f3f0 100%);
+  --text-main: #3C1F1C;
+  --text-primary: #503629;
+  --text-muted: rgba(80, 54, 41, 0.6);
+  --card-bg: #ffffff;
+  --shadow-sm: 0 4px 12px rgba(80, 54, 41, 0.08);
+  --shadow-md: 0 8px 24px rgba(80, 54, 41, 0.12);
+  --shadow-lg: 0 12px 32px rgba(80, 54, 41, 0.15);
+  --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
 
-  .inscripcion-container {
-    min-height: 100vh;
-    padding: 2rem 1rem;
-    background: var(--bg-main);
-    display: flex;
-    justify-content: center;
-    font-family: 'Inter', system-ui, sans-serif;
-  }
+.inscripcion-container {
+  min-height: 100vh;
+  padding: 2rem 1rem;
+  background: var(--bg-gradient);
+  display: flex;
+  justify-content: center;
+  font-family: 'Inter', -apple-system, sans-serif;
+  animation: fade-in 0.6s ease-out;
+}
 
-  .inscripcion-card {
-    background: var(--card-bg);
-    width: 100%;
-    max-width: 800px;
-    border-radius: 20px;
-    box-shadow: var(--shadow);
-    border: 1px solid var(--border);
-    padding: 2.5rem;
-    overflow: hidden;
-  }
+.inscripcion-card {
+  background: var(--card-bg);
+  width: 100%;
+  max-width: 800px;
+  border-radius: 32px;
+  box-shadow: var(--shadow-sm);
+  border: none;
+  padding: 2.5rem;
+  overflow: hidden;
+}
 
-  .inscripcion-title {
-    font-size: 1.5rem;
-    font-weight: 800;
-    color: var(--text-main);
-    margin-bottom: 2rem;
-    text-align: center;
-    letter-spacing: -0.025em;
-    text-transform: uppercase;
-    background: linear-gradient(to right, var(--primary), #3b82f6);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-  }
+.inscripcion-title,
+.inscripcion-card h2 {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--text-main);
+  margin-bottom: 2rem;
+  text-align: center;
+  letter-spacing: -0.025em;
+}
 
   .search-row {
     margin-bottom: 2rem;
@@ -52,18 +51,18 @@
 
   .search-input-container {
     display: flex;
-    gap: 0.5rem;
-    background: #f1f5f9;
+    gap: 0.75rem;
+    background: var(--bg-light);
     padding: 0.5rem;
-    border-radius: 14px;
-    border: 1px solid var(--border);
-    transition: all 0.2s;
+    border-radius: 20px;
+    border: 1px solid transparent;
+    transition: var(--transition);
   }
 
   .search-input-container:focus-within {
     border-color: var(--primary);
     background: white;
-    box-shadow: 0 0 0 4px var(--primary-light);
+    box-shadow: 0 0 0 4px rgba(80, 54, 41, 0.05);
   }
 
   .form-input {
@@ -73,7 +72,12 @@
     padding: 0.75rem 1rem;
     font-size: 1rem;
     outline: none;
-    color: var(--text-main);
+    color: var(--text-primary);
+    font-weight: 500;
+  }
+
+  .form-input::placeholder {
+    color: rgba(80, 54, 41, 0.4);
   }
 
   .search-button {
@@ -81,18 +85,19 @@
     color: white;
     border: none;
     padding: 0.75rem 1.5rem;
-    border-radius: 10px;
+    border-radius: 16px;
     font-weight: 600;
     cursor: pointer;
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    transition: all 0.2s;
+    transition: var(--transition);
   }
 
   .search-button:hover {
-    background: #1d4ed8;
-    transform: translateY(-1px);
+    background: var(--primary-dark);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(80, 54, 41, 0.2);
   }
 
   .employee-info-container {
