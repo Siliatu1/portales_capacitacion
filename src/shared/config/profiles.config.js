@@ -7,6 +7,7 @@ export const PROFILE_CONFIG = {
       canDelete: false,
       canViewAll: false,
       canViewEstadoObs: false,
+      canBlockDates: false,
     },
   },
 
@@ -18,6 +19,7 @@ export const PROFILE_CONFIG = {
       canDelete: true,
       canViewAll: true,
       canViewEstadoObs: true,
+      canBlockDates: true,
     },
   },
 
@@ -29,6 +31,7 @@ export const PROFILE_CONFIG = {
       canDelete: false,
       canViewAll: false,
       canViewEstadoObs: true,
+      canBlockDates: false,
     },
   },
 
@@ -40,6 +43,7 @@ export const PROFILE_CONFIG = {
       canDelete: true,
       canViewAll: true,
       canViewEstadoObs: true,
+      canBlockDates: true,
     },
   },
 
@@ -51,6 +55,7 @@ export const PROFILE_CONFIG = {
       canDelete: false,
       canViewAll: false,
       canViewEstadoObs: false,
+      canBlockDates: false,
     },
   },
 };
