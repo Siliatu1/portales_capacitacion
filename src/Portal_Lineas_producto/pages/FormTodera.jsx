@@ -93,7 +93,9 @@ const FormTodera = ({ onBack, onSubmit, coordinadoraData }) => {
   }, [documento]);
 
   const buscarInstructora = async (categoriaSeleccionada) => {
+   
     if (!puntoVentaCoordinadora || !categoriaSeleccionada) return;
+  
 
     setLoadingInstructora(true);
     try {
@@ -226,7 +228,7 @@ const FormTodera = ({ onBack, onSubmit, coordinadoraData }) => {
 
               <div className="form-section-et">
                 <label className="form-label-et">CATEGORÍA A EVALUAR *</label>
-                <select className="form-select-et" value={categoria} onChange={(e) => setCategoria(e.target.value)} required>
+                <select className="form-select-et" value={categoria} onChange={(e) => buscarInstructora(e.target.value)} required>
                   <option value="">Seleccione la categoría</option>
                   <option value="sal">Sal</option>
                   <option value="dulce">Dulce</option>

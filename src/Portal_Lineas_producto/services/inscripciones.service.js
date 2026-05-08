@@ -1,24 +1,81 @@
 const API_URL = "https://macfer.crepesywaffles.com/api";
+const PAGE_SIZE = 100;
 
-export const getInscripciones = async () => {
-  const res = await fetch(`${API_URL}/cap-cafes`);
-  if (!res.ok) throw new Error("Error al traer inscripciones");
+const getTextValue = (value) => {
+  if (value === null || value === undefined) return "";
+  if (typeof value === "string" || typeof value === "number") return String(value);
 
-  const json = await res.json();
+  const attributes = value?.data?.attributes || value?.attributes || value;
+  return (
+    attributes?.nombre ||
+    attributes?.name ||
+    attributes?.pdv ||
+    attributes?.puntoVenta ||
+    attributes?.area_nombre ||
+    ""
+  );
+};
 
-  return json.data.map(item => ({
+const buildInscripcionesUrl = ({ page = 1, pdv } = {}) => {
+  const params = new URLSearchParams();
+  params.set("pagination[page]", String(page));
+  params.set("pagination[pageSize]", String(PAGE_SIZE));
+
+  if (pdv) {
+    params.set("filters[pdv][$containsi]", pdv);
+  }
+
+  return `${API_URL}/cap-cafes?${params.toString()}`;
+};
+
+const mapInscripcion = (item) => {
+  const attributes = item.attributes || {};
+  const pdv = getTextValue(attributes.pdv);
+
+  return {
     id: item.id,
-    cedula: item.attributes?.documento || '',
-    nombres: item.attributes?.nombre || '',
-    telefono: item.attributes?.telefono || '',
-    cargo: item.attributes?.cargo || '',
-    area_nombre: item.attributes?.area_nombre || '',
-    puntoVenta: item.attributes?.pdv || item.attributes?.puntoVenta || item.attributes?.area_nombre || '',
-    tipo_formulario: item.attributes?.tipo_formulario || item.attributes?.tipoFormulario || 'heladeria',
-    lider: item.attributes?.lider || '',
-    dia: item.attributes?.fecha || '',
-    asistencia: item.attributes?.confirmado ?? null
-  }));
+    cedula: attributes.documento || '',
+    nombres: attributes.nombre || '',
+    telefono: attributes.telefono || '',
+    cargo: attributes.cargo || '',
+    area_nombre: getTextValue(attributes.area_nombre),
+    puntoVenta: pdv || getTextValue(attributes.puntoVenta) || getTextValue(attributes.area_nombre),
+    tipo_formulario: attributes.tipo_formulario || attributes.tipoFormulario || '',
+    lider: attributes.lider || '',
+    dia: attributes.fecha || '',
+    asistencia: attributes.confirmado ?? null
+  };
+};
+
+const fetchInscripcionesPage = async ({ page, pdv } = {}) => {
+  const res = await fetch(buildInscripcionesUrl({ page, pdv }));
+  if (!res.ok) throw new Error("Error al traer inscripciones");
+  return res.json();
+};
+
+export const getInscripciones = async ({ pdv } = {}) => {
+  try {
+    const firstPage = await fetchInscripcionesPage({ page: 1, pdv });
+    const pageCount = firstPage.meta?.pagination?.pageCount || 1;
+    const allItems = [...(firstPage.data || [])];
+
+    for (let page = 2; page <= pageCount; page += 1) {
+      const pageData = await fetchInscripcionesPage({ page, pdv });
+      allItems.push(...(pageData.data || []));
+    }
+
+    if (pdv && allItems.length === 0) {
+      return getInscripciones();
+    }
+
+    return allItems.map(mapInscripcion);
+  } catch (error) {
+    if (pdv) {
+      return getInscripciones();
+    }
+
+    throw error;
+  }
 };
 
 export const deleteInscripcion = async (id) => {
@@ -40,13 +97,13 @@ export const updateAsistencia = async (id, confirmado) => {
   try {
     const raw = localStorage.getItem('user');
     const maybeToken = raw ? (() => {
-      try { const u = JSON.parse(raw); return u?.token || u?.jwt || u?.accessToken || null; } catch(e) { return null; }
+      try { const u = JSON.parse(raw); return u?.token || u?.jwt || u?.accessToken || null; } catch { return null; }
     })() : null;
     const altToken = localStorage.getItem('token');
     const token = maybeToken || altToken;
     if (token) headers['Authorization'] = `Bearer ${token}`;
-  } catch (e) {
-   
+  } catch {
+    // Continuar sin token si localStorage no esta disponible.
   }
 
   let res = await fetch(`${API_URL}/cap-cafes/${id}`, {

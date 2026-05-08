@@ -1,14 +1,14 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { getInscripciones, deleteInscripcion, updateAsistencia } from "../services/inscripciones.service";
 
-export const useInscripciones = () => {
+export const useInscripciones = ({ pdv } = {}) => {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  const fetchData = async () => {
+  const fetchData = useCallback(async () => {
     setLoading(true);
     try {
-      const res = await getInscripciones();
+      const res = await getInscripciones({ pdv });
       setData(res);
     } catch (error) {
       console.error(error);
@@ -16,7 +16,7 @@ export const useInscripciones = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [pdv]);
 
   const remove = async (id) => {
     setLoading(true);
@@ -43,8 +43,9 @@ export const useInscripciones = () => {
   };
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     fetchData();
-  }, []);
+  }, [fetchData]);
 
   return {
     data,

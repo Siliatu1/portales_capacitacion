@@ -1,13 +1,17 @@
 import { useFormulario } from "../hooks/useFormulario";
 import { useEmpleadoForm } from "../hooks/useEmpleado";
 import { useFechas } from "../hooks/useFechas";
+import { useAuth } from "../../auth/hooks/useAuth";
 import { guardarInscripcion } from "../services/formulario.service";
 import { getInitialFormState, buildInscripcionAttributes } from "../utils/formularioHel.utils";
 import { useState, useMemo, useEffect } from "react";
+import { Lock, Unlock } from "lucide-react";
 
 import "../styles/formularioHel.css";
 
 const FormRestaurante = () => {
+  const { hasPermission } = useAuth();
+  const canBlockDates = hasPermission("canBlockDates");
   const { formData, handleChange, setFormData, setLoading } = useFormulario({
     initialState: getInitialFormState(),
   });
@@ -15,7 +19,7 @@ const FormRestaurante = () => {
   const { empleado, buscarEmpleado, clearEmpleado } = useEmpleadoForm(setFormData);
 
   // martes(2), miércoles(3), jueves(4)
-  const { fechas } = useFechas([2, 3, 4]);
+  const { fechas, toggleFechaBloqueada } = useFechas([2, 3, 4]);
 
   // paginación fechas
   const [page, setPage] = useState(0);
@@ -27,6 +31,15 @@ const FormRestaurante = () => {
   }, [fechas, page]);
 
   useEffect(() => setPage(0), [fechas.length]);
+
+  useEffect(() => {
+    if (!formData.fecha || !fechas.length) return;
+
+    const fechaSeleccionada = fechas.find((x) => x.fecha === formData.fecha);
+    if (!fechaSeleccionada?.disponible) {
+      setFormData((prev) => ({ ...prev, fecha: "" }));
+    }
+  }, [fechas, formData.fecha, setFormData]);
 
   const [message, setMessage] = useState(null);
   const [lider, setLider] = useState("");
@@ -71,6 +84,28 @@ const FormRestaurante = () => {
   const onSelectFecha = (f) => {
     if (!f.disponible) return;
     setFormData((prev) => ({ ...prev, fecha: f.fecha }));
+  };
+
+  const onToggleFechaBloqueada = (event, f) => {
+    event.stopPropagation();
+    toggleFechaBloqueada(f.fecha);
+    setMessage({
+      type: "success",
+      text: f.estaBloqueada ? "Fecha desbloqueada correctamente" : "Fecha bloqueada correctamente",
+    });
+  };
+
+  const getFechaNoDisponibleLabel = (f) => {
+    if (f.esFestivo) return "FESTIVO";
+    if (f.estaBloqueada) return "BLOQUEADA";
+    return "COMPLETO";
+  };
+
+  const onFechaKeyDown = (event, f) => {
+    if (!f.disponible || (event.key !== "Enter" && event.key !== " ")) return;
+
+    event.preventDefault();
+    onSelectFecha(f);
   };
 
   useEffect(() => {
@@ -149,19 +184,33 @@ const FormRestaurante = () => {
 
         <div className="fechas-grid">
           {fechasPaginadas.map((f) => (
-            <button
+            <div
               key={f.fecha}
-              type="button"
-              className={`fecha-card ${!f.disponible ? 'no-disponible' : ''} ${formData.fecha === f.fecha ? 'selected' : ''}`}
+              role="button"
+              tabIndex={f.disponible ? 0 : -1}
+              className={`fecha-card ${!f.disponible ? 'no-disponible' : ''} ${f.estaBloqueada ? 'bloqueada' : ''} ${formData.fecha === f.fecha ? 'selected' : ''}`}
               onClick={() => onSelectFecha(f)}
-              disabled={!f.disponible}
+              onKeyDown={(event) => onFechaKeyDown(event, f)}
+              aria-disabled={!f.disponible}
             >
-              {!f.disponible && <div className="fecha-no-disponible-label">{f.esFestivo ? 'FESTIVO' : 'COMPLETO'}</div>}
+              {canBlockDates && (
+                <button
+                  type="button"
+                  className={`fecha-lock-toggle ${f.estaBloqueada ? "is-unlock" : "is-lock"}`}
+                  title={f.estaBloqueada ? "Desbloquear fecha" : "Bloquear fecha"}
+                  aria-label={f.estaBloqueada ? "Desbloquear fecha" : "Bloquear fecha"}
+                  onClick={(event) => onToggleFechaBloqueada(event, f)}
+                >
+                  {f.estaBloqueada ? <Unlock size={14} /> : <Lock size={14} />}
+                </button>
+              )}
+
+              {!f.disponible && <div className="fecha-no-disponible-label">{getFechaNoDisponibleLabel(f)}</div>}
               <div className="fecha-mes">{f.mes ? f.mes.toUpperCase() : ''}</div>
               <div className="fecha-dia">{f.dia}</div>
               <div className="fecha-texto">{f.texto}</div>
               <div className="fecha-contador">{f.inscripciones || 0}/3</div>
-            </button>
+            </div>
           ))}
         </div>
 

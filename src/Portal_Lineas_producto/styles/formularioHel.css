@@ -207,7 +207,7 @@
     padding: 1rem;
   }
 
-  .fecha-card:hover:not(:disabled) {
+  .fecha-card:hover:not([aria-disabled="true"]) {
     border-color: var(--primary);
     transform: translateY(-4px);
     box-shadow: 0 10px 15px -3px rgba(37, 99, 235, 0.1);
@@ -226,15 +226,63 @@
     border-style: dashed;
   }
 
+  .fecha-card.bloqueada {
+    background: #fff7ed;
+    border-color: #fed7aa;
+    opacity: 1;
+  }
+
   .fecha-no-disponible-label {
     position: absolute;
     top: 6px;
+    left: 8px;
+    right: 8px;
     font-size: 0.6rem;
     font-weight: 800;
     padding: 2px 6px;
     border-radius: 4px;
     background: #64748b;
     color: white;
+    text-align: center;
+  }
+
+  .fecha-card.bloqueada .fecha-no-disponible-label {
+    background: #fb7185;
+  }
+
+  .fecha-lock-toggle + .fecha-no-disponible-label {
+    right: 50px;
+  }
+
+  .fecha-lock-toggle {
+    position: absolute;
+    top: 6px;
+    right: 8px;
+    width: 36px;
+    height: 22px;
+    border: none;
+    border-radius: 999px;
+    color: white;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 4px 10px rgba(15, 23, 42, 0.14);
+    transition: transform 0.2s, filter 0.2s;
+    z-index: 1;
+  }
+
+  .fecha-lock-toggle:hover {
+    filter: brightness(0.96);
+    transform: translateY(-1px);
+  }
+
+  .fecha-lock-toggle.is-lock {
+    background: #fb7185;
+  }
+
+  .fecha-lock-toggle.is-unlock {
+    background: #34d399;
   }
 
   .fecha-mes {

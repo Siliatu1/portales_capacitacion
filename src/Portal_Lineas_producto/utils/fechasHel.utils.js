@@ -78,7 +78,7 @@ export const obtenerFechasPorDias = (year, month, diasPermitidos = [1,5], festiv
       const estaBloqueada = fechasBloqueadas.includes(fechaStr);
       const numInscripciones = inscripcionesPorFecha[fechaStr] || 0;
       const disponible = numInscripciones < 3 && !esFestivo && !estaBloqueada;
-      const estado = disponible ? 'disponible' : 'completo';
+      const estado = disponible ? 'disponible' : estaBloqueada ? 'bloqueada' : 'completo';
       
       fechas.push({
         fecha: fechaStr,

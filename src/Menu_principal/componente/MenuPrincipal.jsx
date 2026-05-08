@@ -1,9 +1,10 @@
 import { useMenu } from "../hooks/useMenu";
 import "../styles/menu.css";
+import { useAuth } from "../../auth/hooks/useAuth";
 
 const MenuPrincipal = () => {
   const { menu, loading, goTo } = useMenu();
-  const user = JSON.parse(localStorage.getItem("user"));
+  const { user } = useAuth();
 
   return (
     <div className="menu-container">
