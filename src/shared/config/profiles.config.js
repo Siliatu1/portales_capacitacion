@@ -24,7 +24,7 @@ export const PROFILE_CONFIG = {
   },
 
   FIELD_USER: {
-    views: ["FORM_RESTAURANTE", "PANEL"],
+    views: ["FORM_RESTAURANTE", "PANEL", "FORM_TODERA"],
 
     permissions: {
       filterByPDV: true,
