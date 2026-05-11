@@ -1,16 +1,16 @@
 :root {
-    --primary: #2563eb;
-    --primary-hover: #1d4ed8;
-    --bg-navbar: rgba(255, 255, 255, 0.8);
-    --text-main: #1e293b;
-    --text-muted: #64748b;
-    --border: rgba(226, 232, 240, 0.8);
-    --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-  }
+--primary: #2563eb;
+--primary-hover: #1d4ed8;
+--bg-navbar: rgba(255, 255, 255, 0.8);
+--text-main: #1e293b;
+--text-muted: #64748b;
+--border: rgba(226, 232, 240, 0.8);
+--shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+}
 
-  .navbar-container {
-    position: sticky;
-    top: 0;
+.navbar-container {
+  position: sticky;
+  top: 0;
     z-index: 50;
     width: 100%;
     background: var(--bg-navbar);
@@ -23,7 +23,7 @@
     justify-content: space-between;
     font-family: 'Inter', system-ui, sans-serif;
     transition: all 0.3s ease;
-  }
+}
 
   .navbar-left {
     display: flex;
@@ -61,19 +61,20 @@
     transition: background 0.2s;
   }
 
-  .avatar-wrapper {
-    position: relative;
-    width: 42px;
-    height: 42px;
-  }
+    .avatar-wrapper {
+      position: relative;
+      width: 42px;
+      height: 42px;
+    }
 
   .avatar {
-    width: 100%;
-    height: 100%;
+    width: 10%;
+    height: 10%;
     border-radius: 12px;
     object-fit: cover;
     border: 2px solid white;
     box-shadow: 0 0 0 1px var(--border);
+
   }
 
   .avatar-fallback {
@@ -98,10 +99,15 @@
 
   .user-details span {
     font-size: 0.75rem;
-    color: var(--text-muted);
+    color: var(--text-main);
     display: block;
     text-transform: uppercase;
     letter-spacing: 0.025em;
+  }
+
+  .navbar-center {
+    flex: 1;
+    text-align: center;
   }
 
   .navbar-actions {
@@ -157,6 +163,10 @@
   .logout-btn:hover {
     background: #fecaca;
     transform: scale(1.05);
+  }
+
+  @media (max-width: 1024px) {
+    .navbar-center { display: none; }
   }
 
   @media (max-width: 768px) {

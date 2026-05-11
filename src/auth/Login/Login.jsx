@@ -26,7 +26,6 @@ const Login = () => {
     }
 
     setLoading(false);
-    
   };
 
   return (
@@ -46,7 +45,7 @@ const Login = () => {
         />
       </div>
       <button className="btn-ingresar" onClick={handleLogin} disabled={loading}>
-        {loading ? <span className="loader"></span> : "INGRESAR"}
+        {loading ? <span className="loader"></span> : "INGRESAR AL PORTAL"}
       </button>
       {error && <p className="error-message">{error}</p>}
     </div>

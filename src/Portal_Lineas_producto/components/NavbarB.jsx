@@ -32,7 +32,7 @@ const NavbarCompact = ({ onLogout }) => {
 
           <div>
             <h4>{user?.nombre || "Usuario"}</h4>
-            <span>{user?.cargo_general || ""}</span>
+            <span className="cargo">{user?.cargo_general || ""}</span>
           </div>
         </div>
       </div>

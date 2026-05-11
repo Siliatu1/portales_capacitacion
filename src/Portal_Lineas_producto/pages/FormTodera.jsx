@@ -1,16 +1,41 @@
-import { useState } from "react";
-import { Select, message } from "antd";
+import React, { useState, useEffect } from 'react';
+import '../styles/evaluacion-todera.css';
+import { Select, message } from 'antd';
 
-import BuscarEmpleado from "../components/BuscarEmpleado";
+import BuscarEmpleado from '../components/BuscarEmpleado';
+import useEmpleado from '../hooks/useEmpleado';
 
-import { useFormulario } from "../hooks/useFormulario";
-import { useEmpleadoForm } from "../hooks/useEmpleado";
-import { useInstructora } from "../hooks/useInstructora";
-
-import { guardarTodera } from "../services/toderaService";
-
-import { opcionesCargoEvaluar } from "../utils/toderaOptions";
-import { getInitialFormState } from "../utils/formularioHel.utils";
+const opcionesCargoEvaluar = [
+  {
+    label: <span className="cargo-group-title cargo-group-sal">SAL</span>,
+    options: [
+      { value: 'Plancha Sal', label: 'Plancha Sal' },
+      { value: 'Cocina', label: 'Cocina' },
+      { value: 'Pitas y Ensaladas', label: 'Pitas y Ensaladas' }
+    ]
+  },
+  {
+    label: <span className="cargo-group-title cargo-group-dulce">DULCE</span>,
+    options: [
+      { value: 'Postres y Helados', label: 'Postres y Helados' }
+    ]
+  },
+  {
+    label: <span className="cargo-group-title cargo-group-bebidas">BEBIDAS</span>,
+    options: [
+      { value: 'Bebidas Frias y Calientes', label: 'Bebidas Frias y Calientes' }
+    ]
+  },
+  {
+    label: <span className="cargo-group-title cargo-group-brunch">BRUNCH (Solo 1 punto)</span>,
+    options: [
+      { value: 'Plancha Sal Brunch', label: 'Plancha Sal Brunch' },
+      { value: 'Cocina Brunch', label: 'Cocina Brunch' },
+      { value: 'Postres y Helados Brunch', label: 'Postres y Helados Brunch' },
+      { value: 'Bebidas Brunch', label: 'Bebidas Brunch' }
+    ]
+  }
+];
 
 const FormTodera = () => {
 
