@@ -1,79 +1,57 @@
-import React from 'react';
-import { LogOut, Coffee, Calendar, LayoutGrid } from 'lucide-react';
 import { useMenu } from "../hooks/useMenu";
-import { useAuth } from "../../auth/hooks/useAuth";
 import "../styles/menu.css";
+import { useAuth } from "../../auth/hooks/useAuth";
 
 const MenuPrincipal = () => {
   const { menu, loading, goTo } = useMenu();
-  const { user, handlerLogout } = useAuth(); // Asumo que handlerLogout viene de tu hook
-
-  // Función para asignar iconos dinámicamente (opcional)
-  const getIcon = (title) => {
-    const t = title.toLowerCase();
-    if (t.includes('café') || t.includes('línea')) return <Coffee size={28} />;
-    if (t.includes('horario') || t.includes('calendario')) return <Calendar size={28} />;
-    return <LayoutGrid size={28} />; // Icono por defecto
-  };
+  const { user } = useAuth();
 
   return (
-    <div className="dashboard-container">
-      {/* HEADER */}
-      <header className="dashboard-header">
-        <div className="user-profile">
-          <img 
-            src={user?.foto || "https://api.dicebear.com/9.x/pixel-art/svg"} 
-            className="user-avatar" 
-            alt="User" 
-          />
+    <div className="menu-container">
+      {/* HEADER / NAVBAR */}
+      <header className="menu-header">
+        <div className="header-content">
           <div className="user-info">
-            <h2 className="user-name">{user?.nombre?.split(' ')[0] || "Usuario"}</h2>
-            <p className="user-role">{user?.rol || "Invitado"}</p>
+            {user?.foto && <img src={user.foto} alt="Perfil" className="user-avatar" />}
+            <div className="user-details">
+              <p className="user-name">{user?.nombre || "Usuario"}</p>
+            </div>
           </div>
         </div>
-        
-        <button onClick={handlerLogout} className="logout-button">
-          <LogOut size={18} /> Salir
-        </button>
       </header>
 
       {/* MAIN CONTENT */}
-      {loading ? (
-        <div className="loading-container">
-          <div className="loader"></div>
-          <p>Cargando opciones del sistema...</p>
-        </div>
-      ) : (
-        <div className="portals-grid">
-          {menu.map((item, index) => (
-            <div 
-              key={item.id || index}
-              onClick={() => goTo(item.route)}
-              className="portal-card active animate-fade-in"
-              style={{ animationDelay: `${index * 0.1}s` }}
-            >
-              <div className="icon-wrapper">
-                {getIcon(item.title)}
-              </div>
-              <h3 className="portal-title">{item.title}</h3>
-              <p className="portal-description">
-                {item.description || "Accede a este módulo para gestionar tus tareas."}
-              </p>
+      <main className="menu-body">
+        {loading ? (
+          <div className="loading-container">
+            <div className="loader"></div>
+            <p>Cargando opciones del sistema...</p>
+          </div>
+        ) : (
+          <div className="menu-wrapper">
+            <div className="menu-header-section">
+              <h2>Bienvenido</h2>
+              <p>Selecciona una opción para continuar</p>
             </div>
-          ))}
-
-          {/* Si quieres mantener una card visual de "Próximamente" fija: */}
-          {menu.length === 1 && (
-            <div className="portal-card disabled">
-               <div className="icon-wrapper">
-                <Calendar size={28} />
-              </div>
-              <h3 className="portal-title">Próximamente</h3>
-              <p className="portal-description">Nuevos módulos en desarrollo.</p>
+            <div className="menu-cards">
+              {menu.map((item, index) => (
+                <article
+                  key={item.id}
+                  className="menu-card animate-fade-in"
+                  style={{ animationDelay: `${index * 0.1}s` }} /* Detalle extra para entrada escalonada */
+                  onClick={() => goTo(item.route)}
+                >
+                  <div className="card-header">
+                    <h3>{item.title}</h3>
+                    <span className="arrow-icon">›</span>
+                  </div>
+                  <p className="card-description">{item.description}</p>
+                </article>
+              ))}
             </div>
-          )}
-        </div>
-      )}
+          </div>
+        )}
+      </main>
     </div>
   );
 };
