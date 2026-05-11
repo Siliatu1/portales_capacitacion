@@ -26,7 +26,6 @@ const Login = () => {
     }
 
     setLoading(false);
-    
   };
 
   return (
