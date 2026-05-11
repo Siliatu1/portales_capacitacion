@@ -1,19 +1,18 @@
 import React from 'react';
-import { LogOut, Coffee, Calendar, LayoutGrid } from 'lucide-react';
-import { useMenu } from "../hooks/useMenu";
-import { useAuth } from "../../auth/hooks/useAuth";
-import "../styles/menu.css";
+import { LogOut, Coffee } from 'lucide-react';
+import { useMenu } from "./hooks/useMenu";
+import { useAuth } from "../auth/hooks/useAuth";
+import "./Dashboard.css";
 
-const MenuPrincipal = () => {
+const Dashboard = () => {
   const { menu, loading, goTo } = useMenu();
-  const { user, handlerLogout } = useAuth(); // Asumo que handlerLogout viene de tu hook
+  const { user } = useAuth();
 
   // Función para asignar iconos dinámicamente (opcional)
   const getIcon = (title) => {
     const t = title.toLowerCase();
     if (t.includes('café') || t.includes('línea')) return <Coffee size={28} />;
-    if (t.includes('horario') || t.includes('calendario')) return <Calendar size={28} />;
-    return <LayoutGrid size={28} />; // Icono por defecto
+    return <Coffee size={28} />; // Icono por defecto
   };
 
   return (
@@ -27,12 +26,12 @@ const MenuPrincipal = () => {
             alt="User" 
           />
           <div className="user-info">
-            <h2 className="user-name">{user?.nombre?.split(' ')[0] || "Usuario"}</h2>
-            <p className="user-role">{user?.rol || "Invitado"}</p>
+            <h2 className="user-name">{user?.nombre || "Nombre"}</h2>
+            <p className="user-role">{user?.cargo_general || "CARGO"}</p>
           </div>
         </div>
-        
-        <button onClick={handlerLogout} className="logout-button">
+
+        <button className="logout-button">
           <LogOut size={18} /> Salir
         </button>
       </header>
@@ -41,7 +40,7 @@ const MenuPrincipal = () => {
       {loading ? (
         <div className="loading-container">
           <div className="loader"></div>
-          <p>Cargando opciones del sistema...</p>
+          <p>Cargando...</p>
         </div>
       ) : (
         <div className="portals-grid">
@@ -61,21 +60,10 @@ const MenuPrincipal = () => {
               </p>
             </div>
           ))}
-
-          {/* Si quieres mantener una card visual de "Próximamente" fija: */}
-          {menu.length === 1 && (
-            <div className="portal-card disabled">
-               <div className="icon-wrapper">
-                <Calendar size={28} />
-              </div>
-              <h3 className="portal-title">Próximamente</h3>
-              <p className="portal-description">Nuevos módulos en desarrollo.</p>
-            </div>
-          )}
         </div>
       )}
     </div>
   );
 };
 
-export default MenuPrincipal;
+export default Dashboard;
