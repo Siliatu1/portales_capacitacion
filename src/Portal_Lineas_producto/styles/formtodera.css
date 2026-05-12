@@ -1,0 +1,330 @@
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Inter:wght@400;500;600;700&display=swap');
+
+/* =========================
+   WRAPPER
+========================= */
+
+.form-todera-wrapper {
+  max-width: 1400px;
+
+  margin: 0 auto;
+
+  padding: 30px;
+}
+
+/* =========================
+   ALERT
+========================= */
+
+.alert-warning {
+  background:
+    linear-gradient(
+      135deg,
+      #fff5e8,
+      #fff0dd
+    );
+
+  border:
+    1px solid #f3d7b2;
+
+  color: #8b5e34;
+
+  padding: 18px 22px;
+
+  border-radius: 18px;
+
+  font-weight: 600;
+
+  margin-bottom: 28px;
+
+  box-shadow:
+    0 10px 25px rgba(91,57,40,.04);
+}
+
+/* =========================
+   MAIN CARD
+========================= */
+
+.todera-card {
+  background: white;
+
+  border-radius: 32px;
+
+  padding: 34px;
+
+  box-shadow:
+    0 14px 35px rgba(91,57,40,.05);
+}
+
+/* =========================
+   PHOTO
+========================= */
+
+.foto-empleado {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  margin-bottom: 32px;
+}
+
+.foto-empleado label {
+  margin-bottom: 14px;
+
+  color: #7a5840;
+
+  font-size: .85rem;
+  font-weight: 700;
+
+  letter-spacing: .5px;
+}
+
+.foto-empleado img {
+  width: 130px;
+  height: 130px;
+
+  border-radius: 50%;
+
+  object-fit: cover;
+
+  border:
+    5px solid #f3ebe4;
+
+  box-shadow:
+    0 10px 25px rgba(91,57,40,.08);
+}
+
+/* =========================
+   GRID
+========================= */
+
+.todera-grid {
+  display: grid;
+
+  grid-template-columns:
+    repeat(auto-fit, minmax(320px, 1fr));
+
+  gap: 24px;
+}
+
+/* =========================
+   FIELD
+========================= */
+
+.form-field {
+  display: flex;
+  flex-direction: column;
+
+  gap: 10px;
+}
+
+.form-field label {
+  color: #7a5840;
+
+  font-size: .85rem;
+  font-weight: 700;
+
+  text-transform: uppercase;
+
+  letter-spacing: .5px;
+}
+
+/* =========================
+   INPUTS
+========================= */
+
+.form-field input,
+.form-field select {
+  width: 100%;
+
+  height: 54px;
+
+  border:
+    1px solid #e7ddd4;
+
+  border-radius: 16px;
+
+  background: #fcfbf9;
+
+  padding: 0 16px;
+
+  font-size: .95rem;
+
+  outline: none;
+
+  transition: .3s;
+}
+
+.form-field input:focus,
+.form-field select:focus {
+  border-color: #5b3928;
+
+  box-shadow:
+    0 0 0 4px rgba(91,57,40,.08);
+}
+
+/* =========================
+   READONLY
+========================= */
+
+.form-field input[readonly] {
+  background: #f7f4f1;
+
+  color: #7b746f;
+}
+
+/* =========================
+   ANT SELECT
+========================= */
+
+.form-field .ant-select-selector {
+  height: 54px !important;
+
+  border-radius: 16px !important;
+
+  border:
+    1px solid #e7ddd4 !important;
+
+  background: #fcfbf9 !important;
+
+  display: flex;
+  align-items: center;
+
+  padding: 0 16px !important;
+
+  box-shadow: none !important;
+}
+
+.form-field .ant-select-focused .ant-select-selector {
+  border-color:
+    #5b3928 !important;
+
+  box-shadow:
+    0 0 0 4px rgba(91,57,40,.08) !important;
+}
+
+.form-field .ant-select-selection-item {
+  line-height: 52px !important;
+}
+
+/* =========================
+   MENSAJE
+========================= */
+
+.mensaje-busqueda {
+  padding: 16px 18px;
+
+  border-radius: 16px;
+
+  margin-bottom: 24px;
+
+  font-weight: 600;
+}
+
+.mensaje-success {
+  background: #edf9f1;
+
+  color: #20744a;
+}
+
+.mensaje-error {
+  background: #fff0ef;
+
+  color: #d14343;
+}
+
+/* =========================
+   ACTIONS
+========================= */
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+
+  gap: 16px;
+
+  margin-top: 36px;
+}
+
+/* =========================
+   BUTTONS
+========================= */
+
+.btn-limpiar,
+.btn-registrar {
+  height: 52px;
+
+  padding: 0 28px;
+
+  border: none;
+
+  border-radius: 16px;
+
+  font-size: .95rem;
+  font-weight: 700;
+
+  cursor: pointer;
+
+  transition: .3s;
+}
+
+.btn-limpiar {
+  background: #f3ece6;
+
+  color: #6d5445;
+}
+
+.btn-limpiar:hover {
+  background: #e8ddd3;
+}
+
+.btn-registrar {
+  background:
+    linear-gradient(
+      135deg,
+      #5b3928,
+      #734631
+    );
+
+  color: white;
+
+  box-shadow:
+    0 10px 25px rgba(91,57,40,.18);
+}
+
+.btn-registrar:hover {
+  transform: translateY(-2px);
+}
+
+.btn-registrar:disabled {
+  opacity: .7;
+
+  cursor: not-allowed;
+}
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media (max-width: 768px) {
+  .form-todera-wrapper {
+    padding: 16px;
+  }
+
+  .todera-card {
+    padding: 24px;
+  }
+
+  .todera-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .form-actions {
+    flex-direction: column;
+  }
+
+  .btn-limpiar,
+  .btn-registrar {
+    width: 100%;
+  }
+}
