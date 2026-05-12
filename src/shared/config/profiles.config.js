@@ -48,7 +48,7 @@ export const PROFILE_CONFIG = {
   },
 
   CAPACITADORA: {
-    views: ["CONTROL_ASISTENCIA"],
+    views: ["CONTROL_ASISTENCIA", "PANELINSTRUCTORA"],
 
     permissions: {
       filterByPDV: false,
@@ -66,6 +66,7 @@ export const VIEW_ROUTES = {
   FORM_RESTAURANTE: "/lineas-producto/form-restaurante",
   CONTROL_ASISTENCIA: "/lineas-producto/control-asistencia",
   FORM_TODERA: "/lineas-producto/form-todera",
+  PANELINSTRUCTORA: "/lineas-producto/panel-instructora",
 };
 
 export const PORTAL_LINEAS_PRODUCTO_VIEWS = [
@@ -74,4 +75,5 @@ export const PORTAL_LINEAS_PRODUCTO_VIEWS = [
   "FORM_RESTAURANTE",
   "CONTROL_ASISTENCIA",
   "FORM_TODERA",
+  "PANELINSTRUCTORA",
 ];
