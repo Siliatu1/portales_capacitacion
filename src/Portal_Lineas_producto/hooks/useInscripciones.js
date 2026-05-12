@@ -1,57 +1,147 @@
-import { useCallback, useEffect, useState } from "react";
-import { getInscripciones, deleteInscripcion, updateAsistencia } from "../services/inscripciones.service";
+import {
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 
-export const useInscripciones = ({ pdv } = {}) => {
-  const [data, setData] = useState([]);
-  const [loading, setLoading] = useState(false);
+import {
+  getInscripciones,
+  deleteInscripcion,
+  updateAsistencia,
+} from "../services/inscripciones.service";
 
-  const fetchData = useCallback(async () => {
-    setLoading(true);
-    try {
-      const res = await getInscripciones({ pdv });
-      setData(res);
-    } catch (error) {
-      console.error(error);
-      setData([]);
-    } finally {
-      setLoading(false);
-    }
-  }, [pdv]);
+export const useInscripciones = ({
+  pdv,
+} = {}) => {
+  const [data, setData] =
+    useState([]);
+
+  const [loading, setLoading] =
+    useState(false);
+
+  const [error, setError] =
+    useState(null);
+
+  const fetchedRef = useRef(false);
+
+  const fetchData = useCallback(
+    async () => {
+      try {
+        setLoading(true);
+
+        setError(null);
+
+        console.log(
+          "CONSULTANDO INSCRIPCIONES PDV:",
+          pdv
+        );
+
+        const response =
+          await getInscripciones({
+            pdv,
+          });
+
+        console.log(
+          "RESPUESTA INSCRIPCIONES:",
+          response
+        );
+
+        setData(
+          Array.isArray(response)
+            ? response
+            : []
+        );
+      } catch (err) {
+        console.error(
+          "ERROR FETCH INSCRIPCIONES:",
+          err
+        );
+
+        setError(err);
+
+        setData([]);
+      } finally {
+        setLoading(false);
+      }
+    },
+    [pdv]
+  );
 
   const remove = async (id) => {
-    setLoading(true);
     try {
+      setLoading(true);
+
+      console.log(
+        "ELIMINANDO INSCRIPCION:",
+        id
+      );
+
       await deleteInscripcion(id);
+
       await fetchData();
     } catch (err) {
-      console.error('Error eliminando inscripcion', err);
+      console.error(
+        "ERROR ELIMINANDO INSCRIPCION:",
+        err
+      );
     } finally {
       setLoading(false);
     }
   };
 
-  const setAsistencia = async (id, confirmado) => {
-    setLoading(true);
+  const setAsistencia = async (
+    id,
+    confirmado
+  ) => {
     try {
-      await updateAsistencia(id, confirmado);
+      setLoading(true);
+
+      console.log(
+        "ACTUALIZANDO ASISTENCIA:",
+        {
+          id,
+          confirmado,
+        }
+      );
+
+      await updateAsistencia(
+        id,
+        confirmado
+      );
+
       await fetchData();
     } catch (err) {
-      console.error('Error actualizando asistencia', err);
+      console.error(
+        "ERROR ACTUALIZANDO ASISTENCIA:",
+        err
+      );
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
+    if (fetchedRef.current) {
+      return;
+    }
+
+    fetchedRef.current = true;
+
     fetchData();
   }, [fetchData]);
 
   return {
     data,
+
     loading,
+
+    error,
+
     refetch: fetchData,
-    deleteInscripcion: remove
-    , setAsistencia
+
+    deleteInscripcion: remove,
+
+    setAsistencia,
   };
-};
+}

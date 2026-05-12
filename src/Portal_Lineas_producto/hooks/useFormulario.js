@@ -29,3 +29,5 @@ export const useFormulario = (config) => {
     resetForm: reset,
   };
 };
+
+export default useFormulario

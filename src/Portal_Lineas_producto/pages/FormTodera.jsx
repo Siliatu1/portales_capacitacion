@@ -1,173 +1,430 @@
-import React, { useState, useEffect } from 'react';
-import '../styles/evaluacion-todera.css';
+import React, { useState } from 'react';
 import { Select, message } from 'antd';
 
 import BuscarEmpleado from '../components/BuscarEmpleado';
+
 import useEmpleado from '../hooks/useEmpleado';
 
-const opcionesCargoEvaluar = [
+import { obtenerInstructora } from '../services/instructoraService';
+import { guardarTodera } from '../services/toderaService';
+
+const OPCIONES_POR_CATEGORIA = {
+  sal: [
+    { value: 'Plancha Sal', label: 'Plancha Sal' },
+    { value: 'Cocina', label: 'Cocina' },
+    {
+      value: 'Pitas y Ensaladas',
+      label: 'Pitas y Ensaladas',
+    },
+  ],
+
+  dulce: [
+    {
+      value: 'Postres y Helados',
+      label: 'Postres y Helados',
+    },
+  ],
+
+  bebidas: [
+    {
+      value: 'Bebidas Frias y Calientes',
+      label: 'Bebidas Frias y Calientes',
+    },
+  ],
+};
+
+const OPCIONES_BRUNCH = [
   {
-    label: <span className="cargo-group-title cargo-group-sal">SAL</span>,
-    options: [
-      { value: 'Plancha Sal', label: 'Plancha Sal' },
-      { value: 'Cocina', label: 'Cocina' },
-      { value: 'Pitas y Ensaladas', label: 'Pitas y Ensaladas' }
-    ]
+    value: 'Plancha Sal Brunch',
+    label: 'Plancha Sal Brunch',
   },
+
   {
-    label: <span className="cargo-group-title cargo-group-dulce">DULCE</span>,
-    options: [
-      { value: 'Postres y Helados', label: 'Postres y Helados' }
-    ]
+    value: 'Cocina Brunch',
+    label: 'Cocina Brunch',
   },
+
   {
-    label: <span className="cargo-group-title cargo-group-bebidas">BEBIDAS</span>,
-    options: [
-      { value: 'Bebidas Frias y Calientes', label: 'Bebidas Frias y Calientes' }
-    ]
+    value: 'Postres y Helados Brunch',
+    label: 'Postres y Helados Brunch',
   },
+
   {
-    label: <span className="cargo-group-title cargo-group-brunch">BRUNCH (Solo 1 punto)</span>,
-    options: [
-      { value: 'Plancha Sal Brunch', label: 'Plancha Sal Brunch' },
-      { value: 'Cocina Brunch', label: 'Cocina Brunch' },
-      { value: 'Postres y Helados Brunch', label: 'Postres y Helados Brunch' },
-      { value: 'Bebidas Brunch', label: 'Bebidas Brunch' }
-    ]
-  }
+    value: 'Bebidas Brunch',
+    label: 'Bebidas Brunch',
+  },
 ];
 
+const getPdvFromStorage = () => {
+  try {
+    const raw = localStorage.getItem('user');
+
+    if (raw) {
+      const user = JSON.parse(raw);
+
+      return (
+        user?.pdv ||
+        user?.puntoVenta ||
+        user?.area_nombre ||
+        ''
+      );
+    }
+  } catch (_) {}
+
+  return (
+    localStorage.getItem('pdv') ||
+    localStorage.getItem('puntoVenta') ||
+    ''
+  );
+};
+
 const FormTodera = () => {
-
-  const [categoria, setCategoria] = useState("");
-  const [cargoEvaluar, setCargoEvaluar] = useState("");
+  const pdvLogin = getPdvFromStorage();
 
   const {
-    formData,
-    setFormData,
-    setLoading,
-    handleChange
-  } = useFormulario({
-    initialState: getInitialFormState(),
-  });
-
-  const {
+    documento,
+    setDocumento,
     empleado,
     buscarEmpleado,
-    loading: loadingEmpleado
-  } = useEmpleadoForm(setFormData);
+    loading: loadingEmpleado,
+    mensaje,
+    limpiarEmpleado,
+  } = useEmpleado();
 
-  const {
-    instructora,
-    loadingInstructora
-  } = useInstructora({
-    categoria,
-    empleado,
-    puntoVenta: formData.puntoVenta || formData.area_nombre || empleado?.area_nombre || empleado?.pdv
-  });
+  const [categoria, setCategoria] = useState('');
+  const [cargoEvaluar, setCargoEvaluar] =
+    useState('');
 
-  const setDocumento = (documento) => {
-    setFormData((prev) => ({
-      ...prev,
-      documento
-    }));
+  const [instructora, setInstructora] =
+    useState('');
+
+  const [telefono, setTelefono] =
+    useState('');
+
+  const [loadingInst, setLoadingInst] =
+    useState(false);
+
+  const [loading, setLoading] =
+    useState(false);
+
+  const pdvEfectivo =
+    pdvLogin ||
+    empleado?.area_nombre ||
+    empleado?.pdv ||
+    '';
+
+  const opcionesCargo = categoria
+    ? [
+        ...(OPCIONES_POR_CATEGORIA[categoria] ||
+          []),
+
+        ...OPCIONES_BRUNCH,
+      ]
+    : [];
+
+  const handleBuscarEmpleado = async () => {
+    try {
+      const empleadoEncontrado =
+        await buscarEmpleado(documento);
+
+      if (empleadoEncontrado) {
+        setTelefono(
+          empleadoEncontrado.telefono ||
+            empleadoEncontrado.celular ||
+            ''
+        );
+      }
+    } catch (error) {
+      console.error(error);
+    }
   };
 
-  const onSubmit = async () => {
+  const handleCategoriaChange = async (e) => {
+    const nuevaCategoria = e.target.value;
+
+    setCategoria(nuevaCategoria);
+
+    setCargoEvaluar('');
+
+    setInstructora('');
+
+    if (
+      !nuevaCategoria ||
+      !empleado ||
+      !pdvEfectivo
+    ) {
+      return;
+    }
 
     try {
+      setLoadingInst(true);
 
+      const nombre =
+        await obtenerInstructora(
+          pdvEfectivo,
+          nuevaCategoria
+        );
+
+      setInstructora(
+        nombre ||
+          'Sin instructora asignada'
+      );
+    } catch (error) {
+      console.error(error);
+
+      setInstructora(
+        'Error al buscar instructora'
+      );
+    } finally {
+      setLoadingInst(false);
+    }
+  };
+
+  const handleLimpiar = () => {
+    limpiarEmpleado();
+
+    setCategoria('');
+    setCargoEvaluar('');
+    setInstructora('');
+    setTelefono('');
+  };
+
+  const handleSubmit = async () => {
+    if (!empleado) {
+      message.warning(
+        'Primero busca un empleado'
+      );
+      return;
+    }
+
+    if (!categoria) {
+      message.warning(
+        'Selecciona una categoria'
+      );
+      return;
+    }
+
+    if (!cargoEvaluar) {
+      message.warning(
+        'Selecciona el cargo a evaluar'
+      );
+      return;
+    }
+
+    const payload = {
+      Nombre: empleado.nombre,
+
+      documento: documento,
+
+      telefono: telefono,
+
+      pdv: pdvEfectivo,
+
+      lider: instructora,
+
+      cargo: cargoEvaluar,
+
+      categoria: categoria.toUpperCase(),
+
+      tipo_formulario: 'FORM_TODERA',
+    };
+
+    try {
       setLoading(true);
 
-      const payload = {
-        Nombre: formData.nombres || empleado?.nombre,
-        documento: formData.documento,
-        telefono: formData.telefono || empleado?.celular || empleado?.telefono,
-        pdv: formData.puntoVenta || formData.area_nombre || empleado?.area_nombre || empleado?.pdv,
-        lider: instructora,
-        cargo: cargoEvaluar,
-        categoria: categoria.toUpperCase()
-      };
+      console.log(
+        'Payload a enviar:',
+        payload
+      );
 
       await guardarTodera(payload);
 
-      message.success("Evaluación registrada");
+      message.success(
+        'Evaluacion registrada'
+      );
 
+      handleLimpiar();
     } catch (error) {
+      console.error(error);
 
-      console.log(error);
-
-      message.error("Error al guardar");
-
+      message.error(
+        'Error al guardar la evaluacion'
+      );
     } finally {
-
       setLoading(false);
-
     }
   };
 
   return (
-    <div>
+    <div className="form-todera-wrapper">
+      <div className="alert-warning">
+        SOLO SE PUEDE INSCRIBIR SI YA ESTA
+        100% LISTA PARA LA EVALUACION
+      </div>
+
       <BuscarEmpleado
-        documento={formData.documento}
+        documento={documento}
         setDocumento={setDocumento}
-        onBuscar={() => buscarEmpleado(formData.documento)}
+        onBuscar={handleBuscarEmpleado}
         loading={loadingEmpleado}
       />
 
-      {
-        empleado && (
-          <>
-            <input
-              name="nombres"
-              value={formData.nombres || empleado.nombre || ""}
-              disabled
-            />
+      {mensaje.texto && (
+        <div
+          className={`mensaje-busqueda mensaje-${mensaje.tipo}`}
+        >
+          {mensaje.texto}
+        </div>
+      )}
+
+      {empleado && (
+        <>
+          {empleado.photo && (
+            <div className="foto-empleado">
+              <label>FOTO</label>
+
+              <img
+                src={empleado.photo}
+                alt="Foto empleado"
+              />
+            </div>
+          )}
+
+          <div className="form-field">
+            <label>
+              NOMBRES COMPLETOS *
+            </label>
 
             <input
-              name="telefono"
-              value={formData.telefono || empleado.celular || empleado.telefono || ""}
-              onChange={handleChange}
+              value={empleado.nombre || ''}
+              readOnly
             />
+          </div>
+
+          <div className="form-field">
+            <label>TELEFONO</label>
 
             <input
-              name="puntoVenta"
-              value={formData.puntoVenta || formData.area_nombre || empleado.area_nombre || empleado.pdv || ""}
-              onChange={handleChange}
+              value={telefono}
+              onChange={(e) =>
+                setTelefono(
+                  e.target.value
+                )
+              }
             />
+          </div>
 
-            <select
-              value={categoria}
-              onChange={(e) => setCategoria(e.target.value)}
-            >
-              <option value="">Seleccione</option>
-              <option value="sal">Sal</option>
-              <option value="dulce">Dulce</option>
-              <option value="bebidas">Bebidas</option>
-            </select>
-
-            <Select
-              value={cargoEvaluar}
-              onChange={setCargoEvaluar}
-              options={opcionesCargoEvaluar}
-            />
+          <div className="form-field">
+            <label>CARGO</label>
 
             <input
               value={
-                loadingInstructora
-                  ? "Buscando..."
+                empleado.area_nombre || ''
+              }
+              readOnly
+            />
+          </div>
+
+          <div className="form-field">
+            <label>
+              PUNTO DE VENTA
+            </label>
+
+            <input
+              value={pdvEfectivo}
+              readOnly
+            />
+          </div>
+
+          <div className="form-field">
+            <label>
+              CATEGORIA A EVALUAR *
+            </label>
+
+            <select
+              value={categoria}
+              onChange={
+                handleCategoriaChange
+              }
+            >
+              <option value="">
+                Seleccione
+              </option>
+
+              <option value="sal">
+                Sal
+              </option>
+
+              <option value="dulce">
+                Dulce
+              </option>
+
+              <option value="bebidas">
+                Bebidas
+              </option>
+            </select>
+          </div>
+
+          {categoria && (
+            <div className="form-field">
+              <label>
+                CARGO A EVALUAR *
+              </label>
+
+              <Select
+                style={{ width: '100%' }}
+                placeholder="Seleccione cargo"
+                value={
+                  cargoEvaluar ||
+                  undefined
+                }
+                onChange={(val) =>
+                  setCargoEvaluar(val)
+                }
+                options={opcionesCargo}
+              />
+            </div>
+          )}
+
+          <div className="form-field">
+            <label>
+              NOMBRE DE LA INSTRUCTORA
+            </label>
+
+            <input
+              value={
+                loadingInst
+                  ? 'Buscando...'
                   : instructora
               }
-              disabled
+              readOnly
             />
+          </div>
 
-            <button onClick={onSubmit}>
-              Guardar
+          <div className="form-actions">
+            <button
+              className="btn-limpiar"
+              onClick={handleLimpiar}
+              type="button"
+            >
+              Limpiar
             </button>
-          </>
-        )
-      }
 
+            <button
+              className="btn-registrar"
+              onClick={handleSubmit}
+              disabled={
+                loading || loadingInst
+              }
+              type="button"
+            >
+              {loading
+                ? 'Guardando...'
+                : 'Registrar Evaluacion'}
+            </button>
+          </div>
+        </>
+      )}
     </div>
   );
 };
