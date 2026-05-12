@@ -1,121 +1,260 @@
+/* =========================
+   GOOGLE FONTS
+========================= */
+
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap');
+
+/* =========================
+   VARIABLES
+========================= */
+
 :root {
-  --primary: #462e24;
-  --primary-light: #5d4037;
-  --bg-cream: #FDF8F1;
-  --dark-text: #4A3728;
-  --stone-100: #f5f5f4;
-  --stone-200: #e7e5e4;
-  --stone-400: #a8a29e;
-  --accent: #c68b34;
-  --shadow: 0 4px 20px color-mix(in srgb, var(--dark-text) 5%, transparent);
-  --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  --bg-color: #f3efeb;
+
+  --primary: #5b3928;
+  --primary-light: #7a5039;
+
+  --text-main: #2e2e2e;
+  --text-soft: #8d8179;
+
+  --card-bg: rgba(255, 255, 255, 0.75);
+
+  --border-color: rgba(91, 57, 40, 0.08);
+
+  --shadow-main: 0 10px 25px rgba(91, 57, 40, 0.08);
+
+  --radius-xl: 30px;
+  --radius-lg: 22px;
+  --radius-md: 18px;
+
+  --transition: all 0.3s ease;
 }
+
+/* =========================
+   GLOBAL
+========================= */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  min-height: 100vh;
+
+  font-family: "Inter", sans-serif;
+
+  background: var(--bg-color);
+  color: var(--text-main);
+}
+
+/* =========================
+   CONTAINER
+========================= */
 
 .menu-container {
   min-height: 100vh;
-  background-color: var(--bg-cream);
-  font-family: 'Poppins', system-ui, sans-serif;
-  color: var(--dark-text);
+
+  background:
+    radial-gradient(circle at top left,
+      rgba(91, 57, 40, 0.05),
+      transparent 25%),
+
+    radial-gradient(circle at bottom right,
+      rgba(91, 57, 40, 0.05),
+      transparent 25%),
+
+    var(--bg-color);
+
+  padding: 40px 24px 60px;
 }
 
-/* Navbar de usuario */
+/* =========================
+   HEADER
+========================= */
+
 .menu-header {
-  padding: 1rem 2rem;
+  width: 100%;
+
+  display: flex;
+  justify-content: center;
+
+  margin-bottom: 50px;
 }
 
 .header-content {
   width: 100%;
-  max-width: 1100px;
-  margin: 0 auto;
+  max-width: 1200px;
+
   display: flex;
-  justify-content: flex-end;
+  justify-content: center;
 }
+
+/* =========================
+   USER INFO
+========================= */
 
 .user-info {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: 12px;
-  padding: 6px 14px;
-  background: #ffffff;
-  border-radius: 50px;
-  border: 1px solid var(--stone-200);
-  box-shadow: 0 2px 8px color-mix(in srgb, var(--dark-text) 4%, transparent);
+  justify-content: center;
+
+  gap: 16px;
+
+  background: var(--card-bg);
+
+  backdrop-filter: blur(10px);
+
+  padding: 28px 40px;
+
+  border-radius: var(--radius-xl);
+
+  box-shadow: var(--shadow-main);
+
+  border: 1px solid rgba(255, 255, 255, 0.5);
+
+  animation: fadeUp 0.5s ease;
 }
 
-.user-info img {
-  width: 32px;
-  height: 32px;
+.user-avatar {
+  width: 95px;
+  height: 95px;
+
   border-radius: 50%;
+
   object-fit: cover;
-  border: 2px solid var(--stone-100);
+
+  border: 4px solid rgba(91, 57, 40, 0.1);
+
+  box-shadow: 0 8px 18px rgba(91, 57, 40, 0.12);
+}
+
+.user-details {
+  text-align: center;
 }
 
 .user-name {
-  margin: 0;
-  font-size: 0.85rem;
+  font-size: 1.2rem;
   font-weight: 600;
-  color: var(--dark-text);
+
+  color: var(--primary);
+
+  line-height: 1.4;
 }
 
-/* Cuerpo del Menú */
+/* =========================
+   MAIN BODY
+========================= */
+
 .menu-body {
-  padding: 3rem 2rem;
-  max-width: 1100px;
-  margin: 0 auto;
+  width: 100%;
+
+  display: flex;
+  justify-content: center;
 }
+
+.menu-wrapper {
+  width: 100%;
+  max-width: 1200px;
+}
+
+/* =========================
+   WELCOME
+========================= */
 
 .menu-header-section {
-  margin-bottom: 2rem;
+  text-align: center;
+
+  margin-bottom: 45px;
+
+  animation: fadeUp 0.7s ease;
 }
 
 .menu-header-section h2 {
-  font-size: 2rem;
-  margin: 0 0 0.5rem 0;
+  font-family: "Cormorant Garamond", serif;
+
+  font-size: 3.2rem;
+  font-weight: 700;
+
   color: var(--primary);
+
+  letter-spacing: 1px;
+
+  margin-bottom: 10px;
 }
 
 .menu-header-section p {
-  color: var(--stone-400);
-  margin: 0;
+  font-size: 1.08rem;
+
+  color: var(--text-soft);
+
+  font-weight: 500;
 }
 
-/* Estructura Bento para las tarjetas */
+/* =========================
+   CARDS
+========================= */
+
 .menu-cards {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 1.5rem;
-  width: 100%;
+
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+
+  gap: 28px;
 }
 
-/* Tarjeta Rediseñada */
 .menu-card {
-  background: #ffffff;
-  padding: 2rem;
-  border-radius: 20px;
-  border: 1px solid var(--stone-200);
+  background: var(--card-bg);
+
+  backdrop-filter: blur(10px);
+
+  border-radius: var(--radius-lg);
+
+  padding: 32px 28px;
+
   cursor: pointer;
+
+  border: 1px solid rgba(255, 255, 255, 0.5);
+
+  box-shadow: var(--shadow-main);
+
   transition: var(--transition);
+
   position: relative;
+
   overflow: hidden;
-  box-shadow: var(--shadow);
 }
 
 .menu-card::before {
-  content: '';
+  content: "";
+
   position: absolute;
-  top: 0; 
-  left: 0; 
-  width: 4px; 
-  height: 100%;
-  background: var(--accent);
+
+  top: 0;
+  left: 0;
+
+  width: 100%;
+  height: 5px;
+
+  background: linear-gradient(
+    90deg,
+    var(--primary),
+    var(--primary-light)
+  );
+
   opacity: 0;
+
   transition: var(--transition);
 }
 
 .menu-card:hover {
-  border-color: transparent;
-  box-shadow: 0 15px 30px color-mix(in srgb, var(--dark-text) 8%, transparent);
-  transform: translateY(-5px);
+  transform: translateY(-6px);
+
+  box-shadow: 0 18px 30px rgba(91, 57, 40, 0.12);
 }
 
 .menu-card:hover::before {
@@ -124,73 +263,161 @@
 
 .card-header {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  margin-bottom: 1rem;
+  justify-content: space-between;
+
+  margin-bottom: 18px;
 }
 
 .card-header h3 {
-  font-size: 1.25rem;
+  font-size: 1.45rem;
   font-weight: 700;
-  margin: 0;
+
   color: var(--primary);
+
+  line-height: 1.3;
 }
 
 .arrow-icon {
-  color: var(--accent);
-  font-size: 1.5rem;
-  opacity: 0;
+  font-size: 2rem;
+
+  color: var(--primary);
+
   transition: var(--transition);
-  transform: translateX(-10px);
 }
 
 .menu-card:hover .arrow-icon {
-  opacity: 1;
-  transform: translateX(0);
+  transform: translateX(6px);
 }
 
 .card-description {
-  font-size: 0.95rem;
-  line-height: 1.5;
-  color: var(--stone-400);
-  margin: 0;
+  font-size: 1rem;
+
+  color: var(--text-soft);
+
+  line-height: 1.6;
 }
 
-/* Loading State */
+/* =========================
+   LOADING
+========================= */
+
 .loading-container {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 4rem;
-  color: var(--stone-400);
-  gap: 1rem;
+
+  gap: 18px;
+
+  margin-top: 100px;
+}
+
+.loading-container p {
+  color: var(--text-soft);
 }
 
 .loader {
-  width: 32px;
-  height: 32px;
-  border: 3px solid var(--stone-200);
-  border-radius: 50%;
+  width: 42px;
+  height: 42px;
+
+  border: 4px solid rgba(91, 57, 40, 0.15);
   border-top-color: var(--primary);
+
+  border-radius: 50%;
+
   animation: spin 0.8s linear infinite;
 }
 
-@keyframes spin {
-  to { transform: rotate(360deg); }
-}
-
-@keyframes fade-in {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
-}
+/* =========================
+   ANIMATIONS
+========================= */
 
 .animate-fade-in {
-  animation: fade-in 0.6s ease-out forwards;
+  animation: fadeUp 0.5s ease forwards;
 }
 
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* =========================
+   TABLET
+========================= */
+
 @media (max-width: 768px) {
-  .menu-body { padding: 1.5rem; }
-  .menu-header { padding: 1rem; }
-  .menu-cards { grid-template-columns: 1fr; }
+  .menu-container {
+    padding: 32px 20px 50px;
+  }
+
+  .menu-header-section h2 {
+    font-size: 2.5rem;
+  }
+
+  .menu-cards {
+    gap: 22px;
+  }
+}
+
+/* =========================
+   MOBILE
+========================= */
+
+@media (max-width: 480px) {
+  .menu-container {
+    padding: 24px 16px 40px;
+  }
+
+  .user-info {
+    width: 100%;
+
+    padding: 24px 20px;
+  }
+
+  .user-avatar {
+    width: 80px;
+    height: 80px;
+  }
+
+  .user-name {
+    font-size: 1rem;
+  }
+
+  .menu-header-section {
+    margin-bottom: 32px;
+  }
+
+  .menu-header-section h2 {
+    font-size: 2rem;
+  }
+
+  .menu-header-section p {
+    font-size: 0.95rem;
+  }
+
+  .menu-card {
+    padding: 26px 22px;
+  }
+
+  .card-header h3 {
+    font-size: 1.2rem;
+  }
+
+  .card-description {
+    font-size: 0.92rem;
+  }
 }

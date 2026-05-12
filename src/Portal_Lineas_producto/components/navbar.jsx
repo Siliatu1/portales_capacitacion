@@ -1,33 +1,39 @@
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import "../styles/navbar.css";
 import { useAuth } from "../../auth/hooks/useAuth";
 
 const NAV_ITEMS = [
   {
     view: "FORM_HELADERIA",
-    label: "Form Heladeria",
+    label: "Heladería",
     route: "/lineas-producto/form-heladeria",
   },
   {
     view: "FORM_RESTAURANTE",
-    label: "Form Restaurante",
+    label: "Restaurante",
     route: "/lineas-producto/form-restaurante",
   },
   {
     view: "CONTROL_ASISTENCIA",
-    label: "Control Asistencia",
+    label: "Asistencia",
     route: "/lineas-producto/control-asistencia",
   },
   {
     view: "FORM_TODERA",
-    label: "Form Todera",
+    label: "Todera",
     route: "/lineas-producto/form-todera",
   },
 ];
 
 const Navbar = () => {
   const navigate = useNavigate();
-  const { user, logout, canAccessView } = useAuth();
+  const location = useLocation();
+
+  const {
+    user,
+    logout,
+    canAccessView,
+  } = useAuth();
 
   const handleLogout = () => {
     logout();
@@ -35,16 +41,21 @@ const Navbar = () => {
   };
 
   return (
-    <header className="navbar">
-      <div className="navbar-left">
-        <button className="back-btn" onClick={() => navigate(-1)}>
-          &larr;
-        </button>
+    <aside className="sidebar">
+      {/* TOP */}
+      <div className="sidebar-top">
+        <div className="brand">
+          <h2>Portal C&W</h2>
+          <p>Líneas de Producto</p>
+        </div>
 
-        <div className="user-info">
+        <div className="profile-card">
           <div className="avatar">
             {user?.foto ? (
-              <img src={user.foto} alt="user" />
+              <img
+                src={user.foto}
+                alt="Usuario"
+              />
             ) : (
               <div className="avatar-fallback">
                 {user?.nombre?.charAt(0) || "U"}
@@ -52,29 +63,52 @@ const Navbar = () => {
             )}
           </div>
 
-          <div>
-            <h4>{user?.nombre || "Usuario"}</h4>
-            <span>{user?.cargo_general || ""}</span>
+          <div className="profile-info">
+            <h4>{user?.nombre}</h4>
+
+            <span>
+              {user?.cargo_general}
+            </span>
           </div>
         </div>
       </div>
-      <h2>Portal Lineas de Producto</h2>
-      <div className="navbar-actions">
-        {NAV_ITEMS.filter((item) => canAccessView(item.view)).map((item) => (
-          <button
-            key={item.view}
-            className="action-btn"
-            onClick={() => navigate(item.route)}
-          >
-            {item.label}
-          </button>
-        ))}
 
-        <button className="logout-btn" onClick={handleLogout}>
+      {/* MENU */}
+      <nav className="sidebar-menu">
+        {NAV_ITEMS
+          .filter((item) =>
+            canAccessView(item.view)
+          )
+          .map((item) => {
+            const isActive =
+              location.pathname === item.route;
+
+            return (
+              <button
+                key={item.view}
+                className={`menu-item ${
+                  isActive ? "active" : ""
+                }`}
+                onClick={() =>
+                  navigate(item.route)
+                }
+              >
+                {item.label}
+              </button>
+            );
+          })}
+      </nav>
+
+      {/* BOTTOM */}
+      <div className="sidebar-bottom">
+        <button
+          className="logout-btn"
+          onClick={handleLogout}
+        >
           Salir
         </button>
       </div>
-    </header>
+    </aside>
   );
 };
 

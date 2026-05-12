@@ -6,7 +6,7 @@ import {
 } from "antd";
 
 import { useAuth } from "../../auth/hooks/useAuth";
-
+import "../styles/Table.css";
 import {
   mapAsistencia,
 } from "../utils/asistencia.utils";
@@ -293,7 +293,9 @@ export default function InscripcionesTable({
   );
 
   return (
+  <div className="table-container">
     <Table
+      className="cw-table"
       columns={columns}
       dataSource={
         Array.isArray(data)
@@ -306,13 +308,14 @@ export default function InscripcionesTable({
       }
       pagination={{
         pageSize: 10,
-        showSizeChanger:
-          false,
+        showSizeChanger: false,
       }}
+      scroll={{ x: 1200 }}
       locale={{
         emptyText:
           "No hay inscripciones",
       }}
     />
-  );
+  </div>
+);
 }
