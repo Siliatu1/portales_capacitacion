@@ -1,77 +1,318 @@
-import { Button, Popconfirm, Table, Tag } from "antd";
+import {
+  Button,
+  Popconfirm,
+  Table,
+  Tag,
+} from "antd";
+
 import { useAuth } from "../../auth/hooks/useAuth";
-import { mapAsistencia } from "../utils/asistencia.utils";
 
-export default function InscripcionesTable({ data, loading, formType, onDelete }) {
-  const { hasPermission } = useAuth();
-  const canDelete = hasPermission("canDelete");
+import {
+  mapAsistencia,
+} from "../utils/asistencia.utils";
 
-  const parseDate = (d) => {
-    if (!d) return 0;
-    const t = Date.parse(d);
-    return Number.isNaN(t) ? (typeof d === "string" ? d.localeCompare("") : 0) : t;
-  };
+export default function InscripcionesTable({
+  data,
+  loading,
+  formType,
+  onDelete,
+}) {
+  const { hasPermission } =
+    useAuth();
 
-  const handleDelete = async (id) => {
-    try {
-      if (typeof onDelete === "function") await onDelete(id);
-    } catch (err) {
-      console.error("Eliminar fallo", err);
+  const canDelete =
+    hasPermission(
+      "canDelete"
+    );
+
+  const parseDate = (
+    value
+  ) => {
+    if (!value) {
+      return 0;
     }
+
+    const parsed =
+      Date.parse(value);
+
+    return Number.isNaN(
+      parsed
+    )
+      ? 0
+      : parsed;
   };
 
-  const actionColumn = {
-    title: "Acciones",
-    key: "acciones",
-    render: (_, record) => (
-      <Popconfirm
-        title="Eliminar inscripcion?"
-        onConfirm={() => handleDelete(record.id)}
-        okText="Si"
-        cancelText="No"
-      >
-        <Button danger>Eliminar</Button>
-      </Popconfirm>
-    ),
-  };
+  const handleDelete =
+    async (id) => {
+      try {
+        if (
+          typeof onDelete ===
+          "function"
+        ) {
+          await onDelete(id);
+        }
+      } catch (err) {
+        console.error(
+          "ERROR ELIMINANDO:",
+          err
+        );
+      }
+    };
 
-  const heladeriaColumns = [
-    { title: "Cedula", dataIndex: "cedula" },
-    { title: "Nombres", dataIndex: "nombres" },
-    { title: "Telefono", dataIndex: "telefono" },
-    { title: "Cargo a Evaluar", dataIndex: "cargo" },
-    { title: "Punto de Venta", dataIndex: "puntoVenta", render: (_, r) => r.puntoVenta || r.area_nombre || "" },
-    { title: "Nombre Lider", dataIndex: "lider" },
-    { title: "Dia", dataIndex: "dia", sorter: (a, b) => parseDate(a.dia) - parseDate(b.dia), defaultSortOrder: "descend" },
+  const commonColumns = [
     {
-      title: "Asistencia",
-      dataIndex: "asistencia",
+      title: "Cedula",
+      dataIndex: "cedula",
+      key: "cedula",
+    },
+
+    {
+      title: "Nombres",
+      dataIndex: "nombres",
+      key: "nombres",
+    },
+
+    {
+      title: "Telefono",
+      dataIndex: "telefono",
+      key: "telefono",
+    },
+
+    {
+      title:
+        "Punto de Venta",
+
+      dataIndex:
+        "puntoVenta",
+
+      key: "puntoVenta",
+
+      render: (
+        text,
+        record
+      ) =>
+        record.puntoVenta ||
+        record.area_nombre ||
+        "-",
+    },
+
+    {
+      title:
+        "Nombre Lider",
+
+      dataIndex: "lider",
+
+      key: "lider",
+    },
+
+    {
+      title: "Dia",
+
+      dataIndex: "dia",
+
+      key: "dia",
+
+      sorter: (a, b) =>
+        parseDate(a.dia) -
+        parseDate(b.dia),
+
+      defaultSortOrder:
+        "descend",
+
       render: (value) => {
-        const { label, color } = mapAsistencia(value);
-        return <Tag color={color}>{label}</Tag>;
+        if (!value) {
+          return "-";
+        }
+
+        try {
+          return new Date(
+            value
+          ).toLocaleDateString(
+            "es-CO"
+          );
+        } catch {
+          return value;
+        }
       },
     },
   ];
 
-  const defaultColumns = [
-    { title: "Cedula", dataIndex: "cedula" },
-    { title: "Nombre", dataIndex: "nombres" },
-    { title: "Telefono", dataIndex: "telefono" },
-    { title: "Punto Venta", dataIndex: "puntoVenta", render: (_, r) => r.puntoVenta || r.area_nombre || "" },
-    { title: "Fecha", dataIndex: "dia", sorter: (a, b) => parseDate(a.dia) - parseDate(b.dia), defaultSortOrder: "descend" },
-    { title: "Lider", dataIndex: "lider" },
+  const asistenciaColumn = {
+    title: "Asistencia",
+
+    dataIndex:
+      "asistencia",
+
+    key: "asistencia",
+
+    render: (value) => {
+      const {
+        label,
+        color,
+      } =
+        mapAsistencia(
+          value
+        );
+
+      return (
+        <Tag color={color}>
+          {label}
+        </Tag>
+      );
+    },
+  };
+
+  const actionColumn = {
+    title: "Acciones",
+
+    key: "acciones",
+
+    render: (
+      text,
+      record
+    ) => (
+      <Popconfirm
+        title="Eliminar inscripcion?"
+        onConfirm={() =>
+          handleDelete(
+            record.id
+          )
+        }
+        okText="Si"
+        cancelText="No"
+      >
+        <Button danger>
+          Eliminar
+        </Button>
+      </Popconfirm>
+    ),
+  };
+
+  const heladeriaColumns =
+    [
+      ...commonColumns.slice(
+        0,
+        3
+      ),
+
+      {
+        title:
+          "Cargo a Evaluar",
+
+        dataIndex:
+          "cargo",
+
+        key: "cargo",
+      },
+
+      ...commonColumns.slice(
+        3
+      ),
+
+      asistenciaColumn,
+    ];
+
+  const toderaColumns = [
+    ...commonColumns.slice(
+      0,
+      3
+    ),
+
+    {
+      title:
+        "Categoria",
+
+      dataIndex:
+        "categoria",
+
+      key: "categoria",
+
+      render: (value) =>
+        value || "-",
+    },
+
+    {
+      title:
+        "Cargo a Evaluar",
+
+      dataIndex:
+        "cargo",
+
+      key: "cargo",
+    },
+
+    ...commonColumns.slice(
+      3
+    ),
   ];
 
-  const baseColumns = (formType || "").toLowerCase() === "heladeria" ? heladeriaColumns : defaultColumns;
-  const columns = canDelete ? [...baseColumns, actionColumn] : baseColumns;
+  const restauranteColumns =
+    commonColumns;
+
+  const formTypeLower =
+    String(
+      formType || ""
+    ).toLowerCase();
+
+  let baseColumns =
+    restauranteColumns;
+
+  if (
+    formTypeLower ===
+    "heladeria"
+  ) {
+    baseColumns =
+      heladeriaColumns;
+  }
+
+  if (
+    formTypeLower ===
+    "todera"
+  ) {
+    baseColumns =
+      toderaColumns;
+  }
+
+  const columns =
+    canDelete
+      ? [
+          ...baseColumns,
+          actionColumn,
+        ]
+      : baseColumns;
+
+  console.log(
+    "RENDER TABLA:",
+    {
+      formType,
+      total:
+        data?.length ||
+        0,
+      data,
+    }
+  );
 
   return (
     <Table
       columns={columns}
-      dataSource={data}
+      dataSource={
+        Array.isArray(data)
+          ? data
+          : []
+      }
       loading={loading}
-      rowKey="id"
-      pagination={{ pageSize: 10 }}
+      rowKey={(record) =>
+        String(record.id)
+      }
+      pagination={{
+        pageSize: 10,
+        showSizeChanger:
+          false,
+      }}
+      locale={{
+        emptyText:
+          "No hay inscripciones",
+      }}
     />
   );
 }

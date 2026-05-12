@@ -1,18 +1,29 @@
-const API_URL = "https://macfer.crepesywaffles.com/api";
+const API_URL =
+  "https://macfer.crepesywaffles.com/api";
 
 const PAGE_SIZE = 100;
 
-const normalizeText = (value) => {
+const normalizeText = (
+  value
+) => {
   return String(value || "")
     .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
+    .replace(
+      /[\u0300-\u036f]/g,
+      ""
+    )
     .trim()
     .replace(/\s+/g, " ")
     .toLowerCase();
 };
 
-const getTextValue = (value) => {
-  if (value === null || value === undefined) {
+const getTextValue = (
+  value
+) => {
+  if (
+    value === null ||
+    value === undefined
+  ) {
     return "";
   }
 
@@ -39,10 +50,12 @@ const getTextValue = (value) => {
   );
 };
 
-const buildInscripcionesUrl = ({
+const buildUrl = ({
+  endpoint,
   page = 1,
-} = {}) => {
-  const params = new URLSearchParams();
+}) => {
+  const params =
+    new URLSearchParams();
 
   params.set(
     "pagination[page]",
@@ -59,57 +72,64 @@ const buildInscripcionesUrl = ({
     "createdAt:desc"
   );
 
-  return `${API_URL}/cap-cafes?${params.toString()}`;
+  return `${API_URL}/${endpoint}?${params.toString()}`;
 };
 
-const mapInscripcion = (item) => {
+const mapInscripcion = (
+  item,
+  tipoFormulario
+) => {
   const attributes =
     item?.attributes || {};
 
   const pdv =
-    getTextValue(attributes.pdv);
-
-  const puntoVenta =
-    pdv ||
     getTextValue(
-      attributes.puntoVenta
-    ) ||
-    getTextValue(
-      attributes.area_nombre
+      attributes.pdv
     );
-
-  const tipoFormulario =
-    attributes.tipo_formulario ||
-    attributes.tipoFormulario ||
-    attributes.tipo ||
-    "FORM_RESTAURANTE";
 
   return {
     id: item.id,
 
     cedula:
-      attributes.documento || "",
+      attributes.documento ||
+      "",
 
     nombres:
-      attributes.nombre || "",
+      attributes.nombre ||
+      "",
 
     telefono:
-      attributes.telefono || "",
+      attributes.telefono ||
+      "",
 
     cargo:
-      attributes.cargo || "",
+      attributes.cargo ||
+      "",
 
-    area_nombre: getTextValue(
-      attributes.area_nombre
-    ),
+    categoria:
+      attributes.categoria ||
+      "",
 
-    puntoVenta,
+    area_nombre:
+      getTextValue(
+        attributes.area_nombre
+      ),
+
+    puntoVenta:
+      pdv ||
+      getTextValue(
+        attributes.puntoVenta
+      ) ||
+      getTextValue(
+        attributes.area_nombre
+      ),
 
     tipo_formulario:
       tipoFormulario,
 
     lider:
-      attributes.lider || "",
+      attributes.lider ||
+      "",
 
     dia:
       attributes.fecha ||
@@ -122,82 +142,131 @@ const mapInscripcion = (item) => {
   };
 };
 
-const fetchInscripcionesPage =
-  async ({ page } = {}) => {
-    const url =
-      buildInscripcionesUrl({
-        page,
+const fetchCollection =
+  async ({
+    endpoint,
+    tipoFormulario,
+  }) => {
+    const firstUrl =
+      buildUrl({
+        endpoint,
+        page: 1,
       });
 
     console.log(
-      "URL INSCRIPCIONES:",
-      url
+      "CONSULTANDO:",
+      firstUrl
     );
 
-    const res = await fetch(url);
+    const firstRes =
+      await fetch(firstUrl);
 
-    if (!res.ok) {
+    if (!firstRes.ok) {
       throw new Error(
-        "Error al traer inscripciones"
+        `Error consultando ${endpoint}`
       );
     }
 
-    return res.json();
+    const firstData =
+      await firstRes.json();
+
+    const pageCount =
+      firstData?.meta
+        ?.pagination
+        ?.pageCount || 1;
+
+    const allItems = [
+      ...(firstData?.data ||
+        []),
+    ];
+
+    for (
+      let page = 2;
+      page <= pageCount;
+      page += 1
+    ) {
+      const url =
+        buildUrl({
+          endpoint,
+          page,
+        });
+
+      const res =
+        await fetch(url);
+
+      if (!res.ok) {
+        continue;
+      }
+
+      const json =
+        await res.json();
+
+      allItems.push(
+        ...(json?.data ||
+          [])
+      );
+    }
+
+    return allItems.map(
+      (item) =>
+        mapInscripcion(
+          item,
+          tipoFormulario
+        )
+    );
   };
 
 export const getInscripciones =
   async ({ pdv } = {}) => {
     try {
-      const firstPage =
-        await fetchInscripcionesPage({
-          page: 1,
-        });
+      const [
+        restaurantes,
+        toderas,
+      ] =
+        await Promise.all([
+          fetchCollection({
+            endpoint:
+              "cap-cafes",
 
-      const pageCount =
-        firstPage?.meta?.pagination
-          ?.pageCount || 1;
+            tipoFormulario:
+              "FORM_RESTAURANTE",
+          }),
 
-      const allItems = [
-        ...(firstPage?.data || []),
+          fetchCollection({
+            endpoint:
+              "cap-toderas",
+
+            tipoFormulario:
+              "FORM_TODERA",
+          }),
+        ]);
+
+      const merged = [
+        ...restaurantes,
+        ...toderas,
       ];
 
-      for (
-        let page = 2;
-        page <= pageCount;
-        page += 1
-      ) {
-        const pageData =
-          await fetchInscripcionesPage({
-            page,
-          });
-
-        allItems.push(
-          ...(pageData?.data || [])
-        );
-      }
-
-      const mapped =
-        allItems.map(
-          mapInscripcion
-        );
-
       console.log(
-        "INSCRIPCIONES MAPEADAS:",
-        mapped
+        "INSCRIPCIONES UNIDAS:",
+        merged
       );
 
       if (!pdv) {
-        return mapped;
+        return merged;
       }
 
       const filtered =
-        mapped.filter(
-          (inscripcion) => {
+        merged.filter(
+          (
+            inscripcion
+          ) => {
             return (
               normalizeText(
                 inscripcion.puntoVenta
               ) ===
-              normalizeText(pdv)
+              normalizeText(
+                pdv
+              )
             );
           }
         );
@@ -208,7 +277,7 @@ export const getInscripciones =
       );
 
       console.log(
-        "INSCRIPCIONES FILTRADAS:",
+        "FILTRADAS:",
         filtered
       );
 
@@ -225,19 +294,21 @@ export const getInscripciones =
 
 export const deleteInscripcion =
   async (id) => {
-    const res = await fetch(
-      `${API_URL}/cap-cafes/${id}`,
-      {
-        method: "DELETE",
-      }
-    );
+    const res =
+      await fetch(
+        `${API_URL}/cap-cafes/${id}`,
+        {
+          method:
+            "DELETE",
+        }
+      );
 
     if (!res.ok) {
       const text =
         await res.text();
 
       throw new Error(
-        `Error al eliminar inscripcion: ${text}`
+        `Error al eliminar: ${text}`
       );
     }
 
@@ -267,23 +338,26 @@ export const updateAsistencia =
           "user"
         );
 
-      const maybeToken = raw
-        ? (() => {
-            try {
-              const u =
-                JSON.parse(raw);
+      const maybeToken =
+        raw
+          ? (() => {
+              try {
+                const u =
+                  JSON.parse(
+                    raw
+                  );
 
-              return (
-                u?.token ||
-                u?.jwt ||
-                u?.accessToken ||
-                null
-              );
-            } catch {
-              return null;
-            }
-          })()
-        : null;
+                return (
+                  u?.token ||
+                  u?.jwt ||
+                  u?.accessToken ||
+                  null
+                );
+              } catch {
+                return null;
+              }
+            })()
+          : null;
 
       const altToken =
         localStorage.getItem(
@@ -299,30 +373,34 @@ export const updateAsistencia =
           "Authorization"
         ] = `Bearer ${token}`;
       }
-    } catch {
-      console.warn(
-        "No se pudo obtener token"
-      );
-    }
+    } catch {}
 
-    let res = await fetch(
-      `${API_URL}/cap-cafes/${id}`,
-      {
-        method: "PATCH",
-        headers,
-        body: payload,
-      }
-    );
-
-    if (!res.ok) {
-      res = await fetch(
+    let res =
+      await fetch(
         `${API_URL}/cap-cafes/${id}`,
         {
-          method: "PUT",
+          method:
+            "PATCH",
+
           headers,
+
           body: payload,
         }
       );
+
+    if (!res.ok) {
+      res =
+        await fetch(
+          `${API_URL}/cap-cafes/${id}`,
+          {
+            method:
+              "PUT",
+
+            headers,
+
+            body: payload,
+          }
+        );
     }
 
     if (!res.ok) {

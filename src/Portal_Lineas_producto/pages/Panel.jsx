@@ -1,235 +1,395 @@
-import { useState, useMemo, useCallback } from "react";
+import {
+  useMemo,
+  useState,
+} from "react";
+
 import Navbar from "../components/navbar";
-import { useInscripciones } from "../hooks/useInscripciones";
-import { filtrarInscripciones } from "../utils/filters";
+
+import {
+  useInscripciones,
+} from "../hooks/useInscripciones";
+
+import {
+  filtrarInscripciones,
+} from "../utils/filters";
+
 import "../styles/panel.css";
-import InscripcionesTable from "../components/InscripcionesTable"; 
-import FiltrosInscripciones from "../components/FiltrosInscripciones"; 
+
+import InscripcionesTable from "../components/InscripcionesTable";
+
+import FiltrosInscripciones from "../components/FiltrosInscripciones";
+
 import { useAuth } from "../../auth/hooks/useAuth";
 
 const FORM_TYPE_VIEW_MAP = {
-  heladeria: "FORM_HELADERIA",
-  restaurante: "FORM_RESTAURANTE",
-  todera: "FORM_TODERA",
+  restaurante:
+    "FORM_RESTAURANTE",
+
+  todera:
+    "FORM_TODERA",
+
+  heladeria:
+    "FORM_HELADERIA",
 };
 
 const FORM_TYPE_LABELS = {
-  heladeria: "Heladeria",
-  restaurante: "Restaurante",
-  todera: "Todera",
+  restaurante:
+    "Restaurante",
+
+  todera:
+    "Todera",
+
+  heladeria:
+    "Heladeria",
 };
 
-const PDV_KEYS = new Set([
-  "pdv",
-  "puntoVenta",
-  "punto_venta",
-  "punto_venta_nombre",
-  "pdv_nombre",
-  "area_nombre",
-  "area",
-]);
-
-const normalizePdv = (value) => {
+const normalizeText = (
+  value
+) => {
   return String(value || "")
     .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
+    .replace(
+      /[\u0300-\u036f]/g,
+      ""
+    )
     .trim()
     .replace(/\s+/g, " ")
     .toLowerCase();
 };
 
-const compactPdv = (value) => {
-  return normalizePdv(value).replace(/[^a-z0-9]/g, "");
-};
+const normalizeFormType =
+  (value) => {
+    const formType =
+      normalizeText(value);
 
-const pdvMatches = (source, target) => {
-  const sourceValue = normalizePdv(source);
-  const targetValue = normalizePdv(target);
-  const sourceCompact = compactPdv(source);
-  const targetCompact = compactPdv(target);
+    console.log(
+      "TIPO FORMULARIO:",
+      formType
+    );
 
-  if (!sourceValue || !targetValue) return false;
-
-  return (
-    sourceValue === targetValue ||
-    sourceCompact === targetCompact ||
-    sourceValue.includes(targetValue) ||
-    targetValue.includes(sourceValue) ||
-    sourceCompact.includes(targetCompact) ||
-    targetCompact.includes(sourceCompact)
-  );
-};
-
-const getStoredUser = () => {
-  try {
-    const rawUser = localStorage.getItem("user");
-    return rawUser ? JSON.parse(rawUser) : null;
-  } catch {
-    return null;
-  }
-};
-
-const getTextFromPdvObject = (value) => {
-  if (!value || typeof value !== "object") return "";
-
-  const source = value.data?.attributes || value.attributes || value;
-  return (
-    source.nombre ||
-    source.name ||
-    source.label ||
-    source.value ||
-    source.area_nombre ||
-    source.pdv_nombre ||
-    source.pdv ||
-    ""
-  );
-};
-
-const findPdvInObject = (value, depth = 0) => {
-  if (!value || depth > 4 || typeof value !== "object") return "";
-
-  for (const [key, fieldValue] of Object.entries(value)) {
-    if (!PDV_KEYS.has(key)) continue;
-
-    if (typeof fieldValue === "string" || typeof fieldValue === "number") {
-      return String(fieldValue);
+    if (
+      formType.includes(
+        "heladeria"
+      )
+    ) {
+      return "heladeria";
     }
 
-    const textValue = getTextFromPdvObject(fieldValue);
-    if (textValue) return textValue;
-  }
+    if (
+      formType.includes(
+        "todera"
+      )
+    ) {
+      return "todera";
+    }
 
-  for (const fieldValue of Object.values(value)) {
-    const nestedValue = findPdvInObject(fieldValue, depth + 1);
-    if (nestedValue) return nestedValue;
-  }
+    return "restaurante";
+  };
 
-  return "";
-};
+const getStoredUser =
+  () => {
+    try {
+      const raw =
+        localStorage.getItem(
+          "user"
+        );
 
-const getUserPdv = (...users) => {
-  for (const candidate of users) {
-    const pdv = findPdvInObject(candidate);
-    if (pdv) return pdv;
-  }
+      return raw
+        ? JSON.parse(raw)
+        : null;
+    } catch {
+      return null;
+    }
+  };
 
-  return "";
-};
+const getUserPdv =
+  (user) => {
+    return (
+      user?.pdv ||
+      user?.puntoVenta ||
+      user?.area_nombre ||
+      user?.area ||
+      ""
+    );
+  };
 
-const getInscripcionPdv = (inscripcion) => {
-  return inscripcion?.puntoVenta || inscripcion?.area_nombre || "";
-};
+export default function Panel({
+  userData,
+  onLogout,
+}) {
+  const {
+    canAccessView,
+    hasPermission,
+    user,
+  } = useAuth();
 
-const normalizeFormType = (value) => {
-  const formType = String(value || "")
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .trim()
-    .toLowerCase();
-
-  if (formType.includes("restaurante") || formType.includes("pdv")) return "restaurante";
-  if (formType.includes("heladeria")) return "heladeria";
-  if (formType.includes("todera")) return "todera";
-
-  return "";
-};
-
-export default function Panel ({ userData, onLogout }) {
-  const { canAccessView, hasPermission, user } = useAuth();
-  const storedUser = useMemo(() => getStoredUser(), []);
-  const shouldFilterByPdv = hasPermission("filterByPDV");
-  const userPdv = useMemo(() => {
-    return getUserPdv(storedUser, user, userData);
-  }, [storedUser, user, userData]);
-  const { data, loading, deleteInscripcion } = useInscripciones({
-    pdv: shouldFilterByPdv ? userPdv : "",
-  });
-
-  const [filtros, setFiltros] = useState({
+  const [
+    filtros,
+    setFiltros,
+  ] = useState({
     cedula: "",
     puntoVenta: "",
     fecha: "",
-    formulario: 'todos'
   });
 
-  const dataPorPdv = useMemo(() => {
-    if (!shouldFilterByPdv) return data;
-    if (!userPdv) return [];
+  const storedUser =
+    useMemo(() => {
+      return getStoredUser();
+    }, []);
 
-    return data.filter((inscripcion) => {
-      return pdvMatches(getInscripcionPdv(inscripcion), userPdv);
-    });
-  }, [data, shouldFilterByPdv, userPdv]);
+  const shouldFilterByPdv =
+    hasPermission(
+      "filterByPDV"
+    );
 
-  const visibleFormTypes = useMemo(() => {
-    return Object.entries(FORM_TYPE_VIEW_MAP)
-      .filter(([, view]) => canAccessView(view))
-      .map(([formType]) => formType);
-  }, [canAccessView]);
+  const userPdv =
+    useMemo(() => {
+      return getUserPdv(
+        storedUser ||
+          user ||
+          userData
+      );
+    }, [
+      storedUser,
+      user,
+      userData,
+    ]);
 
-  const getPanelFormType = useCallback((inscripcion) => {
-    if (visibleFormTypes.length === 1) {
-      return visibleFormTypes[0];
-    }
+  const {
+    data,
+    loading,
+    deleteInscripcion,
+  } = useInscripciones({
+    pdv:
+      shouldFilterByPdv
+        ? userPdv
+        : "",
+  });
 
-    const formType = normalizeFormType(inscripcion.tipo_formulario);
-    if (formType && FORM_TYPE_VIEW_MAP[formType]) return formType;
+  const dataFiltrada =
+    useMemo(() => {
+      const filtradas =
+        filtrarInscripciones(
+          data,
+          filtros
+        );
 
-    return "heladeria";
-  }, [visibleFormTypes]);
+      return filtradas.map(
+        (
+          inscripcion
+        ) => {
+          const panelFormType =
+            normalizeFormType(
+              inscripcion.tipo_formulario
+            );
 
-  const dataFiltrada = useMemo(() => {
-    return filtrarInscripciones(dataPorPdv, filtros).map((inscripcion) => {
-      return {
-        ...inscripcion,
-        panelFormType: getPanelFormType(inscripcion),
-      };
-    }).filter((inscripcion) => {
-      const formType = inscripcion.panelFormType;
-      const view = FORM_TYPE_VIEW_MAP[formType];
-      return view ? canAccessView(view) : false;
-    });
-  }, [canAccessView, dataPorPdv, filtros, getPanelFormType]);
+          return {
+            ...inscripcion,
+            panelFormType,
+          };
+        }
+      );
+    }, [data, filtros]);
 
-  const formTypes = useMemo(() => {
-    const set = new Set((dataFiltrada || []).map(i => i.panelFormType));
-    return Array.from(set);
-  }, [dataFiltrada]);
+  const groupedData =
+    useMemo(() => {
+      return dataFiltrada.reduce(
+        (
+          acc,
+          item
+        ) => {
+          const type =
+            item.panelFormType;
 
-  const fechasDisponibles = useMemo(() => {
-    const set = new Set((dataPorPdv || []).map(i => i.dia).filter(Boolean));
-    return Array.from(set).sort((a, b) => a.localeCompare(b));
-  }, [dataPorPdv]);
+          if (
+            !acc[type]
+          ) {
+            acc[type] =
+              [];
+          }
+
+          acc[type].push(
+            item
+          );
+
+          return acc;
+        },
+        {}
+      );
+    }, [dataFiltrada]);
+
+  const visibleGroups =
+    useMemo(() => {
+      return Object.entries(
+        groupedData
+      ).filter(
+        ([formType]) => {
+          const permission =
+            FORM_TYPE_VIEW_MAP[
+              formType
+            ];
+
+          console.log(
+            "VALIDANDO FORM:",
+            formType,
+            permission
+          );
+
+          if (
+            !permission
+          ) {
+            return true;
+          }
+
+          return canAccessView(
+            permission
+          );
+        }
+      );
+    }, [
+      groupedData,
+      canAccessView,
+    ]);
+
+  const fechasDisponibles =
+    useMemo(() => {
+      const unique =
+        new Set(
+          data
+            .map(
+              (
+                item
+              ) =>
+                item.dia
+            )
+            .filter(
+              Boolean
+            )
+        );
+
+      return Array.from(
+        unique
+      ).sort(
+        (a, b) =>
+          String(
+            b
+          ).localeCompare(
+            String(a)
+          )
+      );
+    }, [data]);
+
+  console.log(
+    "USER PDV:",
+    userPdv
+  );
+
+  console.log(
+    "DATA:",
+    data
+  );
+
+  console.log(
+    "DATA FILTRADA:",
+    dataFiltrada
+  );
+
+  console.log(
+    "GROUPED DATA:",
+    groupedData
+  );
+
+  console.log(
+    "VISIBLE GROUPS:",
+    visibleGroups
+  );
 
   return (
     <>
-      {/* NAVBAR */}
-      <Navbar userData={userData} onLogout={onLogout} />
+      <Navbar
+        userData={
+          userData
+        }
+        onLogout={
+          onLogout
+        }
+      />
 
       <div className="admin-content">
-        <h2>Inscripciones</h2>
+        <h2>
+          Inscripciones
+        </h2>
 
-        {/* FILTROS */}
         <FiltrosInscripciones
-          filtros={filtros}
-          setFiltros={setFiltros}
-          fechasDisponibles={fechasDisponibles}
+          filtros={
+            filtros
+          }
+          setFiltros={
+            setFiltros
+          }
+          fechasDisponibles={
+            fechasDisponibles
+          }
         />
 
-        {/* TABLAS POR FORMULARIO */}
-        {formTypes.map((ft) => (
-          <div className="table-card" key={ft} style={{ marginBottom: 18 }}>
-            <div className="table-header">
-              <div className="table-title">{FORM_TYPE_LABELS[ft] || ft} ({dataFiltrada.filter(i => i.panelFormType === ft).length})</div>
-            </div>
-            <InscripcionesTable
-              data={dataFiltrada.filter(i => i.panelFormType === ft)}
-              loading={loading}
-              formType={ft}
-              onDelete={deleteInscripcion}
-            />
+        {visibleGroups.length ===
+          0 && (
+          <div
+            style={{
+              marginTop: 20,
+              fontSize: 16,
+            }}
+          >
+            No hay
+            inscripciones
+            disponibles
           </div>
-        ))}
+        )}
+
+        {visibleGroups.map(
+          ([
+            formType,
+            items,
+          ]) => {
+            return (
+              <div
+                className="table-card"
+                key={
+                  formType
+                }
+              >
+                <div className="table-header">
+                  <div className="table-title">
+                    {FORM_TYPE_LABELS[
+                      formType
+                    ] ||
+                      formType}
+                    {" ("}
+                    {
+                      items.length
+                    }
+                    {")"}
+                  </div>
+                </div>
+
+                <InscripcionesTable
+                  data={
+                    items
+                  }
+                  loading={
+                    loading
+                  }
+                  formType={
+                    formType
+                  }
+                  onDelete={
+                    deleteInscripcion
+                  }
+                />
+              </div>
+            );
+          }
+        )}
       </div>
     </>
   );
