@@ -1,137 +1,289 @@
+/* =========================
+   GOOGLE FONTS
+========================= */
+
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap');
+
+/* =========================
+   VARIABLES GLOBALES
+========================= */
+
 :root {
-  --primary: #462e24;
-  --primary-light: #5d4037;
-  --bg-cream: #FDF8F1;
-  --dark-text: #4A3728;
-  --stone-100: #f5f5f4;
-  --stone-200: #e7e5e4;
-  --stone-400: #a8a29e;
-  --accent: #c68b34;
+  --color-bg: #f3efeb;
+  --color-card: rgba(255, 255, 255, 0.78);
+
+  --color-primary: #5b3928;
+  --color-primary-hover: #6b4330;
+  --color-primary-active: #734631;
+
+  --color-text: #2e2e2e;
+  --color-label: #4a2d20;
+
+  --color-border: #d9cfc8;
+  --color-error: #d64545;
+
+  --shadow-main: 0 12px 30px rgba(91, 57, 40, 0.15);
+
+  --radius-card: 28px;
+  --radius-input: 14px;
+  --radius-button: 18px;
+
+  --transition: all 0.3s ease;
 }
 
-.login-wrapper {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 100vh;
-  padding: 1.5rem;
-  background: linear-gradient(135deg, var(--bg-cream) 0%, var(--stone-100) 100%);
-  font-family: 'Poppins', -apple-system, sans-serif;
+/* =========================
+   RESET GLOBAL
+========================= */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
+
+html,
+body,
+#root {
+  width: 100%;
+  min-height: 100vh;
+
+  font-family: "Inter", sans-serif;
+
+  background: var(--color-bg);
+  color: var(--color-text);
+}
+
+/* =========================
+   LOGIN WRAPPER
+========================= */
+
+.login-wrapper {
+  min-height: 100vh;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 24px;
+
+  background:
+    radial-gradient(circle at top left,
+      rgba(91, 57, 40, 0.08),
+      transparent 30%),
+
+    radial-gradient(circle at bottom right,
+      rgba(91, 57, 40, 0.08),
+      transparent 30%),
+
+    var(--color-bg);
+}
+
+/* =========================
+   CONTAINER
+========================= */
 
 .login-container {
   width: 100%;
-  max-width: 384px;
+  max-width: 480px;
 }
 
-.login-content {
-  display: flex;
-  flex-direction: column;
-  gap: 3rem;
-  text-align: center;
-}
+/* =========================
+   CARD
+========================= */
 
-.header-section {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-
-.form-section {
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-}
-
-.login-input {
+.login-card {
   width: 100%;
-  background-color: #ffffff;
-  border: none;
-  padding: 1.25rem 1.5rem;
-  border-radius: 24px;
-  font-size: 1.125rem;
-  font-weight: 700;
+
+  padding: 52px 42px;
+
+  background: var(--color-card);
+
+  backdrop-filter: blur(12px);
+
+  border: 1px solid rgba(255, 255, 255, 0.5);
+
+  border-radius: var(--radius-card);
+
+  box-shadow: var(--shadow-main);
+
+  animation: fadeIn 0.6s ease;
+}
+
+/* =========================
+   TITLE
+========================= */
+
+.login-card h3 {
   text-align: center;
-  color: var(--dark-text);
-  box-shadow: 0 4px 12px color-mix(in srgb, var(--dark-text) 8%, transparent);
-  transition: all 0.3s ease;
+
+  color: var(--color-primary);
+
+  font-family: "Cormorant Garamond", serif;
+
+  font-size: 1.25rem;
+  font-weight: 800;
+
+  letter-spacing: 3px;
+  text-transform: uppercase;
+
+  margin-bottom: 42px;
+
+  line-height: 1.2;
+}
+
+/* =========================
+   INPUT GROUP
+========================= */
+
+.input-group {
+  display: flex;
+  flex-direction: column;
+
+  gap: 10px;
+
+  margin-bottom: 28px;
+}
+
+.input-group label {
+  font-size: 0.9rem;
+  font-weight: 600;
+
+  color: var(--color-label);
+
+  letter-spacing: 1px;
+
+  text-transform: uppercase;
+}
+
+.input-group input {
+  width: 100%;
+  height: 54px;
+
+  border: 1.5px solid #ddd;
+  border-radius: var(--radius-input);
+
+  background: #ffffff;
+
+  padding: 0 18px;
+
+  font-size: 1rem;
+  font-family: "Inter", sans-serif;
+
+  color: var(--color-text);
+
   outline: none;
+
+  transition: var(--transition);
+
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.03);
 }
 
-.login-input::placeholder {
-  color: var(--stone-400);
-  font-weight: 400;
+.input-group input::placeholder {
+  color: #9b9b9b;
 }
 
-.login-input:focus {
-  box-shadow: 0 4px 12px color-mix(in srgb, var(--dark-text) 8%, transparent), 
-              0 0 0 4px color-mix(in srgb, var(--dark-text) 5%, transparent);
-  transform: translateY(-2px);
+.input-group input:focus {
+  border-color: var(--color-primary);
+
+  box-shadow:
+    0 0 0 4px rgba(91, 57, 40, 0.10);
 }
 
-.login-input:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
+.input-error {
+  border-color: var(--color-error) !important;
 }
+
+/* =========================
+   BUTTON
+========================= */
 
 .btn-ingresar {
   width: 100%;
-  padding: 1.25rem;
-  background-color: var(--primary);
-  color: #ffffff;
+  height: 56px;
+
   border: none;
-  border-radius: 24px;
-  font-size: 1rem;
-  font-weight: 600;
-  letter-spacing: 0.5px;
+  border-radius: var(--radius-button);
+
+  background: linear-gradient(
+    135deg,
+    var(--color-primary),
+    var(--color-primary-hover)
+  );
+
+  color: white;
+
+  font-size: 0.98rem;
+  font-weight: 700;
+
+  letter-spacing: 1px;
+
+  text-transform: uppercase;
+
   cursor: pointer;
-  transition: all 0.3s ease;
+
+  transition: var(--transition);
+
   display: flex;
-  justify-content: center;
   align-items: center;
-  gap: 0.5rem;
-  box-shadow: 0 8px 24px color-mix(in srgb, var(--primary) 20%, transparent);
-  min-height: 56px;
+  justify-content: center;
+
+  box-shadow:
+    0 10px 20px rgba(91, 57, 40, 0.25);
 }
 
-.btn-ingresar:hover:not(:disabled) {
-  background-color: var(--primary-light);
+.btn-ingresar:hover {
   transform: translateY(-2px);
-  box-shadow: 0 12px 32px color-mix(in srgb, var(--primary) 25%, transparent);
+
+  background: linear-gradient(
+    135deg,
+    var(--color-primary-hover),
+    var(--color-primary-active)
+  );
 }
 
-.btn-ingresar:active:not(:disabled) {
-  transform: translateY(0);
+.btn-ingresar:active {
+  transform: scale(0.98);
 }
 
 .btn-ingresar:disabled {
-  background-color: var(--stone-200);
-  color: var(--stone-400);
+  opacity: 0.8;
   cursor: not-allowed;
-  opacity: 0.7;
 }
 
-.chevron {
-  font-size: 1.5rem;
-  font-weight: bold;
-}
+/* =========================
+   ERROR MESSAGE
+========================= */
 
 .error-message {
-  color: var(--accent);
-  font-size: 0.9rem;
-  margin-top: 1.5rem;
+  margin-top: 18px;
+
   text-align: center;
+
+  color: var(--color-error);
+
+  font-size: 0.92rem;
   font-weight: 500;
 }
 
+/* =========================
+   LOADER
+========================= */
+
 .loader {
-  width: 20px;
-  height: 20px;
-  border: 2px solid color-mix(in srgb, #ffffff 30%, transparent);
+  width: 22px;
+  height: 22px;
+
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  border-top-color: white;
+
   border-radius: 50%;
-  border-top-color: #ffffff;
+
   animation: spin 0.8s linear infinite;
 }
+
+/* =========================
+   ANIMATIONS
+========================= */
 
 @keyframes spin {
   to {
@@ -139,32 +291,85 @@
   }
 }
 
-@keyframes fade-in {
+@keyframes fadeIn {
   from {
     opacity: 0;
-    transform: translateY(10px);
+    transform: translateY(15px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
   }
 }
 
-.animate-fade-in {
-  animation: fade-in 0.6s ease-out;
+/* =========================
+   TABLET
+========================= */
+
+@media (max-width: 768px) {
+  .login-card {
+    padding: 42px 30px;
+  }
+
+  .login-card h3 {
+    font-size: 1.8rem;
+    letter-spacing: 2px;
+  }
 }
+
+/* =========================
+   MOBILE
+========================= */
 
 @media (max-width: 480px) {
   .login-wrapper {
-    padding: 1rem;
+    padding: 16px;
   }
 
-  .login-input {
-    padding: 1rem 1.25rem;
-    font-size: 1rem;
+  .login-container {
+    max-width: 100%;
+  }
+
+  .login-card {
+    padding: 34px 22px;
+
+    border-radius: 22px;
+  }
+
+  .login-card h3 {
+    font-size: 1.45rem;
+
+    letter-spacing: 2px;
+
+    line-height: 1.3;
+
+    margin-bottom: 32px;
+  }
+
+  .input-group {
+    margin-bottom: 22px;
+  }
+
+  .input-group label {
+    font-size: 0.82rem;
+  }
+
+  .input-group input {
+    height: 48px;
+
+    font-size: 0.95rem;
+
+    padding: 0 14px;
   }
 
   .btn-ingresar {
-    padding: 1rem;
+    height: 50px;
+
+    font-size: 0.92rem;
+  }
+
+  .error-message {
+    font-size: 0.85rem;
   }
 }
