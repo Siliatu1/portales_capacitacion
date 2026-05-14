@@ -45,6 +45,33 @@
   letter-spacing: -0.025em;
 }
 
+.form-page-header {
+  display: flex;
+  justify-content: flex-start;
+  margin-bottom: 1.5rem;
+}
+
+.back-to-panel-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  border: 1px solid rgba(80, 54, 41, 0.16);
+  background: #fff;
+  color: var(--text-primary);
+  border-radius: 12px;
+  padding: 0.7rem 1rem;
+  font-size: 0.9rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.back-to-panel-button:hover {
+  background: var(--bg-light);
+  border-color: var(--primary);
+  transform: translateY(-1px);
+}
+
   .search-row {
     margin-bottom: 2rem;
   }
@@ -428,4 +455,5 @@
     .employee-details { grid-template-columns: 1fr; }
     .inscripcion-card { padding: 1.5rem; }
     .fechas-grid { grid-template-columns: repeat(2, 1fr); }
+    .back-to-panel-button { width: 100%; justify-content: center; }
   }

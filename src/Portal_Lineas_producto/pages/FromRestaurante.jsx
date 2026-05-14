@@ -5,11 +5,13 @@ import { useAuth } from "../../auth/hooks/useAuth";
 import { guardarInscripcion } from "../services/formulario.service";
 import { getInitialFormState, buildInscripcionAttributes } from "../utils/formularioHel.utils";
 import { useState, useMemo, useEffect } from "react";
-import { Lock, Unlock } from "lucide-react";
+import { ArrowLeft, Lock, Unlock } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 import "../styles/formularioHel.css";
 
 const FormRestaurante = () => {
+  const navigate = useNavigate();
   const { hasPermission } = useAuth();
   const canBlockDates = hasPermission("canBlockDates");
   const { formData, handleChange, setFormData, setLoading } = useFormulario({
@@ -120,6 +122,16 @@ const FormRestaurante = () => {
   return (
     <div className="inscripcion-container">
       <div className="inscripcion-card">
+        <div className="form-page-header">
+          <button
+            type="button"
+            className="back-to-panel-button"
+            onClick={() => navigate("/lineas-producto")}
+          >
+            <ArrowLeft size={18} />
+            Volver al panel
+          </button>
+        </div>
 
         <h2>ESCUELA DEL CAFÉ PDV</h2>
 
