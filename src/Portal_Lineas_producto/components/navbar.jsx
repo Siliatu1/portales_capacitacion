@@ -57,7 +57,10 @@ const INSCRIPCIONES_ITEMS = [
   
 ];
 
-const Navbar = () => {
+const Navbar = ({
+  visibleViews,
+  showInscripciones = true,
+}) => {
   const navigate =
     useNavigate();
 
@@ -71,6 +74,11 @@ const Navbar = () => {
     logout,
     canAccessView,
   } = useAuth();
+
+  const visibleViewSet =
+    Array.isArray(visibleViews)
+      ? new Set(visibleViews)
+      : null;
 
   const handleLogout =
     () => {
@@ -97,7 +105,11 @@ const Navbar = () => {
           (item) =>
             canAccessView(
               item.view
-            )
+            ) &&
+            (!visibleViewSet ||
+              visibleViewSet.has(
+                item.view
+              ))
         ).map((item) => {
           const isActive =
             location.pathname ===
@@ -124,6 +136,7 @@ const Navbar = () => {
 
         {/* SUBMENU */}
 
+        {showInscripciones && (
         <div className="submenu-wrapper">
           <button
             className="submenu-toggle"
@@ -178,6 +191,7 @@ const Navbar = () => {
             </div>
           )}
         </div>
+        )}
       </nav>
 
       {/* BOTTOM */}

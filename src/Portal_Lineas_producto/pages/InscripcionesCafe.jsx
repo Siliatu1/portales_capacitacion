@@ -109,7 +109,7 @@ export default function InscripcionesCafe({
       <div className="admin-content">
         <div className="page-header">
           <h2>
-            Inscripciones Escuela del Cafe
+            Inscripciones Escuela del Café
           </h2>
         </div>
 
@@ -124,7 +124,7 @@ export default function InscripcionesCafe({
         <div className="table-card">
           <div className="table-header">
             <div className="table-title">
-              Escuela del Cafe (
+              Escuela del Café (
               {dataFiltrada.length})
             </div>
           </div>

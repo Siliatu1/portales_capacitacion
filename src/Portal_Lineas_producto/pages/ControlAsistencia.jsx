@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import NavbarCompact from "../components/NavbarB";
+import Navbar from "../components/navbar";
 import { useInscripciones } from "../hooks/useInscripciones";
 import { filtrarInscripciones } from "../utils/filters";
 import "../styles/panel.css";
@@ -82,16 +82,21 @@ export default function ControlAsistencia({ userData, onLogout }) {
   }, [data]);
 
   const pageTitle = isCafeInstructor
-    ? "Control de asistencia Cafe"
+    ? "Control de asistencia Café"
     : "Control de asistencia Todera";
 
   const tableTitle = isCafeInstructor
-    ? "Escuela del Cafe"
+    ? "Escuela del Café"
     : `Inscripciones asignadas${instructorName ? ` a ${instructorName}` : ""}`;
 
   return (
     <>
-      <NavbarCompact onLogout={onLogout} />
+      <Navbar
+        userData={userData}
+        onLogout={onLogout}
+        visibleViews={["CONTROL_ASISTENCIA"]}
+        showInscripciones={false}
+      />
 
       <div className="admin-content">
         <div className="page-header attendance-header">
@@ -99,7 +104,7 @@ export default function ControlAsistencia({ userData, onLogout }) {
             <h2>{pageTitle}</h2>
             <p>
               {isCafeInstructor
-                ? "Confirmacion exclusiva para las inscripciones de cap-cafes."
+                ? "Confirmacion exclusiva para las inscripciones de la escuela del Café."
                 : "Aqui aparecen solo las inscripciones de cap-toderas asignadas a tu nombre."}
             </p>
           </div>
