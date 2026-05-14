@@ -3,7 +3,7 @@ const API_URL =
 
 const PAGE_SIZE = 100;
 
-const normalizeText = (
+export const normalizeText = (
   value
 ) => {
   return String(value || "")
@@ -97,6 +97,7 @@ const mapInscripcion = (
 
     nombres:
       attributes.nombre ||
+      attributes.Nombre ||
       "",
 
     telefono:
@@ -158,6 +159,7 @@ const mapInscripcion = (
         attributes.instructora
       ) ||
       attributes.instructora ||
+      attributes.lider ||
       "",
   };
 };
@@ -238,56 +240,90 @@ const fetchCollection =
   };
 
 export const getInscripciones =
-  async ({ pdv } = {}) => {
+  async ({
+    pdv,
+    endpoints,
+    instructora,
+  } = {}) => {
     try {
-      const [
-        restaurantes,
-        toderas,
-      ] =
-        await Promise.all([
-          fetchCollection({
-            endpoint:
-              "cap-cafes",
+      const collections = {
+        "cap-cafes":
+          "FORM_RESTAURANTE",
+        "cap-toderas":
+          "FORM_TODERA",
+      };
 
-            tipoFormulario:
-              "FORM_RESTAURANTE",
-          }),
+      const endpointsToFetch =
+        Array.isArray(endpoints) &&
+        endpoints.length
+          ? endpoints.filter(
+              (endpoint) =>
+                collections[endpoint]
+            )
+          : Object.keys(
+              collections
+            );
 
-          fetchCollection({
-            endpoint:
-              "cap-toderas",
+      const responses =
+        await Promise.all(
+          endpointsToFetch.map(
+            (endpoint) =>
+              fetchCollection({
+                endpoint,
+                tipoFormulario:
+                  collections[
+                    endpoint
+                  ],
+              })
+          )
+        );
 
-            tipoFormulario:
-              "FORM_TODERA",
-          }),
-        ]);
-
-      const merged = [
-        ...restaurantes,
-        ...toderas,
-      ];
+      const merged =
+        responses.flat();
 
       console.log(
         "INSCRIPCIONES UNIDAS:",
         merged
       );
 
-      if (!pdv) {
-        return merged;
-      }
-
       const filtered =
         merged.filter(
-          (
-            inscripcion
-          ) => {
-            return (
+          (inscripcion) => {
+            const matchesPdv =
+              !pdv ||
               normalizeText(
                 inscripcion.puntoVenta
               ) ===
+                normalizeText(
+                  pdv
+                );
+
+            const instructorText =
               normalizeText(
-                pdv
-              )
+                inscripcion.instructora ||
+                  inscripcion.lider
+              );
+
+            const userInstructor =
+              normalizeText(
+                instructora
+              );
+
+            const matchesInstructor =
+              !userInstructor ||
+              Boolean(
+                instructorText &&
+                  (instructorText.includes(
+                    userInstructor
+                  ) ||
+                    userInstructor.includes(
+                      instructorText
+                    ))
+              );
+
+            return (
+              matchesPdv &&
+              matchesInstructor
             );
           }
         );
@@ -342,7 +378,8 @@ export const deleteInscripcion =
 export const updateAsistencia =
   async (
     id,
-    confirmado
+    confirmado,
+    endpoint = "cap-cafes"
   ) => {
     const payload =
       JSON.stringify({
@@ -403,7 +440,7 @@ export const updateAsistencia =
 
     let res =
       await fetch(
-        `${API_URL}/cap-cafes/${id}`,
+        `${API_URL}/${endpoint}/${id}`,
         {
           method:
             "PATCH",
@@ -417,7 +454,7 @@ export const updateAsistencia =
     if (!res.ok) {
       res =
         await fetch(
-          `${API_URL}/cap-cafes/${id}`,
+          `${API_URL}/${endpoint}/${id}`,
           {
             method:
               "PUT",

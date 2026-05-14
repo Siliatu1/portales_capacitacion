@@ -13,6 +13,8 @@ import {
 
 export const useInscripciones = ({
   pdv,
+  endpoints,
+  instructora,
 } = {}) => {
   const [data, setData] =
     useState([]);
@@ -40,6 +42,8 @@ export const useInscripciones = ({
         const response =
           await getInscripciones({
             pdv,
+            endpoints,
+            instructora,
           });
 
         console.log(
@@ -65,7 +69,11 @@ export const useInscripciones = ({
         setLoading(false);
       }
     },
-    [pdv]
+    [
+      pdv,
+      endpoints,
+      instructora,
+    ]
   );
 
   const remove = async (
@@ -98,7 +106,8 @@ export const useInscripciones = ({
 
   const setAsistencia = async (
     id,
-    confirmado
+    confirmado,
+    endpoint
   ) => {
     try {
       setLoading(true);
@@ -113,7 +122,8 @@ export const useInscripciones = ({
 
       await updateAsistencia(
         id,
-        confirmado
+        confirmado,
+        endpoint
       );
 
       await fetchData();

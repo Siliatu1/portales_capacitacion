@@ -1,13 +1,54 @@
-import { useState, useMemo } from "react";
+import { useMemo, useState } from "react";
 import NavbarCompact from "../components/NavbarB";
 import { useInscripciones } from "../hooks/useInscripciones";
 import { filtrarInscripciones } from "../utils/filters";
 import "../styles/panel.css";
 import InscripcionesAttendanceTable from "../components/InscripcionesAttendanceTable";
 import FiltrosInscripciones from "../components/FiltrosInscripciones";
+import { useAuth } from "../../auth/hooks/useAuth";
+import { getStoredUser } from "../utils/userPdv.utils";
+
+const CAFE_ATTENDANCE_INSTRUCTOR = "35512822";
+
+const pickUserDocument = (user) => {
+  return String(
+    user?.documento ||
+      user?.document_number ||
+      user?.document ||
+      user?.cedula ||
+      user?.identificacion ||
+      ""
+  ).trim();
+};
+
+const pickUserName = (user) => {
+  return (
+    user?.nombre ||
+    user?.name ||
+    user?.Nombre ||
+    user?.nombres ||
+    ""
+  );
+};
 
 export default function ControlAsistencia({ userData, onLogout }) {
-  const { data, loading, refetch, deleteInscripcion, setAsistencia } = useInscripciones();
+  const { user } = useAuth();
+
+  const storedUser = useMemo(() => getStoredUser(), []);
+  const activeUser = storedUser || user || userData || {};
+  const userDocument = pickUserDocument(activeUser);
+  const instructorName = pickUserName(activeUser);
+  const isCafeInstructor = userDocument === CAFE_ATTENDANCE_INSTRUCTOR;
+  const attendanceMode = isCafeInstructor ? "cafe" : "todera";
+  const endpoints = useMemo(
+    () => [isCafeInstructor ? "cap-cafes" : "cap-toderas"],
+    [isCafeInstructor]
+  );
+
+  const { data, loading, deleteInscripcion, setAsistencia } = useInscripciones({
+    endpoints,
+    instructora: isCafeInstructor ? "" : instructorName,
+  });
 
   const [filtros, setFiltros] = useState({
     cedula: "",
@@ -16,39 +57,90 @@ export default function ControlAsistencia({ userData, onLogout }) {
     formulario: 'todos'
   });
 
-  const dataFiltrada = useMemo(() => filtrarInscripciones(data, filtros), [data, filtros]);
+  const dataFiltrada = useMemo(
+    () => filtrarInscripciones(data, filtros),
+    [data, filtros]
+  );
 
-  const formTypes = useMemo(() => {
-    const set = new Set((dataFiltrada || []).map(i => (i.tipo_formulario || 'heladeria')));
-    return Array.from(set);
+  const resumen = useMemo(() => {
+    const total = dataFiltrada.length;
+    const asistieron = dataFiltrada.filter((item) => item.asistencia === true).length;
+    const noAsistieron = dataFiltrada.filter((item) => item.asistencia === false).length;
+
+    return {
+      total,
+      asistieron,
+      noAsistieron,
+      pendientes: total - asistieron - noAsistieron,
+    };
   }, [dataFiltrada]);
+
+  const fechasDisponibles = useMemo(() => {
+    return Array.from(new Set((data || []).map((i) => i.dia).filter(Boolean))).sort((a, b) =>
+      String(b).localeCompare(String(a))
+    );
+  }, [data]);
+
+  const pageTitle = isCafeInstructor
+    ? "Control de asistencia Cafe"
+    : "Control de asistencia Todera";
+
+  const tableTitle = isCafeInstructor
+    ? "Escuela del Cafe"
+    : `Inscripciones asignadas${instructorName ? ` a ${instructorName}` : ""}`;
 
   return (
     <>
       <NavbarCompact onLogout={onLogout} />
 
       <div className="admin-content">
-        <h2>Control de Asistencia</h2>
+        <div className="page-header attendance-header">
+          <div>
+            <h2>{pageTitle}</h2>
+            <p>
+              {isCafeInstructor
+                ? "Confirmacion exclusiva para las inscripciones de cap-cafes."
+                : "Aqui aparecen solo las inscripciones de cap-toderas asignadas a tu nombre."}
+            </p>
+          </div>
+        </div>
+
+        <div className="attendance-summary">
+          <div className="attendance-summary-item">
+            <span>Total</span>
+            <strong>{resumen.total}</strong>
+          </div>
+          <div className="attendance-summary-item success">
+            <span>Asistieron</span>
+            <strong>{resumen.asistieron}</strong>
+          </div>
+          <div className="attendance-summary-item danger">
+            <span>No asistieron</span>
+            <strong>{resumen.noAsistieron}</strong>
+          </div>
+          <div className="attendance-summary-item pending">
+            <span>Pendientes</span>
+            <strong>{resumen.pendientes}</strong>
+          </div>
+        </div>
 
         <FiltrosInscripciones
           filtros={filtros}
           setFiltros={setFiltros}
-          fechasDisponibles={Array.from(new Set((data || []).map(i => i.dia).filter(Boolean))).sort((a,b)=>a.localeCompare(b))}
+          fechasDisponibles={fechasDisponibles}
         />
 
-        {formTypes.map((ft) => (
-          <div className="table-card" key={ft} style={{ marginBottom: 18 }}>
-            <div className="table-header">
-              <div className="table-title">{ft.charAt(0).toUpperCase() + ft.slice(1)} ({dataFiltrada.filter(i => (i.tipo_formulario || 'heladeria') === ft).length})</div>
-            </div>
-            <InscripcionesAttendanceTable
-              data={dataFiltrada.filter(i => (i.tipo_formulario || 'heladeria') === ft)}
-              loading={loading}
-              onDelete={deleteInscripcion}
-              onSetAsistencia={setAsistencia}
-            />
-          </div>
-        ))}
+        <div className="table-card attendance-card">
+         
+
+          <InscripcionesAttendanceTable
+            data={dataFiltrada}
+            loading={loading}
+            mode={attendanceMode}
+            onDelete={deleteInscripcion}
+            onSetAsistencia={setAsistencia}
+          />
+        </div>
       </div>
     </>
   );

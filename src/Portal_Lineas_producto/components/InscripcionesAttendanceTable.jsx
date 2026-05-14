@@ -1,8 +1,15 @@
 import { Button, Popconfirm, Switch, Table, Tag } from "antd";
 import { useAuth } from "../../auth/hooks/useAuth";
 import { mapAsistencia } from "../utils/asistencia.utils";
+import "../styles/Table.css";
 
-export default function InscripcionesAttendanceTable({ data, loading, onDelete, onSetAsistencia }) {
+export default function InscripcionesAttendanceTable({
+  data,
+  loading,
+  onDelete,
+  onSetAsistencia,
+  mode = "cafe",
+}) {
   const { hasPermission } = useAuth();
   const canDelete = hasPermission("canDelete");
 
@@ -12,9 +19,11 @@ export default function InscripcionesAttendanceTable({ data, loading, onDelete, 
     return Number.isNaN(t) ? (typeof d === "string" ? d.localeCompare("") : 0) : t;
   };
 
-  const handleDelete = async (id) => {
+  const handleDelete = async (record) => {
     try {
-      if (typeof onDelete === "function") await onDelete(id);
+      if (typeof onDelete === "function") {
+        await onDelete(record.id, record.sourceEndpoint);
+      }
     } catch (err) {
       console.error("Eliminar fallo", err);
     }
@@ -22,7 +31,7 @@ export default function InscripcionesAttendanceTable({ data, loading, onDelete, 
 
   const handleSet = async (record, value) => {
     if (typeof onSetAsistencia === "function") {
-      await onSetAsistencia(record.id, value);
+      await onSetAsistencia(record.id, value, record.sourceEndpoint);
     }
   };
 
@@ -42,7 +51,7 @@ export default function InscripcionesAttendanceTable({ data, loading, onDelete, 
               console.error("Actualizar asistencia fallo", err);
             }
           }}
-          checkedChildren="SI"
+          checkedChildren="Si"
           unCheckedChildren="NO"
         />
       </div>
@@ -55,7 +64,7 @@ export default function InscripcionesAttendanceTable({ data, loading, onDelete, 
     render: (_, record) => (
       <Popconfirm
         title="Eliminar inscripcion?"
-        onConfirm={() => handleDelete(record.id)}
+        onConfirm={() => handleDelete(record)}
         okText="Si"
         cancelText="No"
       >
@@ -64,26 +73,73 @@ export default function InscripcionesAttendanceTable({ data, loading, onDelete, 
     ),
   };
 
-  const baseColumns = [
+  const dateColumn = {
+    title: "Dia",
+    dataIndex: "dia",
+    sorter: (a, b) => parseDate(a.dia) - parseDate(b.dia),
+    defaultSortOrder: "descend",
+    render: (value) => {
+      if (!value) return "-";
+
+      try {
+        return new Date(value).toLocaleDateString("es-CO");
+      } catch {
+        return value;
+      }
+    },
+  };
+
+  const cafeColumns = [
     { title: "Cedula", dataIndex: "cedula" },
     { title: "Nombres", dataIndex: "nombres" },
     { title: "Telefono", dataIndex: "telefono" },
-    { title: "Cargo", dataIndex: "cargo" },
-    { title: "Punto de Venta", dataIndex: "puntoVenta", render: (_, r) => r.puntoVenta || r.area_nombre || "" },
-    { title: "Nombre Lider", dataIndex: "lider" },
-    { title: "Dia", dataIndex: "dia", sorter: (a, b) => parseDate(a.dia) - parseDate(b.dia), defaultSortOrder: "descend" },
+    { title: "Cargo", dataIndex: "cargo", render: (value) => value || "-" },
+    {
+      title: "Punto de Venta",
+      dataIndex: "puntoVenta",
+      render: (_, r) => r.puntoVenta || r.area_nombre || "-",
+    },
+    { title: "Nombre Lider", dataIndex: "lider", render: (value) => value || "-" },
+    dateColumn,
     { title: "Asistencia", dataIndex: "asistencia", render: renderAsistencia },
   ];
+
+  const toderaColumns = [
+    { title: "Cedula", dataIndex: "cedula" },
+    { title: "Nombres", dataIndex: "nombres" },
+    { title: "Telefono", dataIndex: "telefono", render: (value) => value || "-" },
+    { title: "Cargo a Evaluar", dataIndex: "cargo", render: (value) => value || "-" },
+    {
+      title: "Punto de Venta",
+      dataIndex: "puntoVenta",
+      render: (_, r) => r.puntoVenta || r.area_nombre || "-",
+    },
+    { title: "Categoria", dataIndex: "categoria", render: (value) => value || "-" },
+    dateColumn,
+    { title: "Asistencia", dataIndex: "asistencia", render: renderAsistencia },
+  ];
+
+  const baseColumns = mode === "todera" ? toderaColumns : cafeColumns;
 
   const columns = canDelete ? [...baseColumns, actionColumn] : baseColumns;
 
   return (
-    <Table
-      columns={columns}
-      dataSource={data}
-      loading={loading}
-      rowKey="id"
-      pagination={{ pageSize: 10 }}
-    />
+    <div className="table-container">
+      <Table
+        className="cw-table attendance-table"
+        columns={columns}
+        dataSource={Array.isArray(data) ? data : []}
+        loading={loading}
+        rowKey={(record) => String(record.id)}
+        pagination={{
+          pageSize: 10,
+          showSizeChanger: false,
+        }}
+        scroll={{ x: mode === "todera" ? 1250 : 1150 }}
+        locale={{
+          emptyText: "No hay inscripciones asignadas",
+        }}
+      />
+    </div>
   );
 }
