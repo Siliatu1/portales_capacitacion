@@ -68,7 +68,10 @@ export const useInscripciones = ({
     [pdv]
   );
 
-  const remove = async (id) => {
+  const remove = async (
+    id,
+    endpoint
+  ) => {
     try {
       setLoading(true);
 
@@ -77,7 +80,10 @@ export const useInscripciones = ({
         id
       );
 
-      await deleteInscripcion(id);
+      await deleteInscripcion(
+        id,
+        endpoint
+      );
 
       await fetchData();
     } catch (err) {

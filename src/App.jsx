@@ -14,6 +14,10 @@ import ControlAsistencia from "./Portal_Lineas_producto/pages/ControlAsistencia"
 
 import FormTodera from "./Portal_Lineas_producto/pages/FormTodera";
 
+import InscripcionesCafe from "./Portal_Lineas_producto/pages/InscripcionesCafe";
+
+import InscripcionesTodera from "./Portal_Lineas_producto/pages/InscripcionesTodera";
+
 import ProtectedViewRoute from "./auth/components/ProtectedViewRoute";
 
 import Dashboard from "./Portal_Instructoras/pages/Dashboard";
@@ -75,6 +79,24 @@ function App() {
           element={
             <ProtectedViewRoute view="FORM_TODERA">
               <FormTodera />
+            </ProtectedViewRoute>
+          }
+        />
+
+        <Route
+          path="/lineas-producto/inscripciones/cafe"
+          element={
+            <ProtectedViewRoute view="PANEL">
+              <InscripcionesCafe />
+            </ProtectedViewRoute>
+          }
+        />
+
+        <Route
+          path="/lineas-producto/inscripciones/todera"
+          element={
+            <ProtectedViewRoute view="PANEL">
+              <InscripcionesTodera />
             </ProtectedViewRoute>
           }
         />

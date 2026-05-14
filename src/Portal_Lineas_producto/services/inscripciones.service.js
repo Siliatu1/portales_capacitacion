@@ -77,7 +77,8 @@ const buildUrl = ({
 
 const mapInscripcion = (
   item,
-  tipoFormulario
+  tipoFormulario,
+  endpoint
 ) => {
   const attributes =
     item?.attributes || {};
@@ -125,7 +126,11 @@ const mapInscripcion = (
       ),
 
     tipo_formulario:
+      attributes.tipo_formulario ||
       tipoFormulario,
+
+    sourceEndpoint:
+      endpoint,
 
     lider:
       attributes.lider ||
@@ -139,6 +144,21 @@ const mapInscripcion = (
     asistencia:
       attributes.confirmado ??
       null,
+
+    estado:
+      attributes.estado ||
+      "",
+
+    observacion:
+      attributes.observacion ||
+      "",
+
+    instructora:
+      getTextValue(
+        attributes.instructora
+      ) ||
+      attributes.instructora ||
+      "",
   };
 };
 
@@ -211,7 +231,8 @@ const fetchCollection =
       (item) =>
         mapInscripcion(
           item,
-          tipoFormulario
+          tipoFormulario,
+          endpoint
         )
     );
   };
@@ -293,10 +314,13 @@ export const getInscripciones =
   };
 
 export const deleteInscripcion =
-  async (id) => {
+  async (
+    id,
+    endpoint = "cap-cafes"
+  ) => {
     const res =
       await fetch(
-        `${API_URL}/cap-cafes/${id}`,
+        `${API_URL}/${endpoint}/${id}`,
         {
           method:
             "DELETE",
@@ -373,7 +397,9 @@ export const updateAsistencia =
           "Authorization"
         ] = `Bearer ${token}`;
       }
-    } catch {}
+    } catch {
+      // La asistencia tambien puede actualizarse sin token local.
+    }
 
     let res =
       await fetch(

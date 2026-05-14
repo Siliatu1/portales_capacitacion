@@ -43,13 +43,16 @@ export default function InscripcionesTable({
   };
 
   const handleDelete =
-    async (id) => {
+    async (record) => {
       try {
         if (
           typeof onDelete ===
           "function"
         ) {
-          await onDelete(id);
+          await onDelete(
+            record.id,
+            record.sourceEndpoint
+          );
         }
       } catch (err) {
         console.error(
@@ -175,7 +178,7 @@ export default function InscripcionesTable({
         title="Eliminar inscripcion?"
         onConfirm={() =>
           handleDelete(
-            record.id
+            record
           )
         }
         okText="Si"
