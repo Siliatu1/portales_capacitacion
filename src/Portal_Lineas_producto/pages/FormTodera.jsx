@@ -31,7 +31,7 @@ import {
   opcionesCargoEvaluar,
 } from "../utils/toderaOptions.js";
 
-import "../styles/formTodera.css";
+import "../styles/formtodera.css";
 
 const getPdvFromStorage =
   () => {
@@ -450,51 +450,59 @@ const FormTodera = () => {
                 </label>
 
                 <Select
-  style={{
-    width: "100%",
-  }}
-  placeholder="Seleccione cargo"
-  value={
-    cargoEvaluar ||
-    undefined
-  }
-  onChange={(val) =>
-    setCargoEvaluar(val)
-  }
-  popupClassName="cargo-dropdown"
->
-  {opcionesCargoEvaluar.map(
-    (grupo) => (
-      <Select.OptGroup
-        key={grupo.label}
-        label={
-          <span
-            className={`cargo-group-label ${grupo.color}`}
-          >
-            {grupo.label}
-          </span>
-        }
-      >
-        {grupo.options.map(
-          (opcion) => (
-            <Select.Option
-              key={
-                opcion.value
-              }
-              value={
-                opcion.value
-              }
-            >
-              {
-                opcion.label
-              }
-            </Select.Option>
-          )
-        )}
-      </Select.OptGroup>
-    )
-  )}
-</Select>
+                  className="todera-cargo-select"
+                  placeholder="Seleccione cargo"
+                  value={
+                    cargoEvaluar ||
+                    undefined
+                  }
+                  onChange={(val) =>
+                    setCargoEvaluar(
+                      val
+                    )
+                  }
+                  optionLabelProp="label"
+                  popupClassName="cargo-dropdown"
+                >
+                  {opcionesCargoEvaluar.map(
+                    (grupo) => (
+                      <Select.OptGroup
+                        key={grupo.label}
+                        label={
+                          <span
+                            className={`cargo-group-label ${grupo.color}`}
+                          >
+                            {
+                              grupo.label
+                            }
+                          </span>
+                        }
+                      >
+                        {grupo.options.map(
+                          (
+                            opcion
+                          ) => (
+                            <Select.Option
+                              key={
+                                opcion.value
+                              }
+                              value={
+                                opcion.value
+                              }
+                              label={
+                                opcion.label
+                              }
+                            >
+                              {
+                                opcion.label
+                              }
+                            </Select.Option>
+                          )
+                        )}
+                      </Select.OptGroup>
+                    )
+                  )}
+                </Select>
               </div>
             )}
 
