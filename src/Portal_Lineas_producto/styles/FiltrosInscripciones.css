@@ -1,0 +1,27 @@
+/* FiltrosInscripciones.css */
+
+.filtros-container {
+  width: 100%;
+  background: #fff;
+  padding: 16px;
+  border-radius: 12px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.filtros-space {
+  width: 100%;
+  display: flex;
+}
+
+.filtro-input {
+  min-width: 200px;
+}
+
+.filtro-select {
+  min-width: 180px;
+}
+
+.filtro-btn {
+  min-width: 120px;
+}

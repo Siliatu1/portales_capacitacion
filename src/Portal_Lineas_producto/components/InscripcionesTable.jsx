@@ -213,38 +213,116 @@ export default function InscripcionesTable({
     ];
 
   const toderaColumns = [
-    ...commonColumns.slice(
-      0,
-      3
-    ),
+  {
+    title: "Cédula",
+    dataIndex: "cedula",
+    key: "cedula",
+  },
 
-    {
-      title:
-        "Categoria",
+  {
+    title: "Nombres",
+    dataIndex: "nombres",
+    key: "nombres",
+  },
 
-      dataIndex:
-        "categoria",
+  {
+    title: "Teléfono",
+    dataIndex: "telefono",
+    key: "telefono",
+  },
 
-      key: "categoria",
+  {
+    title: "Cargo a Evaluar",
+    dataIndex: "cargo",
+    key: "cargo",
+    render: (value) => value || "-",
+  },
 
-      render: (value) =>
-        value || "-",
+  {
+    title: "Punto de Venta",
+    dataIndex: "puntoVenta",
+    key: "puntoVenta",
+    render: (text, record) =>
+      record.puntoVenta ||
+      record.area_nombre ||
+      "-",
+  },
+
+  {
+    title: "Instructora",
+    dataIndex: "instructora",
+    key: "instructora",
+    render: (value) => value || "-",
+  },
+
+  {
+    title: "Categoría",
+    dataIndex: "categoria",
+    key: "categoria",
+    render: (value) => value || "-",
+  },
+
+  {
+    title: "Día Inscripción",
+    dataIndex: "dia",
+    key: "dia",
+
+    sorter: (a, b) =>
+      parseDate(a.dia) -
+      parseDate(b.dia),
+
+    defaultSortOrder: "descend",
+
+    render: (value) => {
+      if (!value) {
+        return "-";
+      }
+
+      try {
+        return new Date(
+          value
+        ).toLocaleDateString(
+          "es-CO"
+        );
+      } catch {
+        return value;
+      }
     },
+  },
 
-    {
-      title:
-        "Cargo a Evaluar",
+  {
+    title: "Estado",
+    dataIndex: "estado",
+    key: "estado",
 
-      dataIndex:
-        "cargo",
+    render: (value) => {
+      const estado =
+        value || "No evaluado";
 
-      key: "cargo",
+      return (
+        <Tag
+          color={
+            estado ===
+            "Evaluado"
+              ? "green"
+              : "red"
+          }
+        >
+          {estado}
+        </Tag>
+      );
     },
+  },
 
-    ...commonColumns.slice(
-      3
-    ),
-  ];
+  {
+    title: "Observación",
+    dataIndex: "observacion",
+    key: "observacion",
+
+    render: (value) =>
+      value || "Sin observación",
+  },
+];
 
   const restauranteColumns =
     commonColumns;

@@ -49,28 +49,7 @@ const Navbar = () => {
           <p>Líneas de Producto</p>
         </div>
 
-        <div className="profile-card">
-          <div className="avatar">
-            {user?.foto ? (
-              <img
-                src={user.foto}
-                alt="Usuario"
-              />
-            ) : (
-              <div className="avatar-fallback">
-                {user?.nombre?.charAt(0) || "U"}
-              </div>
-            )}
-          </div>
-
-          <div className="profile-info">
-            <h4>{user?.nombre}</h4>
-
-            <span>
-              {user?.cargo_general}
-            </span>
-          </div>
-        </div>
+        
       </div>
 
       {/* MENU */}
