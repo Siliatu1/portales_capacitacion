@@ -31,6 +31,28 @@ const pickUserName = (user) => {
   );
 };
 
+const isEvaluado = (value) => {
+  const normalized = String(value || "").trim().toLowerCase();
+
+  return (
+    value === true ||
+    normalized === "evaluado" ||
+    normalized === "true" ||
+    normalized === "si"
+  );
+};
+
+const isNoEvaluado = (value) => {
+  const normalized = String(value || "").trim().toLowerCase();
+
+  return (
+    value === false ||
+    normalized === "no evaluado" ||
+    normalized === "false" ||
+    normalized === "no"
+  );
+};
+
 export default function ControlAsistencia({ userData, onLogout }) {
   const { user } = useAuth();
 
@@ -45,7 +67,14 @@ export default function ControlAsistencia({ userData, onLogout }) {
     [isCafeInstructor]
   );
 
-  const { data, loading, deleteInscripcion, setAsistencia } = useInscripciones({
+  const {
+    data,
+    loading,
+    deleteInscripcion,
+    setAsistencia,
+    setEstado,
+    saveObservacion,
+  } = useInscripciones({
     endpoints,
     instructora: isCafeInstructor ? "" : instructorName,
   });
@@ -64,16 +93,29 @@ export default function ControlAsistencia({ userData, onLogout }) {
 
   const resumen = useMemo(() => {
     const total = dataFiltrada.length;
+
+    if (!isCafeInstructor) {
+      const evaluados = dataFiltrada.filter((item) => isEvaluado(item.estado)).length;
+      const noEvaluados = dataFiltrada.filter((item) => isNoEvaluado(item.estado)).length;
+
+      return {
+        total,
+        completados: evaluados,
+        rechazados: noEvaluados,
+        pendientes: total - evaluados - noEvaluados,
+      };
+    }
+
     const asistieron = dataFiltrada.filter((item) => item.asistencia === true).length;
     const noAsistieron = dataFiltrada.filter((item) => item.asistencia === false).length;
 
     return {
       total,
-      asistieron,
-      noAsistieron,
+      completados: asistieron,
+      rechazados: noAsistieron,
       pendientes: total - asistieron - noAsistieron,
     };
-  }, [dataFiltrada]);
+  }, [dataFiltrada, isCafeInstructor]);
 
   const fechasDisponibles = useMemo(() => {
     return Array.from(new Set((data || []).map((i) => i.dia).filter(Boolean))).sort((a, b) =>
@@ -85,9 +127,8 @@ export default function ControlAsistencia({ userData, onLogout }) {
     ? "Control de asistencia Café"
     : "Control de asistencia Todera";
 
-  const tableTitle = isCafeInstructor
-    ? "Escuela del Café"
-    : `Inscripciones asignadas${instructorName ? ` a ${instructorName}` : ""}`;
+  const completedLabel = isCafeInstructor ? "Asistieron" : "Evaluados";
+  const rejectedLabel = isCafeInstructor ? "No asistieron" : "No evaluados";
 
   return (
     <>
@@ -105,7 +146,7 @@ export default function ControlAsistencia({ userData, onLogout }) {
             <p>
               {isCafeInstructor
                 ? "Confirmacion exclusiva para las inscripciones de la escuela del Café."
-                : "Aqui aparecen solo las inscripciones de cap-toderas asignadas a tu nombre."}
+                : "Aqui aparecen solo las inscripciones de Toderas asignadas a tu nombre."}
             </p>
           </div>
         </div>
@@ -116,12 +157,12 @@ export default function ControlAsistencia({ userData, onLogout }) {
             <strong>{resumen.total}</strong>
           </div>
           <div className="attendance-summary-item success">
-            <span>Asistieron</span>
-            <strong>{resumen.asistieron}</strong>
+            <span>{completedLabel}</span>
+            <strong>{resumen.completados}</strong>
           </div>
           <div className="attendance-summary-item danger">
-            <span>No asistieron</span>
-            <strong>{resumen.noAsistieron}</strong>
+            <span>{rejectedLabel}</span>
+            <strong>{resumen.rechazados}</strong>
           </div>
           <div className="attendance-summary-item pending">
             <span>Pendientes</span>
@@ -144,6 +185,8 @@ export default function ControlAsistencia({ userData, onLogout }) {
             mode={attendanceMode}
             onDelete={deleteInscripcion}
             onSetAsistencia={setAsistencia}
+            onSetEstado={setEstado}
+            onSaveObservacion={saveObservacion}
           />
         </div>
       </div>

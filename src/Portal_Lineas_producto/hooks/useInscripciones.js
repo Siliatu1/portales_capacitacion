@@ -9,6 +9,7 @@ import {
   getInscripciones,
   deleteInscripcion,
   updateAsistencia,
+  updateInscripcionFields,
 } from "../services/inscripciones.service";
 
 export const useInscripciones = ({
@@ -137,6 +138,57 @@ export const useInscripciones = ({
     }
   };
 
+  const updateFields = async (
+    id,
+    fields,
+    endpoint
+  ) => {
+    try {
+      setLoading(true);
+
+      await updateInscripcionFields(
+        id,
+        fields,
+        endpoint
+      );
+
+      await fetchData();
+    } catch (err) {
+      console.error(
+        "ERROR ACTUALIZANDO INSCRIPCION:",
+        err
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const setEstado = (
+    id,
+    estado,
+    endpoint
+  ) =>
+    updateFields(
+      id,
+      {
+        estado,
+      },
+      endpoint
+    );
+
+  const saveObservacion = (
+    id,
+    observacion,
+    endpoint
+  ) =>
+    updateFields(
+      id,
+      {
+        observacion,
+      },
+      endpoint
+    );
+
   useEffect(() => {
     if (fetchedRef.current) {
       return;
@@ -159,5 +211,9 @@ export const useInscripciones = ({
     deleteInscripcion: remove,
 
     setAsistencia,
+
+    setEstado,
+
+    saveObservacion,
   };
 }

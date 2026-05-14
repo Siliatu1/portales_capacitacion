@@ -105,6 +105,8 @@ const mapInscripcion = (
       "",
 
     cargo:
+      attributes.cargo_evaluar ||
+      attributes.cargoEvaluar ||
       attributes.cargo ||
       "",
 
@@ -147,8 +149,8 @@ const mapInscripcion = (
       null,
 
     estado:
-      attributes.estado ||
-      "",
+      attributes.estado ??
+      null,
 
     observacion:
       attributes.observacion ||
@@ -381,11 +383,24 @@ export const updateAsistencia =
     confirmado,
     endpoint = "cap-cafes"
   ) => {
+    return updateInscripcionFields(
+      id,
+      {
+        confirmado,
+      },
+      endpoint
+    );
+  };
+
+export const updateInscripcionFields =
+  async (
+    id,
+    fields,
+    endpoint = "cap-cafes"
+  ) => {
     const payload =
       JSON.stringify({
-        data: {
-          confirmado,
-        },
+        data: fields,
       });
 
     const headers = {
@@ -435,7 +450,7 @@ export const updateAsistencia =
         ] = `Bearer ${token}`;
       }
     } catch {
-      // La asistencia tambien puede actualizarse sin token local.
+      // La inscripcion tambien puede actualizarse sin token local.
     }
 
     let res =
@@ -471,7 +486,7 @@ export const updateAsistencia =
         await res.text();
 
       throw new Error(
-        `Error actualizando asistencia: ${text}`
+        `Error actualizando inscripcion: ${text}`
       );
     }
 
