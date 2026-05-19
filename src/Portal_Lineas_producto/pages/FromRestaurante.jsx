@@ -8,6 +8,7 @@ import EmpleadoInfo from "../components/EmpleadoInfo";
 import { useState, useMemo, useEffect } from "react";
 import { ArrowLeft, Lock, Unlock } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
 
 import "../styles/formularioHel.css";
 
@@ -70,9 +71,16 @@ const FormRestaurante = () => {
         return;
       }
 
-      const confirmed = window.confirm("Desea inscribir esta reserva?");
+      const result = await Swal.fire({
+      title: "¡Atención!",
+      text: "¿Desea inscribir esta reserva?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Confirmar",
+      cancelButtonText: "Cancelar",
+      });
 
-      if (!confirmed) return;
+      if (!result.isConfirmed) return;
 
       setLoading(true);
 
@@ -107,10 +115,19 @@ const FormRestaurante = () => {
     }
   };
 
-  const onClear = () => {
-    const confirmed = window.confirm("Desea cancelar y limpiar la reserva?");
+   const onClear = async () => {
+  const result = await Swal.fire({
+    title: "¡Atención!",
+    text: "¿Está seguro que desea cancelar y limpiar la inscripcion?",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonText: "Confirmar",
+    cancelButtonText: "Cancelar",
+    confirmButtonColor: "#3085d6",
+    cancelButtonColor: "#d33",
+  });
 
-    if (!confirmed) return;
+    if (!result.isConfirmed) return;
 
     setFormData(getInitialFormState());
     if (typeof clearEmpleado === 'function') clearEmpleado();

@@ -39,22 +39,35 @@ const NAV_ITEMS = [
     route:
       "/lineas-producto/form-todera",
   },
+
+  // NUEVO ITEM
+  {
+    view:
+      "GESTION_INSTRUCTORAS",
+
+    label:
+      "Gestión Instructoras",
+
+    route:
+      "/lineas-producto/gestion-instructoras",
+  },
 ];
 
 const INSCRIPCIONES_ITEMS = [
   {
-    label: "Escuela Café",
+    label:
+      "Escuela Café",
+
     route:
       "/lineas-producto/inscripciones/cafe",
   },
 
   {
     label: "Todera",
+
     route:
       "/lineas-producto/inscripciones/todera",
   },
-
-  
 ];
 
 const Navbar = ({
@@ -67,8 +80,10 @@ const Navbar = ({
   const location =
     useLocation();
 
-  const [openSubmenu, setOpenSubmenu] =
-    useState(true);
+  const [
+    openSubmenu,
+    setOpenSubmenu,
+  ] = useState(true);
 
   const {
     logout,
@@ -76,13 +91,18 @@ const Navbar = ({
   } = useAuth();
 
   const visibleViewSet =
-    Array.isArray(visibleViews)
-      ? new Set(visibleViews)
+    Array.isArray(
+      visibleViews
+    )
+      ? new Set(
+          visibleViews
+        )
       : null;
 
   const handleLogout =
     () => {
       logout();
+
       navigate("/");
     };
 
@@ -91,10 +111,13 @@ const Navbar = ({
       {/* TOP */}
       <div className="sidebar-top">
         <div className="brand">
-          <h2>Portal C&W</h2>
+          <h2>
+            Portal C&W
+          </h2>
 
           <p>
-            Líneas de Producto
+            Líneas de
+            Producto
           </p>
         </div>
       </div>
@@ -117,7 +140,9 @@ const Navbar = ({
 
           return (
             <button
-              key={item.view}
+              key={
+                item.view
+              }
               className={`menu-item ${
                 isActive
                   ? "active"
@@ -129,68 +154,73 @@ const Navbar = ({
                 )
               }
             >
-              {item.label}
+              {
+                item.label
+              }
             </button>
           );
         })}
 
         {/* SUBMENU */}
-
         {showInscripciones && (
-        <div className="submenu-wrapper">
-          <button
-            className="submenu-toggle"
-            onClick={() =>
-              setOpenSubmenu(
-                !openSubmenu
-              )
-            }
-          >
-            <span>
-              Inscripciones
-            </span>
-
-            <span
-              className={`arrow ${
-                openSubmenu
-                  ? "open"
-                  : ""
-              }`}
+          <div className="submenu-wrapper">
+            <button
+              className="submenu-toggle"
+              onClick={() =>
+                setOpenSubmenu(
+                  !openSubmenu
+                )
+              }
             >
-              ▼
-            </span>
-          </button>
+              <span>
+                Inscripciones
+              </span>
 
-          {openSubmenu && (
-            <div className="submenu-items">
-              {INSCRIPCIONES_ITEMS.map(
-                (item) => {
-                  const isActive =
-                    location.pathname ===
-                    item.route;
+              <span
+                className={`arrow ${
+                  openSubmenu
+                    ? "open"
+                    : ""
+                }`}
+              >
+                ▼
+              </span>
+            </button>
 
-                  return (
-                    <button
-                      key={item.route}
-                      className={`submenu-item ${
-                        isActive
-                          ? "active"
-                          : ""
-                      }`}
-                      onClick={() =>
-                        navigate(
+            {openSubmenu && (
+              <div className="submenu-items">
+                {INSCRIPCIONES_ITEMS.map(
+                  (item) => {
+                    const isActive =
+                      location.pathname ===
+                      item.route;
+
+                    return (
+                      <button
+                        key={
                           item.route
-                        )
-                      }
-                    >
-                      {item.label}
-                    </button>
-                  );
-                }
-              )}
-            </div>
-          )}
-        </div>
+                        }
+                        className={`submenu-item ${
+                          isActive
+                            ? "active"
+                            : ""
+                        }`}
+                        onClick={() =>
+                          navigate(
+                            item.route
+                          )
+                        }
+                      >
+                        {
+                          item.label
+                        }
+                      </button>
+                    );
+                  }
+                )}
+              </div>
+            )}
+          </div>
         )}
       </nav>
 

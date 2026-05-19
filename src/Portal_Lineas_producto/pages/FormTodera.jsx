@@ -14,6 +14,8 @@ import {
   ArrowLeft,
 } from "lucide-react";
 
+import Swal from "sweetalert2";
+
 import BuscarEmpleado from "../components/BuscarEmpleado";
 
 import useEmpleado from "../hooks/useEmpleado";
@@ -70,7 +72,11 @@ const getEmpleadoValue = (empleado, ...keys) => {
   const source = empleado?.attributes || empleado || {};
 
   for (const key of keys) {
-    if (source[key] !== undefined && source[key] !== null && source[key] !== "") {
+    if (
+      source[key] !== undefined &&
+      source[key] !== null &&
+      source[key] !== ""
+    ) {
       return source[key];
     }
   }
@@ -126,7 +132,14 @@ const FormTodera = () => {
 
   const pdvEfectivo =
     pdvLogin ||
-    getEmpleadoValue(empleado, "area_nombre", "area", "pdv", "puntoVenta", "pdv_nombre") ||
+    getEmpleadoValue(
+      empleado,
+      "area_nombre",
+      "area",
+      "pdv",
+      "puntoVenta",
+      "pdv_nombre"
+    ) ||
     "";
 
   const handleBuscarEmpleado =
@@ -212,10 +225,30 @@ const FormTodera = () => {
     };
 
   const handleLimpiar =
-    (askConfirmation = true) => {
-      const confirmed = !askConfirmation || window.confirm("Desea cancelar y limpiar la reserva?");
+    async (
+      askConfirmation = true
+    ) => {
+      if (askConfirmation) {
+        const result =
+          await Swal.fire({
+            title:
+              "¡Atención!",
+            text:
+              "¿Desea cancelar y limpiar la reserva?",
+            icon:
+              "warning",
+            showCancelButton: true,
+            confirmButtonText:
+              "Confirmar",
+            cancelButtonText:
+              "Cancelar",
+          });
 
-      if (!confirmed) return;
+        if (
+          !result.isConfirmed
+        )
+          return;
+      }
 
       limpiarEmpleado();
 
@@ -227,8 +260,14 @@ const FormTodera = () => {
 
       setTelefono("");
 
-      if (askConfirmation) {
-        window.alert("Reserva cancelada");
+      if (
+        askConfirmation
+      ) {
+        Swal.fire(
+          "Cancelado",
+          "Reserva cancelada correctamente",
+          "success"
+        );
       }
     };
 
@@ -260,7 +299,14 @@ const FormTodera = () => {
 
       const payload = {
         Nombre:
-          getEmpleadoValue(empleado, "nombre", "fullName", "nombres", "name", "nombre_completo"),
+          getEmpleadoValue(
+            empleado,
+            "nombre",
+            "fullName",
+            "nombres",
+            "name",
+            "nombre_completo"
+          ),
 
         documento:
           documento,
@@ -268,7 +314,8 @@ const FormTodera = () => {
         telefono:
           telefono,
 
-        pdv: pdvEfectivo,
+        pdv:
+          pdvEfectivo,
 
         lider:
           instructora,
@@ -284,9 +331,25 @@ const FormTodera = () => {
       };
 
       try {
-        const confirmed = window.confirm("Desea registrar esta evaluacion?");
+        const result =
+          await Swal.fire({
+            title:
+              "¡Atención!",
+            text:
+              "¿Desea registrar esta evaluación?",
+            icon:
+              "warning",
+            showCancelButton: true,
+            confirmButtonText:
+              "Confirmar",
+            cancelButtonText:
+              "Cancelar",
+          });
 
-        if (!confirmed) return;
+        if (
+          !result.isConfirmed
+        )
+          return;
 
         setLoading(true);
 
@@ -295,9 +358,14 @@ const FormTodera = () => {
         );
 
         message.success(
-          "Evaluacion registrada"
+          "Evaluación registrada"
         );
-        window.alert("Reserva confirmada!");
+
+        Swal.fire(
+          "¡Reserva confirmada!",
+          "La evaluación fue registrada correctamente",
+          "success"
+        );
 
         handleLimpiar(false);
       } catch (error) {
@@ -306,9 +374,14 @@ const FormTodera = () => {
         );
 
         message.error(
-          "Error al guardar la evaluacion"
+          "Error al guardar la evaluación"
         );
-        window.alert("No se pudo confirmar la reserva");
+
+        Swal.fire(
+          "Error",
+          "No se pudo confirmar la reserva",
+          "error"
+        );
       } finally {
         setLoading(false);
       }
@@ -389,7 +462,14 @@ const FormTodera = () => {
               <input
                 value={
                   empleado.nombre ||
-                  getEmpleadoValue(empleado, "nombre", "fullName", "nombres", "name", "nombre_completo")
+                  getEmpleadoValue(
+                    empleado,
+                    "nombre",
+                    "fullName",
+                    "nombres",
+                    "name",
+                    "nombre_completo"
+                  )
                 }
                 readOnly
               />
@@ -421,9 +501,12 @@ const FormTodera = () => {
               </label>
 
               <input
-                value={
-                  getEmpleadoValue(empleado, "cargo", "position", "cargo_general")
-                }
+                value={getEmpleadoValue(
+                  empleado,
+                  "cargo",
+                  "position",
+                  "cargo_general"
+                )}
                 readOnly
               />
             </div>
@@ -486,9 +569,13 @@ const FormTodera = () => {
                   value={
                     cargoEvaluar
                   }
-                  onChange={(event) =>
+                  onChange={(
+                    event
+                  ) =>
                     setCargoEvaluar(
-                      event.target.value
+                      event
+                        .target
+                        .value
                     )
                   }
                 >
@@ -497,9 +584,13 @@ const FormTodera = () => {
                   </option>
 
                   {opcionesCargoEvaluar.map(
-                    (grupo) => (
+                    (
+                      grupo
+                    ) => (
                       <optgroup
-                        key={grupo.label}
+                        key={
+                          grupo.label
+                        }
                         label={
                           grupo.label
                         }

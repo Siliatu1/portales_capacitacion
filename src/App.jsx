@@ -1,4 +1,9 @@
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import {
+  BrowserRouter,
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom";
 
 import Login from "./auth/Login/Login";
 
@@ -18,13 +23,13 @@ import InscripcionesCafe from "./Portal_Lineas_producto/pages/InscripcionesCafe"
 
 import InscripcionesTodera from "./Portal_Lineas_producto/pages/InscripcionesTodera";
 
+import GestionInstructoras from "./Portal_Lineas_producto/pages/GestionInstructoras";
+
 import ProtectedViewRoute from "./auth/components/ProtectedViewRoute";
 
 import Dashboard from "./Portal_Instructoras/pages/Dashboard";
 
 import Programacion from "./Portal_Instructoras/pages/ProgramacionHorarios";
-
-
 
 function App() {
   const user = null;
@@ -32,10 +37,15 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
+        <Route
+          path="/"
+          element={<Login />}
+        />
 
-        <Route path="/" element={<Login />} />
-
-        <Route path="/menu" element={<MenuPrincipal />} />
+        <Route
+          path="/menu"
+          element={<MenuPrincipal />}
+        />
 
         {/* Portal Líneas de Producto */}
         <Route
@@ -79,6 +89,16 @@ function App() {
           element={
             <ProtectedViewRoute view="FORM_TODERA">
               <FormTodera />
+            </ProtectedViewRoute>
+          }
+        />
+
+        {/* NUEVA RUTA */}
+        <Route
+          path="/lineas-producto/gestion-instructoras"
+          element={
+            <ProtectedViewRoute view="GESTION_INSTRUCTORAS">
+              <GestionInstructoras />
             </ProtectedViewRoute>
           }
         />
@@ -135,7 +155,6 @@ function App() {
           path="*"
           element={<Navigate to="/" />}
         />
-
       </Routes>
     </BrowserRouter>
   );

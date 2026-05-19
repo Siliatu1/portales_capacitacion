@@ -24,7 +24,11 @@ export const PROFILE_CONFIG = {
   },
 
   FIELD_USER: {
-    views: ["FORM_RESTAURANTE", "PANEL", "FORM_TODERA"],
+    views: [
+      "FORM_RESTAURANTE",
+      "PANEL",
+      "FORM_TODERA",
+    ],
 
     permissions: {
       filterByPDV: true,
@@ -36,7 +40,15 @@ export const PROFILE_CONFIG = {
   },
 
   SUPER_ADMIN: {
-    views: ["*"],
+    views: [
+      "PANEL",
+      "FORM_HELADERIA",
+      "FORM_RESTAURANTE",
+      "FORM_TODERA",
+      "PANELINSTRUCTORA",
+      "PROGRAMACION",
+      "GESTION_INSTRUCTORAS",
+    ],
 
     permissions: {
       filterByPDV: false,
@@ -48,7 +60,11 @@ export const PROFILE_CONFIG = {
   },
 
   CAPACITADORA: {
-    views: ["CONTROL_ASISTENCIA", "PANELINSTRUCTORA", "PROGRAMACION"],
+    views: [
+      "CONTROL_ASISTENCIA",
+      "PANELINSTRUCTORA",
+      "PROGRAMACION",
+    ],
 
     permissions: {
       filterByPDV: false,
@@ -62,20 +78,43 @@ export const PROFILE_CONFIG = {
 
 export const VIEW_ROUTES = {
   PANEL: "/lineas-producto",
-  FORM_HELADERIA: "/lineas-producto/form-heladeria",
-  FORM_RESTAURANTE: "/lineas-producto/form-restaurante",
-  CONTROL_ASISTENCIA: "/lineas-producto/control-asistencia",
-  FORM_TODERA: "/lineas-producto/form-todera",
-  PANELINSTRUCTORA: "/lineas-producto/panel-instructora",
-  PROGRAMACION:"/portal-instructoras/dashboard",
+
+  FORM_HELADERIA:
+    "/lineas-producto/form-heladeria",
+
+  FORM_RESTAURANTE:
+    "/lineas-producto/form-restaurante",
+
+  CONTROL_ASISTENCIA:
+    "/lineas-producto/control-asistencia",
+
+  FORM_TODERA:
+    "/lineas-producto/form-todera",
+
+  PANELINSTRUCTORA:
+    "/lineas-producto/panel-instructora",
+
+  PROGRAMACION:
+    "/portal-instructoras/dashboard",
+
+  GESTION_INSTRUCTORAS:
+    "/lineas-producto/gestion-instructoras",
 };
 
 export const PORTAL_LINEAS_PRODUCTO_VIEWS = [
   "PANEL",
+
   "FORM_HELADERIA",
+
   "FORM_RESTAURANTE",
+
   "CONTROL_ASISTENCIA",
+
   "FORM_TODERA",
+
   "PANELINSTRUCTORA",
+
   "PROGRAMACION",
+
+  "GESTION_INSTRUCTORAS",
 ];
