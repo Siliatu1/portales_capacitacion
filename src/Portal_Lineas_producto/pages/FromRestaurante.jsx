@@ -4,6 +4,7 @@ import { useFechas } from "../hooks/useFechas";
 import { useAuth } from "../../auth/hooks/useAuth";
 import { guardarInscripcion } from "../services/formulario.service";
 import { getInitialFormState, buildInscripcionAttributes } from "../utils/formularioHel.utils";
+import EmpleadoInfo from "../components/EmpleadoInfo";
 import { useState, useMemo, useEffect } from "react";
 import { ArrowLeft, Lock, Unlock } from "lucide-react";
 import { useNavigate } from "react-router-dom";
@@ -45,6 +46,7 @@ const FormRestaurante = () => {
 
   const [message, setMessage] = useState(null);
   const [lider, setLider] = useState("");
+  const [showDetails, setShowDetails] = useState(true);
 
   const onSubmit = async () => {
     try {
@@ -155,7 +157,16 @@ const FormRestaurante = () => {
           </div>
         </div>
 
-        {empleado && (
+        <EmpleadoInfo
+          empleado={empleado}
+          formData={formData}
+          handleChange={handleChange}
+          lider={lider}
+          showDetails={showDetails}
+          onToggleDetails={() => setShowDetails((s) => !s)}
+        />
+
+        {showDetails === "legacy" && empleado && (
           <div className="employee-info-container">
             <img src={empleado.photo || ''} className="employee-photo" alt="foto" />
             <div className="employee-meta">

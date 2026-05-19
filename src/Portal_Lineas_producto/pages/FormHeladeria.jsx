@@ -4,6 +4,7 @@ import { useFechas } from "../hooks/useFechas";
 import { useAuth } from "../../auth/hooks/useAuth";
 import { guardarInscripcion } from "../services/formulario.service";
 import { getInitialFormState, buildInscripcionAttributes } from "../utils/formularioHel.utils";
+import EmpleadoInfo from "../components/EmpleadoInfo";
 import { useState, useMemo, useEffect } from "react";
 import { ArrowLeft, Lock, Unlock } from "lucide-react";
 import { useNavigate } from "react-router-dom";
@@ -182,7 +183,16 @@ const FormHeladeria = () => {
           </div>
         )}
 
-        {empleado && (
+        <EmpleadoInfo
+          empleado={empleado}
+          formData={formData}
+          handleChange={handleChange}
+          lider={lider}
+          showDetails={showDetails}
+          onToggleDetails={() => setShowDetails((s) => !s)}
+        />
+
+        {showDetails === "legacy" && empleado && (
           <div className="employee-info-container">
             <div className="employee-top">
               <img

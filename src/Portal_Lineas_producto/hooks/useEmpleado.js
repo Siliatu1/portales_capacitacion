@@ -3,7 +3,7 @@ import { getEmpleado } from '../services/empleado.service';
 
 const empleadosCache = {};
 
-export default function useEmpleado(initialPdv = '') {
+export default function useEmpleado() {
   const [documento, setDocumento] = useState('');
   const [empleado, setEmpleado] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -16,7 +16,7 @@ export default function useEmpleado(initialPdv = '') {
     setLoading(false);
   };
 
-  const buscarEmpleado = async (docBusqueda = documento, puntoVentaCoordinadora = initialPdv) => {
+  const buscarEmpleado = async (docBusqueda = documento) => {
     const docTrim = String(docBusqueda || '').trim();
 
     if (!docTrim) {
@@ -51,7 +51,7 @@ export default function useEmpleado(initialPdv = '') {
       setEmpleado(null);
       setMensaje({ texto: 'No se encontró empleado con ese documento', tipo: 'error' });
       return null;
-    } catch (error) {
+    } catch {
       setEmpleado(null);
       setMensaje({ texto: 'Error de conexión con la API', tipo: 'error' });
       return null;
@@ -100,7 +100,12 @@ export const useEmpleadoForm = (setFormData) => {
 
       const data = await getEmpleado(documento);
 
-      const raw = data?.data || [];
+      const responseData = data?.data || data || [];
+      const raw = Array.isArray(responseData)
+        ? responseData
+        : responseData
+          ? [responseData]
+          : [];
 
       // intentar encontrar por distintos campos de documento
       const empRaw = raw.find(
@@ -123,7 +128,7 @@ export const useEmpleadoForm = (setFormData) => {
         ? {
             id: empRaw.id || src.id || src.id_persona || null,
             nombre: pick(src, 'nombre', 'fullName', 'nombres', 'name', 'nombre_completo') || '',
-            telefono: pick(src, 'telefono', 'Telefono', 'phone', 'mobile') || '',
+            telefono: pick(src, 'celular', 'Celular', 'telefono', 'Telefono', 'phone', 'mobile') || '',
             celular: pick(src, 'celular', 'Celular', 'telefono', 'Telefono', 'mobile', 'phone') || '',
             cargo_general: pick(src, 'cargo', 'position', 'cargo_general') || '',
             pdv: pick(src, 'pdv', 'puntoVenta', 'punto_venta', 'pdv_nombre') || '',
