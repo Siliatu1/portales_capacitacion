@@ -27,6 +27,7 @@ const guardarFechasBloqueadas = (fechas) => {
 export const useFechas = (diasPermitidos = [1, 5]) => {
   const [fechas, setFechas] = useState([]);
   const [fechasBloqueadas, setFechasBloqueadas] = useState(leerFechasBloqueadas);
+  const [reloadKey, setReloadKey] = useState(0);
   const diasPermitidosKey = diasPermitidos.join(",");
   const diasPermitidosNormalizados = useMemo(
     () => diasPermitidosKey.split(",").filter(Boolean).map(Number),
@@ -61,6 +62,10 @@ export const useFechas = (diasPermitidos = [1, 5]) => {
     setFechasBloqueadas(next);
   }, []);
 
+  const refreshFechas = useCallback(() => {
+    setReloadKey((current) => current + 1);
+  }, []);
+
   useEffect(() => {
     const syncFechasBloqueadas = () => {
       setFechasBloqueadas(leerFechasBloqueadas());
@@ -82,7 +87,9 @@ export const useFechas = (diasPermitidos = [1, 5]) => {
 
         let inscripciones = [];
         try {
-          inscripciones = await getInscripciones();
+          inscripciones = await getInscripciones({
+            endpoints: ["cap-cafes"],
+          });
         } catch (err) {
           console.warn("No se pudo cargar inscripciones", err);
           inscripciones = [];
@@ -125,7 +132,7 @@ export const useFechas = (diasPermitidos = [1, 5]) => {
     };
 
     cargarFechas();
-  }, [diasPermitidosNormalizados, fechasBloqueadas]);
+  }, [diasPermitidosNormalizados, fechasBloqueadas, reloadKey]);
 
-  return { fechas, fechasBloqueadas, setFechaBloqueada, toggleFechaBloqueada };
+  return { fechas, fechasBloqueadas, setFechaBloqueada, toggleFechaBloqueada, refreshFechas };
 };

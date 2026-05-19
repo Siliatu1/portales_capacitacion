@@ -1,4 +1,4 @@
-import React, {
+import {
   useState,
 } from "react";
 
@@ -7,7 +7,6 @@ import {
 } from "react-router-dom";
 
 import {
-  Select,
   message,
 } from "antd";
 
@@ -52,7 +51,9 @@ const getPdvFromStorage =
           ""
         );
       }
-    } catch (_) {}
+    } catch {
+      // Continua con el PDV guardado en las llaves antiguas.
+    }
 
     return (
       localStorage.getItem(
@@ -64,6 +65,18 @@ const getPdvFromStorage =
       ""
     );
   };
+
+const getEmpleadoValue = (empleado, ...keys) => {
+  const source = empleado?.attributes || empleado || {};
+
+  for (const key of keys) {
+    if (source[key] !== undefined && source[key] !== null && source[key] !== "") {
+      return source[key];
+    }
+  }
+
+  return "";
+};
 
 const FormTodera = () => {
   const navigate =
@@ -113,8 +126,7 @@ const FormTodera = () => {
 
   const pdvEfectivo =
     pdvLogin ||
-    empleado?.area_nombre ||
-    empleado?.pdv ||
+    getEmpleadoValue(empleado, "area_nombre", "area", "pdv", "puntoVenta", "pdv_nombre") ||
     "";
 
   const handleBuscarEmpleado =
@@ -129,8 +141,15 @@ const FormTodera = () => {
           empleadoEncontrado
         ) {
           setTelefono(
-            empleadoEncontrado.telefono ||
-              empleadoEncontrado.celular ||
+            getEmpleadoValue(
+              empleadoEncontrado,
+              "celular",
+              "Celular",
+              "telefono",
+              "Telefono",
+              "mobile",
+              "phone"
+            ) ||
               ""
           );
         }
@@ -193,7 +212,11 @@ const FormTodera = () => {
     };
 
   const handleLimpiar =
-    () => {
+    (askConfirmation = true) => {
+      const confirmed = !askConfirmation || window.confirm("Desea cancelar y limpiar la reserva?");
+
+      if (!confirmed) return;
+
       limpiarEmpleado();
 
       setCategoria("");
@@ -203,6 +226,10 @@ const FormTodera = () => {
       setInstructora("");
 
       setTelefono("");
+
+      if (askConfirmation) {
+        window.alert("Reserva cancelada");
+      }
     };
 
   const handleSubmit =
@@ -233,7 +260,7 @@ const FormTodera = () => {
 
       const payload = {
         Nombre:
-          empleado.nombre,
+          getEmpleadoValue(empleado, "nombre", "fullName", "nombres", "name", "nombre_completo"),
 
         documento:
           documento,
@@ -257,6 +284,10 @@ const FormTodera = () => {
       };
 
       try {
+        const confirmed = window.confirm("Desea registrar esta evaluacion?");
+
+        if (!confirmed) return;
+
         setLoading(true);
 
         await guardarTodera(
@@ -266,8 +297,9 @@ const FormTodera = () => {
         message.success(
           "Evaluacion registrada"
         );
+        window.alert("Reserva confirmada!");
 
-        handleLimpiar();
+        handleLimpiar(false);
       } catch (error) {
         console.error(
           error
@@ -276,6 +308,7 @@ const FormTodera = () => {
         message.error(
           "Error al guardar la evaluacion"
         );
+        window.alert("No se pudo confirmar la reserva");
       } finally {
         setLoading(false);
       }
@@ -356,7 +389,7 @@ const FormTodera = () => {
               <input
                 value={
                   empleado.nombre ||
-                  ""
+                  getEmpleadoValue(empleado, "nombre", "fullName", "nombres", "name", "nombre_completo")
                 }
                 readOnly
               />
@@ -389,8 +422,7 @@ const FormTodera = () => {
 
               <input
                 value={
-                  empleado.area_nombre ||
-                  ""
+                  getEmpleadoValue(empleado, "cargo", "position", "cargo_general")
                 }
                 readOnly
               />
@@ -449,40 +481,34 @@ const FormTodera = () => {
                   EVALUAR *
                 </label>
 
-                <Select
+                <select
                   className="todera-cargo-select"
-                  placeholder="Seleccione cargo"
                   value={
-                    cargoEvaluar ||
-                    undefined
+                    cargoEvaluar
                   }
-                  onChange={(val) =>
+                  onChange={(event) =>
                     setCargoEvaluar(
-                      val
+                      event.target.value
                     )
                   }
-                  optionLabelProp="label"
-                  popupClassName="cargo-dropdown"
                 >
+                  <option value="">
+                    Seleccione cargo
+                  </option>
+
                   {opcionesCargoEvaluar.map(
                     (grupo) => (
-                      <Select.OptGroup
+                      <optgroup
                         key={grupo.label}
                         label={
-                          <span
-                            className={`cargo-group-label ${grupo.color}`}
-                          >
-                            {
-                              grupo.label
-                            }
-                          </span>
+                          grupo.label
                         }
                       >
                         {grupo.options.map(
                           (
                             opcion
                           ) => (
-                            <Select.Option
+                            <option
                               key={
                                 opcion.value
                               }
@@ -496,13 +522,13 @@ const FormTodera = () => {
                               {
                                 opcion.label
                               }
-                            </Select.Option>
+                            </option>
                           )
                         )}
-                      </Select.OptGroup>
+                      </optgroup>
                     )
                   )}
-                </Select>
+                </select>
               </div>
             )}
 
