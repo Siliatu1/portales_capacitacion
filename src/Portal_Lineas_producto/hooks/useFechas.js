@@ -14,7 +14,7 @@ const leerFechasBloqueadas = () => {
     const raw = localStorage.getItem(FECHAS_BLOQUEADAS_KEY);
     const parsed = raw ? JSON.parse(raw) : [];
     return Array.isArray(parsed) ? parsed : [];
-  } catch (err) {
+  } catch {
     return [];
   }
 };
@@ -103,7 +103,7 @@ export const useFechas = (diasPermitidos = [1, 5]) => {
 
         let result = [];
 
-        meses.forEach(({ year, month }) => {
+        meses.forEach(({ year, month, diaInicio, diaFin }) => {
           const festivos = festivosPorYear[year] || [];
           const fechasMes = obtenerFechasPorDias(
             year,
@@ -111,7 +111,8 @@ export const useFechas = (diasPermitidos = [1, 5]) => {
             diasPermitidosNormalizados,
             festivos,
             fechasBloqueadas,
-            inscripcionesPorFecha
+            inscripcionesPorFecha,
+            { diaInicio, diaFin }
           );
           result = [...result, ...fechasMes];
         });

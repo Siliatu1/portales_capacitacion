@@ -9,19 +9,40 @@ export const obtenerMesesAMostrar = () => {
   const diaActual = hoy.getDate();
   const mesActual = hoy.getMonth();
   const yearActual = hoy.getFullYear();
+  const ultimoDiaMesActual = new Date(yearActual, mesActual + 1, 0).getDate();
 
   const meses = [];
   
   if (diaActual >= 15) {
-    meses.push({ year: yearActual, month: mesActual });
+    meses.push({
+      year: yearActual,
+      month: mesActual,
+      diaInicio: 15,
+      diaFin: ultimoDiaMesActual,
+    });
     
     if (mesActual === 11) {
-      meses.push({ year: yearActual + 1, month: 0 });
+      meses.push({
+        year: yearActual + 1,
+        month: 0,
+        diaInicio: 1,
+        diaFin: new Date(yearActual + 1, 1, 0).getDate(),
+      });
     } else {
-      meses.push({ year: yearActual, month: mesActual + 1 });
+      meses.push({
+        year: yearActual,
+        month: mesActual + 1,
+        diaInicio: 1,
+        diaFin: new Date(yearActual, mesActual + 2, 0).getDate(),
+      });
     }
   } else {
-    meses.push({ year: yearActual, month: mesActual });
+    meses.push({
+      year: yearActual,
+      month: mesActual,
+      diaInicio: 1,
+      diaFin: ultimoDiaMesActual,
+    });
   }
 
   return meses;
@@ -56,9 +77,19 @@ export const fetchFestivosColombia = async (year) => {
  * @param {Object} inscripcionesPorFecha - map { 'YYYY-MM-DD': number }
  * @returns Array de objetos con información de cada fecha disponible
  */
-export const obtenerFechasPorDias = (year, month, diasPermitidos = [1,5], festivosColombianos = [], fechasBloqueadas = [], inscripcionesPorFecha = {}) => {
+export const obtenerFechasPorDias = (
+  year,
+  month,
+  diasPermitidos = [1,5],
+  festivosColombianos = [],
+  fechasBloqueadas = [],
+  inscripcionesPorFecha = {},
+  rangoDias = {}
+) => {
   const fechas = [];
   const ultimoDia = new Date(year, month + 1, 0).getDate();
+  const diaInicio = Math.max(1, rangoDias.diaInicio || 1);
+  const diaFin = Math.min(ultimoDia, rangoDias.diaFin || ultimoDia);
   
   const meses = [
     "enero", "febrero", "marzo", "abril", "mayo", "junio",
@@ -67,7 +98,7 @@ export const obtenerFechasPorDias = (year, month, diasPermitidos = [1,5], festiv
   
   const diasSemana = ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"];
   
-  for (let dia = 1; dia <= ultimoDia; dia++) {
+  for (let dia = diaInicio; dia <= diaFin; dia++) {
     const fecha = new Date(year, month, dia);
     const diaSemana = fecha.getDay();
     
