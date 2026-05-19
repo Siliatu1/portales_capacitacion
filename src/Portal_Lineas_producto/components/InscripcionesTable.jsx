@@ -294,7 +294,7 @@ export default function InscripcionesTable({
   },
 
   {
-    title: "Estado",
+    title: "ESTADO",
     dataIndex: "estado",
     key: "estado",
 
@@ -306,12 +306,16 @@ export default function InscripcionesTable({
         <Tag
           color={
             estado ===
-            "Evaluado"
-              ? "green"
+            true
+              ? "black"
               : "red"
           }
         >
-          {estado}
+          {estado === true
+            ? "Aprobado"
+            : estado === false
+            ? "Rechazado"
+            : estado}
         </Tag>
       );
     },

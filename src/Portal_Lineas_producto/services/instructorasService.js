@@ -40,6 +40,47 @@ export const obtenerInstructoras =
     return response.json();
   };
 
+export const eliminarInstructoraDePDV =
+  async (
+    pdvId,
+    instructoraId,
+    instructorasActuales
+  ) => {
+    const nuevasInstructoras =
+      instructorasActuales.filter(
+        (id) =>
+          id !== instructoraId
+      );
+
+    const response =
+      await fetch(
+        `https://macfer.crepesywaffles.com/api/cap-pdvs/${pdvId}`,
+        {
+          method: "PUT",
+
+          headers: {
+            "Content-Type":
+              "application/json",
+          },
+
+          body: JSON.stringify({
+            data: {
+              cap_instructoras:
+                nuevasInstructoras,
+            },
+          }),
+        }
+      );
+
+    if (!response.ok) {
+      throw new Error(
+        "Error eliminando instructora"
+      );
+    }
+
+    return response.json();
+  };
+
 export const obtenerInstructorasPorCategoria =
   async (categoria) => {
     const campo =

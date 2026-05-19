@@ -20,29 +20,36 @@
 ========================= */
 
 .sidebar {
-  width: 240px;
-
-  height: 100vh;
-
   position: fixed;
 
   top: 0;
+
   left: 0;
 
+  width: 260px;
+
+  height: 100vh;
+
   z-index: 1000;
+
+  display: flex;
+
+  flex-direction: column;
+
+  justify-content: space-between;
 
   background:
     linear-gradient(
       180deg,
-      #5b3928,
-      #3f261b
+      #6b3d1f,
+      #4a2513
     );
 
-  padding: 28px 20px;
+  padding: 24px 18px;
 
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
+  border-top-right-radius: 24px;
+
+  border-bottom-right-radius: 24px;
 
   overflow-y: auto;
 }
@@ -252,12 +259,42 @@
    RESPONSIVE
 ========================= */
 
-@media (max-width: 900px) {
+@media (max-width: 1200px) {
+  .admin-content {
+    margin-left: 260px;
+
+    width: calc(100% - 260px);
+  }
+}
+
+@media (max-width: 768px) {
   .sidebar {
+    position: relative;
+
     width: 100%;
 
     height: auto;
 
-    position: relative;
+    border-radius: 0;
+  }
+
+  .admin-content {
+    margin-left: 0;
+
+    width: 100%;
+
+    padding: 20px;
+  }
+
+  .hero-panel {
+    grid-template-columns: 1fr;
+  }
+
+  .page-header h2 {
+    font-size: 34px;
+  }
+
+  .hero-carousel {
+    height: 350px;
   }
 }

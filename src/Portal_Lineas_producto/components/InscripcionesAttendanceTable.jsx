@@ -99,39 +99,36 @@ export default function InscripcionesAttendanceTable({
     );
   };
 
-  const isEvaluado = (value) => {
-    const normalized = String(value || "").trim().toLowerCase();
-    return (
-      value === true ||
-      normalized === "evaluado" ||
-      normalized === "true" ||
-      normalized === "si"
-    );
-  };
+ const isEvaluado = (value) => {
+  return value === true;
+};
+const renderEstado = (value) => {
+  console.log("VALOR:", value);
 
-  const renderEstado = (value, record) => {
-    const checked = isEvaluado(value);
+  const checked =
+    value === true ||
+    value === "true" ||
+    value === 1 ||
+    value === "1";
 
-    return (
-      <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-        <Tag color={checked ? "green" : "red"}>
-          {checked ? "Evaluado" : "No evaluado"}
-        </Tag>
-        <Switch
-          checked={checked}
-          onChange={async (nextChecked) => {
-            try {
-              await handleSetEstado(record, nextChecked);
-            } catch (err) {
-              console.error("Actualizar estado fallo", err);
-            }
-          }}
-          checkedChildren="SI"
-          unCheckedChildren="NO"
-        />
-      </div>
-    );
-  };
+  return (
+    <div
+      style={{
+        background: checked
+          ? "green"
+          : "red",
+        color: "white",
+        padding: "8px 14px",
+        borderRadius: "20px",
+        fontWeight: "bold",
+        width: "120px",
+        textAlign: "center",
+      }}
+    >
+      {String(checked)}
+    </div>
+  );
+};
 
   const renderObservacion = (_, record) => (
     <Button
@@ -206,9 +203,37 @@ export default function InscripcionesAttendanceTable({
     { title: "Nombre Líder", dataIndex: "lider", render: (value) => value || "-" },
     { title: "Categoría", dataIndex: "categoria", render: (value) => value || "-" },
     fechaInscripcionColumn,
-    { title: "Estado", dataIndex: "estado", render: renderEstado },
     { title: "Observación", dataIndex: "observacion", render: renderObservacion },
+
+    {
+  title: "ESTADO",
+  key: "estado",
+  render: (_, record) => {
+    const checked = record.estado === false;
+
+    return (
+      <div
+        style={{
+          background: checked
+            ? "#22c55e"
+            : "#ef4444",
+          color: "white",
+          padding: "8px 12px",
+          borderRadius: "20px",
+          fontWeight: "700",
+          textAlign: "center",
+          minWidth: "110px",
+        }}
+      >
+        {checked
+          ? "Evaluado"
+          : "No evaluado"}
+      </div>
+    );
+  },
+},
   ];
+  console.log(record);
 
   const baseColumns = mode === "todera" ? toderaColumns : cafeColumns;
 

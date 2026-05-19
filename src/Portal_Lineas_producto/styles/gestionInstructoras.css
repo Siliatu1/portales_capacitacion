@@ -1,71 +1,97 @@
-.gestion-grid {
-  display: grid;
+/* PAGE */
 
-  grid-template-columns:
-    repeat(
-      auto-fit,
-      minmax(320px, 1fr)
-    );
+.gestion-page {
+  padding: 40px;
 
-  gap: 20px;
+  background: #f7f2ea;
 
-  margin-top: 20px;
+  min-height: 100vh;
 }
 
-.gestion-card {
-  border-radius: 16px !important;
+/* HEADER */
 
-  box-shadow:
-    0 4px 12px
-    rgba(0, 0, 0, 0.08);
-
-  border: none !important;
+.gestion-header {
+  margin-bottom: 30px;
 }
 
-.gestion-title {
-  margin-bottom: 20px;
+.gestion-header h1 {
+  font-size: 34px;
 
-  font-size: 18px;
+  color: #4e2d16;
 
-  font-weight: 700;
-
-  color: #5f4630;
+  margin-bottom: 6px;
 }
 
-.gestion-categorias {
+.gestion-header p {
+  color: #8b7355;
+
+  font-size: 15px;
+}
+
+/* BACK */
+
+.back-button {
   display: flex;
 
-  flex-direction: column;
+  align-items: center;
 
-  gap: 14px;
+  gap: 8px;
+
+  border: 1px solid #cbb89d;
+
+  background: white;
+
+  padding: 8px 16px;
+
+  border-radius: 999px;
+
+  cursor: pointer;
+
+  margin-bottom: 18px;
+
+  color: #6a4526;
+
+  font-weight: 600;
 }
 
-.categoria-row {
+/* FILTROS */
+
+.gestion-filtros-container {
   display: flex;
+
+  align-items: center;
 
   justify-content: space-between;
 
-  align-items: center;
+  gap: 20px;
 
-  padding: 10px;
+  background: white;
 
-  border-radius: 10px;
+  padding: 20px;
 
-  background: #faf7f2;
+  border-radius: 18px;
+
+  margin-bottom: 30px;
+
+  box-shadow:
+    0 4px 14px
+    rgba(0, 0, 0, 0.05);
 }
 
-.categoria-info {
-  display: flex;
-
-  align-items: center;
-
-  gap: 10px;
+.gestion-filtros-left {
+  flex: 1;
 }
 
-.categoria-label {
-  font-weight: 700;
+/* NUEVA INSTRUCTORA */
 
-  width: 80px;
+.btn-nueva-instructora {
+  background: #6d4c2f !important;
 
-  color: #7a5c3e;
+  border: none !important;
+
+  height: 42px !important;
+
+  border-radius: 12px !important;
+
+  font-weight: 600;
 }

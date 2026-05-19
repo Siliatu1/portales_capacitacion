@@ -176,6 +176,28 @@
   font-weight: 600;
 }
 
+
+
+/* =========================
+   ESTADO COLUMN
+========================= */
+
+
+.estado-column {
+  min-width: 220px;
+}
+
+.estado-column .ant-table-cell {
+  overflow: visible !important;
+}
+
+.estado-column div {
+  white-space: nowrap;
+}
+
+
+
+
 /* =========================
    LOADING
 ========================= */
