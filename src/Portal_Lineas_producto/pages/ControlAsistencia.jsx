@@ -2,11 +2,12 @@ import { useMemo, useState } from "react";
 import Navbar from "../components/navbar";
 import { useInscripciones } from "../hooks/useInscripciones";
 import { filtrarInscripciones } from "../utils/filters";
-import "../styles/panel.css";
+import "../styles/Panelinstructoras.css";
 import InscripcionesAttendanceTable from "../components/InscripcionesAttendanceTable";
 import FiltrosInscripciones from "../components/FiltrosInscripciones";
 import { useAuth } from "../../auth/hooks/useAuth";
 import { getStoredUser } from "../utils/userPdv.utils";
+
 
 const CAFE_ATTENDANCE_INSTRUCTOR = "35512822";
 
@@ -151,24 +152,6 @@ export default function ControlAsistencia({ userData, onLogout }) {
           </div>
         </div>
 
-        <div className="attendance-summary">
-          <div className="attendance-summary-item">
-            <span>Total</span>
-            <strong>{resumen.total}</strong>
-          </div>
-          <div className="attendance-summary-item success">
-            <span>{completedLabel}</span>
-            <strong>{resumen.completados}</strong>
-          </div>
-          <div className="attendance-summary-item danger">
-            <span>{rejectedLabel}</span>
-            <strong>{resumen.rechazados}</strong>
-          </div>
-          <div className="attendance-summary-item pending">
-            <span>Pendientes</span>
-            <strong>{resumen.pendientes}</strong>
-          </div>
-        </div>
 
         <FiltrosInscripciones
           filtros={filtros}

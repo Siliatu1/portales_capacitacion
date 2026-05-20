@@ -126,10 +126,7 @@ export default function InscripcionesTodera({
 
         <div className="table-card">
           <div className="table-header">
-            <div className="table-title">
-              Todera (
-              {dataFiltrada.length})
-            </div>
+          
           </div>
 
           <InscripcionesTable

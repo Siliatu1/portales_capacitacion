@@ -1,308 +1,125 @@
-/* =========================
-   TABLE CONTAINER
-========================= */
-
-.table-container {
-  width: 100%;
-
-  max-width: 100%;
-
-  overflow-x: auto;
-  overflow-y: hidden;
-
-  border-radius: 24px;
-
-  background: white;
-
-  position: relative;
-
-  box-shadow:
-    0 12px 30px rgba(91, 57, 40, 0.05);
-}
-
-/* =========================
-   MAIN TABLE
-========================= */
-
-.cw-table {
-  width: 100%;
-
-  max-width: 100%;
-
-  background: white;
-
-  border-radius: 24px;
-
-  overflow: hidden;
-}
-
-/* =========================
-   ANT TABLE FIX
-========================= */
-
-.cw-table .ant-table-wrapper {
-  width: 100%;
-}
-
-.cw-table .ant-table-container {
-  width: 100%;
-}
-
-.cw-table .ant-table-content {
-  overflow-x: auto !important;
-}
-
-.cw-table .ant-table {
-  min-width: 1200px;
-
-  border-radius: 24px !important;
-
-  overflow: hidden;
-}
-
-/* =========================
-   TABLE HEADER
-========================= */
 
 .cw-table .ant-table-thead > tr > th {
-  background: #f8efe4 !important;
+  background: #f5e9dc !important;
 
   color: #7a5840 !important;
 
-  font-size: 0.82rem;
-  font-weight: 700;
+  font-size: 13px !important;
+
+  font-weight: 800 !important;
 
   text-transform: uppercase;
 
-  letter-spacing: 0.5px;
-
-  border-bottom: none !important;
+  letter-spacing: 0.6px;
 
   padding: 18px 16px !important;
 }
 
-/* =========================
-   TABLE BODY
-========================= */
-
 .cw-table .ant-table-tbody > tr > td {
-  padding: 20px 16px !important;
+  background: white !important;
 
-  color: #4f4a46;
+  padding: 18px 16px !important;
 
-  font-size: 0.94rem;
+  font-size: 14px !important;
+
+  color: #4b4b4b !important;
 
   border-bottom:
-    1px solid #f3ece6 !important;
+    1px solid #f2ebe5 !important;
 }
-
-/* =========================
-   HOVER
-========================= */
 
 .cw-table .ant-table-tbody > tr:hover > td {
-  background: #fcfaf8 !important;
+  background: #fcf9f6 !important;
 }
 
 /* =========================
-   PAGINATION
+   TABLE WRAPPER
 ========================= */
 
-.cw-table .ant-pagination {
-  margin: 24px 20px !important;
+.ant-table-wrapper {
+  border-radius: 10px !important;
+
+  overflow: hidden !important;
 }
 
-.cw-table .ant-pagination-item {
-  border-radius: 10px !important;
+/* =========================
+   FILTER CONTAINER
+========================= */
+
+.filters-container {
+  display: flex;
+
+  flex-wrap: wrap;
+
+  gap: 14px;
+
+  margin-bottom: 24px;
+
+  padding: 18px;
+
+  background: white;
+
+  border-radius: 10px;
+
+  box-shadow:
+    0 8px 24px rgba(0, 0, 0, 0.04);
+}
+
+/* =========================
+   INPUTS
+========================= */
+
+.filters-container input,
+.filters-container .ant-select-selector,
+.filters-container .ant-picker {
+  height: 44px !important;
+
+  border-radius: 14px !important;
 
   border:
     1px solid #eadfd6 !important;
-}
 
-.cw-table .ant-pagination-item-active {
-  background:
-    linear-gradient(
-      135deg,
-      #5b3928,
-      #734631
-    ) !important;
-
-  border: none !important;
-}
-
-.cw-table .ant-pagination-item-active a {
-  color: white !important;
+  box-shadow: none !important;
 }
 
 /* =========================
-   BUTTONS
+   TITLE CARD
 ========================= */
 
-.cw-table .ant-btn-dangerous {
-  border-radius: 12px;
+.page-title-card {
+  background: white;
 
-  height: 38px;
-
-  padding: 0 18px !important;
-
-  border:
-    1px solid #ff5d52 !important;
-
-  background: transparent !important;
-
-  color: #ff5d52 !important;
-
-  font-weight: 600;
-
-  transition: 0.3s;
-}
-
-.cw-table .ant-btn-dangerous:hover {
-  background:
-    #ff5d52 !important;
-
-  color: white !important;
-}
-
-/* =========================
-   TAGS
-========================= */
-
-.cw-table .ant-tag {
   border-radius: 10px;
 
-  padding: 4px 10px;
+  padding: 24px 30px;
 
-  font-weight: 600;
+  margin-bottom: 20px;
+
+  box-shadow:
+    0 10px 24px rgba(0, 0, 0, 0.04);
 }
 
+.page-title-card h2 {
+  margin: 0;
 
+  color: #4f2d16;
 
-/* =========================
-   ESTADO COLUMN
-========================= */
+  font-size: 2rem;
 
-
-.estado-column {
-  min-width: 220px;
-}
-
-.estado-column .ant-table-cell {
-  overflow: visible !important;
-}
-
-.estado-column div {
-  white-space: nowrap;
-}
-
-
-
-
-/* =========================
-   LOADING
-========================= */
-
-.cw-table .ant-spin-dot-item {
-  background-color:
-    #5b3928 !important;
+  font-weight: 800;
 }
 
 /* =========================
-   EMPTY STATE
-========================= */
-
-.cw-table .ant-empty-description {
-  color: #8f8178;
-}
-
-/* =========================
-   SCROLLBAR
-========================= */
-
-.cw-table ::-webkit-scrollbar {
-  height: 8px;
-}
-
-.cw-table ::-webkit-scrollbar-thumb {
-  background: #d7c4b5;
-
-  border-radius: 20px;
-}
-
-/* =========================
-   FIX SIDEBAR OVERLAP
+   TABLE CARD
 ========================= */
 
 .table-card {
-  overflow: hidden;
+  background: white;
 
-  position: relative;
-}
+  border-radius: 10px;
 
-.admin-content {
-  overflow-x: hidden;
-}
+  padding: 22px;
 
-/* =========================
-   RESPONSIVE
-========================= */
-
-@media (max-width: 768px) {
-  .table-container {
-    border-radius: 18px;
-  }
-
-  .cw-table .ant-table {
-    min-width: 1000px;
-  }
-
-  .cw-table .ant-table-thead > tr > th {
-    font-size: 0.75rem;
-
-    padding: 14px 12px !important;
-  }
-
-  .cw-table .ant-table-tbody > tr > td {
-    font-size: 0.85rem;
-
-    padding: 16px 12px !important;
-  }
-
-  .cw-table .ant-btn-dangerous {
-    height: 34px;
-
-    font-size: 0.8rem;
-  }
-}
-/* =========================
-   FORCE TABLE INSIDE CONTENT
-========================= */
-
-.table-container,
-.cw-table,
-.ant-table-wrapper,
-.ant-spin-nested-loading,
-.ant-spin-container {
-  width: 100% !important;
-
-  max-width: 100% !important;
-}
-
-.ant-table-content {
-  overflow-x: auto !important;
-}
-
-.ant-table {
-  width: 100% !important;
-
-  table-layout: auto;
-}
-
-/* evita que atraviese sidebar */
-.table-card {
-  width: 100%;
-
-  max-width: 100%;
-
-  overflow: hidden;
+  box-shadow:
+    0 12px 30px rgba(91, 57, 40, 0.05);
 }

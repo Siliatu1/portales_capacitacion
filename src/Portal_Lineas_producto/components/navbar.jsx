@@ -14,14 +14,14 @@ import { useAuth } from "../../auth/hooks/useAuth";
 const NAV_ITEMS = [
   {
     view: "FORM_HELADERIA",
-    label: "Heladería",
+    label: "Formulario Heladería",
     route:
       "/lineas-producto/form-heladeria",
   },
 
   {
     view: "FORM_RESTAURANTE",
-    label: "Restaurante",
+    label: "Formulario Restaurante",
     route:
       "/lineas-producto/form-restaurante",
   },
@@ -35,7 +35,7 @@ const NAV_ITEMS = [
 
   {
     view: "FORM_TODERA",
-    label: "Todera",
+    label: "Formulario Todera",
     route:
       "/lineas-producto/form-todera",
   },

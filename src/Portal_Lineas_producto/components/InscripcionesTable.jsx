@@ -6,7 +6,9 @@ import {
 } from "antd";
 
 import { useAuth } from "../../auth/hooks/useAuth";
+
 import "../styles/Table.css";
+
 import {
   mapAsistencia,
 } from "../utils/asistencia.utils";
@@ -62,23 +64,37 @@ export default function InscripcionesTable({
       }
     };
 
+  /* =========================================
+     COLUMNAS GENERALES
+  ========================================= */
+
   const commonColumns = [
     {
       title: "Cedula",
       dataIndex: "cedula",
       key: "cedula",
+
+      responsive: ["md"],
+
+      ellipsis: true,
     },
 
     {
       title: "Nombres",
       dataIndex: "nombres",
       key: "nombres",
+
+      ellipsis: true,
     },
 
     {
       title: "Telefono",
       dataIndex: "telefono",
       key: "telefono",
+
+      responsive: ["lg"],
+
+      ellipsis: true,
     },
 
     {
@@ -89,6 +105,10 @@ export default function InscripcionesTable({
         "puntoVenta",
 
       key: "puntoVenta",
+
+      responsive: ["xl"],
+
+      ellipsis: true,
 
       render: (
         text,
@@ -106,6 +126,10 @@ export default function InscripcionesTable({
       dataIndex: "lider",
 
       key: "lider",
+
+      responsive: ["xl"],
+
+      ellipsis: true,
     },
 
     {
@@ -114,6 +138,8 @@ export default function InscripcionesTable({
       dataIndex: "dia",
 
       key: "dia",
+
+      responsive: ["md"],
 
       sorter: (a, b) =>
         parseDate(a.dia) -
@@ -140,6 +166,10 @@ export default function InscripcionesTable({
     },
   ];
 
+  /* =========================================
+     ASISTENCIA
+  ========================================= */
+
   const asistenciaColumn = {
     title: "Asistencia",
 
@@ -147,6 +177,8 @@ export default function InscripcionesTable({
       "asistencia",
 
     key: "asistencia",
+
+    responsive: ["sm"],
 
     render: (value) => {
       const {
@@ -165,10 +197,18 @@ export default function InscripcionesTable({
     },
   };
 
+  /* =========================================
+     ACCIONES
+  ========================================= */
+
   const actionColumn = {
     title: "Acciones",
 
     key: "acciones",
+
+    fixed: "right",
+
+    responsive: ["md"],
 
     render: (
       text,
@@ -191,6 +231,10 @@ export default function InscripcionesTable({
     ),
   };
 
+  /* =========================================
+     HELADERIA
+  ========================================= */
+
   const heladeriaColumns =
     [
       ...commonColumns.slice(
@@ -206,6 +250,10 @@ export default function InscripcionesTable({
           "cargo",
 
         key: "cargo",
+
+        responsive: ["md"],
+
+        ellipsis: true,
       },
 
       ...commonColumns.slice(
@@ -215,121 +263,193 @@ export default function InscripcionesTable({
       asistenciaColumn,
     ];
 
+  /* =========================================
+     TODERA
+  ========================================= */
+
   const toderaColumns = [
-  {
-    title: "Cédula",
-    dataIndex: "cedula",
-    key: "cedula",
-  },
+    {
+      title: "Cédula",
+      dataIndex: "cedula",
+      key: "cedula",
 
-  {
-    title: "Nombres",
-    dataIndex: "nombres",
-    key: "nombres",
-  },
+      responsive: ["md"],
 
-  {
-    title: "Teléfono",
-    dataIndex: "telefono",
-    key: "telefono",
-  },
+      ellipsis: true,
+    },
 
-  {
-    title: "Cargo a Evaluar",
-    dataIndex: "cargo",
-    key: "cargo",
-    render: (value) => value || "-",
-  },
+    {
+      title: "Nombres",
+      dataIndex: "nombres",
+      key: "nombres",
 
-  {
-    title: "Punto de Venta",
-    dataIndex: "puntoVenta",
-    key: "puntoVenta",
-    render: (text, record) =>
-      record.puntoVenta ||
-      record.area_nombre ||
-      "-",
-  },
+      ellipsis: true,
+    },
 
-  {
-    title: "Instructora",
-    dataIndex: "instructora",
-    key: "instructora",
-    render: (value) => value || "-",
-  },
+    {
+      title: "Teléfono",
+      dataIndex: "telefono",
+      key: "telefono",
 
-  {
-    title: "Categoría",
-    dataIndex: "categoria",
-    key: "categoria",
-    render: (value) => value || "-",
-  },
+      responsive: ["lg"],
 
-  {
-    title: "Día Inscripción",
-    dataIndex: "dia",
-    key: "dia",
+      ellipsis: true,
+    },
 
-    sorter: (a, b) =>
-      parseDate(a.dia) -
-      parseDate(b.dia),
+    {
+      title:
+        "Cargo a Evaluar",
 
-    defaultSortOrder: "descend",
+      dataIndex:
+        "cargo",
 
-    render: (value) => {
-      if (!value) {
-        return "-";
-      }
+      key: "cargo",
 
-      try {
-        return new Date(
-          value
-        ).toLocaleDateString(
-          "es-CO"
+      responsive: ["md"],
+
+      ellipsis: true,
+
+      render: (value) =>
+        value || "-",
+    },
+
+    {
+      title:
+        "Punto de Venta",
+
+      dataIndex:
+        "puntoVenta",
+
+      key: "puntoVenta",
+
+      responsive: ["xl"],
+
+      ellipsis: true,
+
+      render: (
+        text,
+        record
+      ) =>
+        record.puntoVenta ||
+        record.area_nombre ||
+        "-",
+    },
+
+    {
+      title:
+        "Instructora",
+
+      dataIndex:
+        "instructora",
+
+      key: "instructora",
+
+      responsive: ["xl"],
+
+      ellipsis: true,
+
+      render: (value) =>
+        value || "-",
+    },
+
+    {
+      title:
+        "Categoría",
+
+      dataIndex:
+        "categoria",
+
+      key: "categoria",
+
+      responsive: ["lg"],
+
+      render: (value) =>
+        value || "-",
+    },
+
+    {
+      title:
+        "Día Inscripción",
+
+      dataIndex: "dia",
+
+      key: "dia",
+
+      responsive: ["md"],
+
+      sorter: (a, b) =>
+        parseDate(a.dia) -
+        parseDate(b.dia),
+
+      defaultSortOrder:
+        "descend",
+
+      render: (value) => {
+        if (!value) {
+          return "-";
+        }
+
+        try {
+          return new Date(
+            value
+          ).toLocaleDateString(
+            "es-CO"
+          );
+        } catch {
+          return value;
+        }
+      },
+    },
+
+    {
+      title: "Estado",
+
+      dataIndex:
+        "estado",
+
+      key: "estado",
+
+      responsive: ["sm"],
+
+      render: (value) => {
+        return (
+          <Tag
+            color={
+              value === true
+                ? "green"
+                : "red"
+            }
+          >
+            {value === true
+              ? "Aprobado"
+              : "Pendiente"}
+          </Tag>
         );
-      } catch {
-        return value;
-      }
+      },
     },
-  },
 
-  {
-    title: "ESTADO",
-    dataIndex: "estado",
-    key: "estado",
+    {
+      title:
+        "Observación",
 
-    render: (value) => {
-      const estado =
-        value || "No evaluado";
+      dataIndex:
+        "observacion",
 
-      return (
-        <Tag
-          color={
-            estado ===
-            true
-              ? "black"
-              : "red"
-          }
-        >
-          {estado === true
-            ? "Aprobado"
-            : estado === false
-            ? "Rechazado"
-            : estado}
-        </Tag>
-      );
+      key: "observacion",
+
+      responsive: ["xl"],
+
+      ellipsis: true,
+
+      render: (value) =>
+        value ||
+        "Sin observación",
     },
-  },
+  ];
 
-  {
-    title: "Observación",
-    dataIndex: "observacion",
-    key: "observacion",
-
-    render: (value) =>
-      value || "Sin observación",
-  },
-];
+  /* =========================================
+     RESTAURANTE
+  ========================================= */
 
   const restauranteColumns =
     commonColumns;
@@ -378,29 +498,35 @@ export default function InscripcionesTable({
   );
 
   return (
-  <div className="table-container">
-    <Table
-      className="cw-table"
-      columns={columns}
-      dataSource={
-        Array.isArray(data)
-          ? data
-          : []
-      }
-      loading={loading}
-      rowKey={(record) =>
-        String(record.id)
-      }
-      pagination={{
-        pageSize: 10,
-        showSizeChanger: false,
-      }}
-      scroll={{ x: 1200 }}
-      locale={{
-        emptyText:
-          "No hay inscripciones",
-      }}
-    />
-  </div>
-);
+    <div className="table-container">
+
+      <Table
+        className="cw-table"
+        columns={columns}
+        dataSource={
+          Array.isArray(data)
+            ? data
+            : []
+        }
+        loading={loading}
+        rowKey={(record) =>
+          String(record.id)
+        }
+        pagination={{
+          pageSize: 10,
+          showSizeChanger: false,
+        }}
+
+        scroll={{
+          x: "max-content",
+        }}
+
+        locale={{
+          emptyText:
+            "No hay inscripciones",
+        }}
+      />
+
+    </div>
+  );
 }

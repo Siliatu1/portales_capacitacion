@@ -6,14 +6,13 @@ import { useInstructoras } from "../hooks/useInstructoras";
 
 import InstructorasTable from "../components/InstructorasTable";
 
-import "../styles/panel.css";
+import "../styles/Panelinstructoras.css";
 
 export default function PanelInstructoras({
   userData,
   onLogout,
 }) {
-  const { user } =
-    useAuth();
+  const { user } = useAuth();
 
   const nombreInstructora =
     user?.nombre ||
@@ -28,10 +27,9 @@ export default function PanelInstructoras({
     error,
     cambiarEstado,
     guardarObservacion,
-  } =
-    useInstructoras({
-      nombreInstructora,
-    });
+  } = useInstructoras({
+    nombreInstructora,
+  });
 
   console.log(
     "USUARIO INSTRUCTORA:",
@@ -43,87 +41,76 @@ export default function PanelInstructoras({
     data
   );
 
+  const total = data.length;
+
+  const evaluados =
+    data.filter(
+      (item) =>
+        item.estado === true ||
+        item.estado === 1
+    ).length;
+
+  const pendientes =
+    total - evaluados;
+
   return (
     <>
       <Navbar
-        userData={
-          userData
-        }
-        onLogout={
-          onLogout
-        }
+        userData={userData}
+        onLogout={onLogout}
       />
 
       <div className="admin-content">
-        <div
-          style={{
-            marginBottom: 24,
-          }}
-        >
+
+        {/* HEADER */}
+
+        <div className="panel-header">
           <h1>
-            Panel
-            Instructoras
+            Panel Instructoras
           </h1>
 
           <p>
             Hola{" "}
             <strong>
-              {
-                nombreInstructora
-              }
+              {nombreInstructora}
             </strong>
           </p>
 
           <p>
-            Aqui puedes
-            evaluar tus
-            estudiantes
+            Aquí puedes evaluar
+            tus estudiantes
             asignados.
           </p>
         </div>
 
+        {/* ERROR */}
+
         {error && (
-          <div
-            style={{
-              background:
-                "#fff2f0",
-
-              border:
-                "1px solid #ffccc7",
-
-              padding: 16,
-
-              borderRadius: 8,
-
-              marginBottom: 20,
-            }}
-          >
-            Error
-            cargando
+          <div className="error-box">
+            Error cargando
             estudiantes
           </div>
         )}
 
+        {/* TABLA */}
+
         <div className="table-card">
+
           <div className="table-header">
+
             <div className="table-title">
-              Evaluacion
-              Todera
+              Evaluación Todera
             </div>
 
             <div className="table-count">
-              Total:{" "}
-              {
-                data.length
-              }
+              Total: {total}
             </div>
+
           </div>
 
           <InstructorasTable
             data={data}
-            loading={
-              loading
-            }
+            loading={loading}
             onEstadoChange={
               cambiarEstado
             }
@@ -131,7 +118,9 @@ export default function PanelInstructoras({
               guardarObservacion
             }
           />
+
         </div>
+
       </div>
     </>
   );

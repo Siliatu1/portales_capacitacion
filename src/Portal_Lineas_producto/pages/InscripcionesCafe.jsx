@@ -123,10 +123,7 @@ export default function InscripcionesCafe({
 
         <div className="table-card">
           <div className="table-header">
-            <div className="table-title">
-              Escuela del Café (
-              {dataFiltrada.length})
-            </div>
+
           </div>
 
           <InscripcionesTable

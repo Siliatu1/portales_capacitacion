@@ -51,53 +51,30 @@ export default function Panel({
         <div className="hero-panel">
           {/* TEXTO */}
           <div className="hero-info">
-            <div className="page-header">
-              <h2>
-                {user?.foto && (
-                  <img
-                    src={user.foto}
-                    alt="Perfil"
-                    className="user-avatar"
-                  />
-                )}
+           
+        
 
-                BIENVENIDO A TU PANEL DE
-                CONTROL
-              </h2>
-            </div>
+           <div className="hero-card">
+             {user?.foto && (
+                <img
+                    src={user.foto}
+                        alt="Perfil"
+                     className="user-avatar"
+               />
+               )}
+
+           <div className="hero-text">
+               <h2>
+                 BIENVENIDO A TU PANEL DE
+                 CONTROL
+                </h2>
 
             <p className="hero-description">
-              Gestiona las inscripciones y asignaciones según tu perfil.
-            </p>
-
-            <div className="hero-cards">
-              <div className="hero-card">
-               
-
-                <div>
-                  <h4>Inscripciones</h4>
-
-                  <p>
-                    Escuela del café y toderas.
-                  </p>
-                </div>
-              </div>
-
-              <div className="hero-card">
-                
-
-                <div>
-                  <h4>Instructoras</h4>
-
-                  <p>
-                    Gestionan sus inscripciones y
-                    asignaciones.
-                  </p>
-                </div>
-              </div>
-
-        
-            </div>
+                  Gestiona las inscripciones y
+                  asignaciones según tu perfil.
+           </p>
+           </div>
+          </div>
           </div>
 
           {/* CARRUSEL */}

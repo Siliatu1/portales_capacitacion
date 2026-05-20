@@ -1,3 +1,7 @@
+
+// TABLA ES PARA LAS INSTRUCTORAS DE TODERAS
+
+
 import { Button, Input, Modal, Popconfirm, Switch, Table, Tag } from "antd";
 import { useState } from "react";
 import { useAuth } from "../../auth/hooks/useAuth";
@@ -102,33 +106,20 @@ export default function InscripcionesAttendanceTable({
  const isEvaluado = (value) => {
   return value === true;
 };
-const renderEstado = (value) => {
-  console.log("VALOR:", value);
-
-  const checked =
-    value === true ||
-    value === "true" ||
-    value === 1 ||
-    value === "1";
-
+const renderEstado = (value, record) => { 
+  const checked = isEvaluado(value); 
   return (
-    <div
-      style={{
-        background: checked
-          ? "green"
-          : "red",
-        color: "white",
-        padding: "8px 14px",
-        borderRadius: "20px",
-        fontWeight: "bold",
-        width: "120px",
-        textAlign: "center",
-      }}
-    >
-      {String(checked)}
-    </div>
-  );
-};
+     <div style={{ display: "flex", alignItems: "center", gap: 12 }}> 
+     <Tag color={checked ? "green" : "red"}>
+       {checked ? "Evaluado" : "No evaluado"} 
+       </Tag> 
+       <Switch checked={checked} onChange={async (nextChecked) => {
+        try { await handleSetEstado(record, nextChecked); }
+        catch (err) { console.error("Actualizar estado fallo", err); } 
+      }} checkedChildren="SI" unCheckedChildren="NO" /> 
+      </div> 
+      );
+     };
 
   const renderObservacion = (_, record) => (
     <Button
@@ -204,37 +195,10 @@ const renderEstado = (value) => {
     { title: "Categoría", dataIndex: "categoria", render: (value) => value || "-" },
     fechaInscripcionColumn,
     { title: "Observación", dataIndex: "observacion", render: renderObservacion },
+    { title: "Evaluado", dataIndex: "estado", render: renderEstado },
 
-    {
-  title: "ESTADO",
-  key: "estado",
-  render: (_, record) => {
-    const checked = record.estado === false;
-
-    return (
-      <div
-        style={{
-          background: checked
-            ? "#22c55e"
-            : "#ef4444",
-          color: "white",
-          padding: "8px 12px",
-          borderRadius: "20px",
-          fontWeight: "700",
-          textAlign: "center",
-          minWidth: "110px",
-        }}
-      >
-        {checked
-          ? "Evaluado"
-          : "No evaluado"}
-      </div>
-    );
-  },
-},
   ];
-  console.log(record);
-
+  
   const baseColumns = mode === "todera" ? toderaColumns : cafeColumns;
 
   const columns =
