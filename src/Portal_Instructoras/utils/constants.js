@@ -1,33 +1,91 @@
-export const CARGOS_ADMINISTRATIVOS = [
-  "JEFE DESARROLLO DE PRODUCTO",
-  "DIRECTORA DE LINEAS DE PRODUCTO",
-  "ANALISTA DE PRODUCTO"
-];
+/* =========================
+   HORAS
+========================= */
 
-export const MOTIVOS_LABELS = {
-  retroalimentacion: "Retroalimentación",
-  acompañamiento: "Acompañamiento",
-  capacitacion: "Capacitación",
-  dia_descanso: "Día de Descanso",
-  visita: "Visita",
-  induccion: "Inducción",
-  cubrir_puesto: "Cubrir Puesto",
-  disponible: "Disponible",
-  fotos: "Fotos",
-  escuela_cafe: "Escuela del Café",
-  sintonizarte: "Sintonizarte",
-  viaje: "Viaje",
-  pg: "P&G",
-  apoyo: "Apoyo",
-  reunion: "Reunión",
-  cambio_turno: "Cambio de Turno",
-  apertura: "Apertura",
-  lanzamiento: "Lanzamiento",
-  vacaciones: "Vacaciones",
-  incapacidad: "Incapacidad",
-  dia_familia: "Día de la Familia",
-  permiso_no_remunerado: "Permiso No Remunerado",
-  licencia_no_remunerada: "Licencia No Remunerada",
-  licencia_remunerada: "Licencia Remunerada",
-  licencia_luto: "Licencia por Luto"
+export const MAX_HORAS_DIA = 10;
+
+export const MAX_HORAS_SEMANA = 48;
+
+/* =========================
+   HORARIOS
+========================= */
+
+export const HORA_INICIO =
+  "06:00";
+
+export const HORA_FIN =
+  "22:00";
+
+/* =========================
+   COLORES ACTIVIDADES
+========================= */
+
+export const ACTIVIDAD_COLORS = {
+  Retroalimentación:
+    "#10b981",
+
+  Acompañamiento:
+    "#3b82f6",
+
+  Capacitación:
+    "#8b5cf6",
+
+  Visita:
+    "#f59e0b",
+
+  Inducción:
+    "#06b6d4",
+
+  Disponible:
+    "#9ca3af",
+
+  Viaje:
+    "#ef4444",
+
+  Vacaciones:
+    "#14b8a6",
+
+  Incapacidad:
+    "#dc2626",
+
+  Otro:
+    "#6b7280",
 };
+
+/* =========================
+   MODAL INITIAL STATE
+========================= */
+
+export const INITIAL_FORM =
+  {
+    puntoVenta: "",
+
+    horaInicio: "",
+
+    horaFin: "",
+
+    motivo: "",
+
+    detalleOtro: "",
+  };
+
+/* =========================
+   EMPTY SEMANA
+========================= */
+
+export const EMPTY_SEMANA =
+  {
+    lunes: [],
+
+    martes: [],
+
+    miercoles: [],
+
+    jueves: [],
+
+    viernes: [],
+
+    sabado: [],
+
+    domingo: [],
+  };

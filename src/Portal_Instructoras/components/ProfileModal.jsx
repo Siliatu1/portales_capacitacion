@@ -1,63 +1,98 @@
 import {
   Modal,
-  Button
+  Tag,
 } from "antd";
 
-import { useNavigate } from "react-router-dom";
-
-import {
-  getInitials
-} from "../utils/dateUtils";
-
-function ProfileModal({
+const ProfileModal = ({
   open,
   onClose,
-  user
-}) {
-  const navigate = useNavigate();
-
-  const handleLogout = () => {
-    localStorage.removeItem("user");
-
-    navigate("/", {
-      replace: true
-    });
-  };
+  user,
+}) => {
+  if (!user) {
+    return null;
+  }
 
   return (
     <Modal
-      title="Perfil"
       open={open}
       onCancel={onClose}
-      footer={[
-        <Button
-          key="logout"
-          danger
-          onClick={handleLogout}
-        >
-          Cerrar sesión
-        </Button>
-      ]}
+      footer={null}
+      centered
+      title="Perfil"
     >
-      <div
-        style={{
-          textAlign: "center"
-        }}
-      >
-        <div className="profile-avatar-modal">
-          {getInitials(user?.nombre)}
+      <div className="profile-modal">
+        {/* =========================
+            AVATAR
+        ========================= */}
+
+        <div className="profile-avatar">
+          {user?.name
+            ?.charAt(0)
+            ?.toUpperCase() ||
+            "U"}
         </div>
 
-        <h3>{user?.nombre}</h3>
+        {/* =========================
+            INFO
+        ========================= */}
 
-        <p>{user?.cargo}</p>
+        <div className="profile-info">
+          <h2>
+            {user?.name ||
+              "Usuario"}
+          </h2>
 
-        <p>
-          {user?.document_number}
-        </p>
+          <p>
+            {
+              user?.email
+            }
+          </p>
+
+          <Tag color="green">
+            Activo
+          </Tag>
+        </div>
+
+        {/* =========================
+            DETAILS
+        ========================= */}
+
+        <div className="profile-details">
+          <div className="detail-item">
+            <span>
+              Documento
+            </span>
+
+            <strong>
+              {user?.document_number ||
+                "-"}
+            </strong>
+          </div>
+
+          <div className="detail-item">
+            <span>
+              Perfil
+            </span>
+
+            <strong>
+              {user?.profile ||
+                "Capacitadora"}
+            </strong>
+          </div>
+
+          <div className="detail-item">
+            <span>
+              Portal
+            </span>
+
+            <strong>
+              Instructoras
+            </strong>
+          </div>
+        </div>
       </div>
     </Modal>
   );
-}
+};
 
 export default ProfileModal;

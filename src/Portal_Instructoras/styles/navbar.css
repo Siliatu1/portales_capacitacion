@@ -1,0 +1,202 @@
+/* =========================
+   SIDEBAR
+========================= */
+
+.sidebar {
+  width: 260px;
+
+  height: 100vh;
+
+  position: fixed;
+
+  top: 0;
+
+  left: 0;
+
+  z-index: 1000;
+
+  background:
+    linear-gradient(
+      180deg,
+      #7a431d 0%,
+      #4b1e0e 100%
+    );
+
+  color: white;
+
+  display: flex;
+
+  flex-direction: column;
+
+  justify-content: space-between;
+
+  padding: 24px 18px;
+
+  box-sizing: border-box;
+
+  overflow-y: auto;
+}
+
+/* =========================
+   HEADER
+========================= */
+
+.sidebar-header {
+  margin-bottom: 40px;
+}
+
+.sidebar-header h1 {
+  margin: 0;
+
+  font-size: 34px;
+
+  font-weight: 700;
+
+  line-height: 1;
+}
+
+.sidebar-header span {
+  font-size: 14px;
+
+  opacity: 0.85;
+}
+
+/* =========================
+   MENU
+========================= */
+
+.sidebar-menu {
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 12px;
+
+  flex: 1;
+}
+
+.sidebar-item {
+  width: 100%;
+
+  border: none;
+
+  background: transparent;
+
+  color: white;
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 12px;
+
+  padding: 14px 16px;
+
+  border-radius: 14px;
+
+  cursor: pointer;
+
+  font-size: 15px;
+
+  font-weight: 500;
+
+  transition: 0.2s;
+}
+
+.sidebar-item:hover {
+  background:
+    rgba(255, 255, 255, 0.12);
+}
+
+.sidebar-item.active {
+  background:
+    rgba(255, 255, 255, 0.18);
+}
+
+/* =========================
+   FOOTER
+========================= */
+
+.sidebar-footer {
+  margin-top: auto;
+
+  padding-top: 20px;
+}
+
+.logout-button {
+  width: 100%;
+
+  border: none;
+
+  background:
+    rgba(255, 255, 255, 0.12);
+
+  color: white;
+
+  padding: 14px;
+
+  border-radius: 14px;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  gap: 10px;
+
+  cursor: pointer;
+
+  font-size: 15px;
+
+  font-weight: 600;
+
+  transition: 0.2s;
+}
+
+.logout-button:hover {
+  background:
+    rgba(255, 255, 255, 0.2);
+}
+
+/* =========================
+   PAGE LAYOUT
+========================= */
+
+.dashboard-container,
+.programacion-container,
+.admin-container {
+  margin-left: 260px;
+
+  min-height: 100vh;
+
+  width: calc(100% - 260px);
+
+  padding: 32px;
+
+  box-sizing: border-box;
+
+  overflow-x: hidden;
+}
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media (max-width: 992px) {
+  .sidebar {
+    width: 100%;
+
+    height: auto;
+
+    position: relative;
+  }
+
+  .dashboard-container,
+  .programacion-container,
+  .admin-container {
+    margin-left: 0;
+
+    width: 100%;
+  }
+}

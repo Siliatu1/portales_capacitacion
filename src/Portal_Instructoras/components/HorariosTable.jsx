@@ -1,80 +1,207 @@
 import {
-  Card,
   Table,
-  Tag
+  Tag,
+  Button,
+  Popconfirm,
 } from "antd";
 
-function HorariosTable({
-  horarios,
-  totalHoras,
-  infoSemana,
-  formatearFecha
-}) {
-  return (
-    <div className="horarios-table-section">
-      <div className="table-header">
-        <div>
-          <h3 className="table-title">
-            Horarios Programados
-          </h3>
+import {
+  EditOutlined,
+  DeleteOutlined,
+} from "@ant-design/icons";
 
-          {infoSemana && (
-            <p>
-              {formatearFecha(
-                infoSemana.fechaInicio
-              )}{" "}
-              -{" "}
-              {formatearFecha(
-                infoSemana.fechaFin
-              )}
-            </p>
-          )}
-        </div>
+import {
+  getColorActividad,
+} from "../utils/motivos";
 
-        <Tag color="green">
-          {totalHoras.toFixed(1)}h
+const HorariosTable = ({
+  data = [],
+  loading = false,
+  onEditar,
+  onEliminar,
+}) => {
+  /* =========================
+     COLUMNS
+  ========================= */
+
+  const columns = [
+    {
+      title: "Fecha",
+
+      dataIndex: "fecha",
+
+      key: "fecha",
+
+      width: 120,
+    },
+
+    {
+      title: "Punto de Venta",
+
+      dataIndex:
+        "puntoVenta",
+
+      key: "puntoVenta",
+
+      width: 220,
+    },
+
+    {
+      title: "Actividad",
+
+      dataIndex: "motivo",
+
+      key: "motivo",
+
+      width: 180,
+
+      render: (value) => (
+        <Tag
+          color={
+            getColorActividad(
+              value
+            )
+          }
+        >
+          {value}
         </Tag>
-      </div>
+      ),
+    },
 
-      <Card>
-        <Table
-          dataSource={horarios}
-          rowKey="id"
-          pagination={false}
-          columns={[
-            {
-              title: "PDV",
-              render: (_, item) =>
-                item.attributes
-                  ?.pdv_nombre
-            },
-            {
-              title: "Actividad",
-              render: (_, item) => (
-                <Tag color="blue">
-                  {
-                    item.attributes
-                      ?.actividad
-                  }
-                </Tag>
-              )
-            },
-            {
-              title: "Horario",
-              render: (_, item) =>
-                `${item.attributes?.hora_inicio?.substring(
-                  0,
-                  5
-                )} - ${item.attributes?.hora_fin?.substring(
-                  0,
-                  5
-                )}`
+    {
+      title: "Hora Inicio",
+
+      dataIndex:
+        "horaInicio",
+
+      key: "horaInicio",
+
+      width: 120,
+    },
+
+    {
+      title: "Hora Fin",
+
+      dataIndex:
+        "horaFin",
+
+      key: "horaFin",
+
+      width: 120,
+    },
+
+    {
+      title: "Horas",
+
+      key: "horas",
+
+      width: 100,
+
+      render: (_, row) => {
+        const inicio =
+          row.horaInicio
+            ?.split(":")
+            .map(Number);
+
+        const fin =
+          row.horaFin
+            ?.split(":")
+            .map(Number);
+
+        if (
+          !inicio ||
+          !fin
+        ) {
+          return "0h";
+        }
+
+        const minutosInicio =
+          inicio[0] * 60 +
+          inicio[1];
+
+        const minutosFin =
+          fin[0] * 60 +
+          fin[1];
+
+        const total =
+          (
+            (minutosFin -
+              minutosInicio) /
+            60
+          ).toFixed(1);
+
+        return `${total}h`;
+      },
+    },
+
+    {
+      title: "Acciones",
+
+      key: "acciones",
+
+      fixed: "right",
+
+      width: 140,
+
+      render: (_, row) => (
+        <div
+          style={{
+            display: "flex",
+            gap: "8px",
+          }}
+        >
+          <Button
+            icon={
+              <EditOutlined />
             }
-          ]}
-        />
-      </Card>
+            onClick={() =>
+              onEditar(row)
+            }
+          />
+
+          <Popconfirm
+            title="Eliminar horario"
+            description="¿Deseas eliminar este horario?"
+            okText="Eliminar"
+            cancelText="Cancelar"
+            onConfirm={() =>
+              onEliminar(
+                row.id
+              )
+            }
+          >
+            <Button
+              danger
+              icon={
+                <DeleteOutlined />
+              }
+            />
+          </Popconfirm>
+        </div>
+      ),
+    },
+  ];
+
+  /* =========================
+     RENDER
+  ========================= */
+
+  return (
+    <div className="horarios-table">
+      <Table
+        rowKey="id"
+        loading={loading}
+        columns={columns}
+        dataSource={data}
+        pagination={{
+          pageSize: 10,
+        }}
+        scroll={{
+          x: 1000,
+        }}
+      />
     </div>
   );
-}
+};
 
 export default HorariosTable;

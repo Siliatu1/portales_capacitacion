@@ -1,137 +1,106 @@
-import { useEffect, useMemo, useState } from "react";
-import { useNavigate } from "react-router-dom";
-
-import { getHorariosSemana } from "../services/horariosService";
+import { useMemo } from "react";
 
 import {
-  calcularSemana,
-  formatearFecha,
-  formatearRangoFechas
-} from "../utils/dateUtils";
+  calcularHorasSemana,
+} from "../utils/fechas";
 
-import {
-  CARGOS_ADMINISTRATIVOS
-} from "../utils/constants";
+export const useDashboard = ({
+  horarios = [],
+  programacionSemanal = {},
+}) => {
+  /* =========================
+     TOTAL EVENTOS
+  ========================= */
 
-export const useDashboard = () => {
-  const navigate = useNavigate();
+  const totalEventos =
+    useMemo(() => {
+      return horarios.length;
+    }, [horarios]);
 
-  const [user, setUser] = useState(null);
+  /* =========================
+     TOTAL HORAS
+  ========================= */
 
-  const [horarios, setHorarios] = useState([]);
+  const totalHoras =
+    useMemo(() => {
+      return calcularHorasSemana(
+        programacionSemanal
+      );
+    }, [programacionSemanal]);
 
-  const [showProfileModal, setShowProfileModal] =
-    useState(false);
+  /* =========================
+     TOTAL PDVS
+  ========================= */
 
-  const [infoSemana, setInfoSemana] =
-    useState(null);
+  const totalPDVS =
+    useMemo(() => {
+      const unique =
+        new Set();
 
-  useEffect(() => {
-    validarUsuario();
-  }, []);
+      horarios.forEach((item) => {
+        const pdv =
+          item.attributes
+            ?.pdv_nombre;
 
-  useEffect(() => {
-    if (user) {
-      cargarHorarios();
-    }
-  }, [user]);
-
-  const validarUsuario = () => {
-    const userData =
-      localStorage.getItem("user");
-
-    if (!userData) {
-      navigate("/", { replace: true });
-      return;
-    }
-
-    const parsedUser = JSON.parse(userData);
-
-    if (
-      CARGOS_ADMINISTRATIVOS.includes(
-        parsedUser.cargo
-      )
-    ) {
-      navigate("/vista-administrativa", {
-        replace: true
+        if (pdv) {
+          unique.add(pdv);
+        }
       });
 
-      return;
-    }
+      return unique.size;
+    }, [horarios]);
 
-    setUser(parsedUser);
-  };
+  /* =========================
+     ACTIVIDAD MÁS USADA
+  ========================= */
 
-  const cargarHorarios = async () => {
-    try {
-      const semana = calcularSemana();
+  const actividadTop =
+    useMemo(() => {
+      const counter = {};
 
-      setInfoSemana(semana);
+      horarios.forEach((item) => {
+        const actividad =
+          item.attributes
+            ?.actividad;
 
-      const documento =
-        user?.document_number ||
-        user?.documento ||
-        user?.cedula;
+        if (!actividad) {
+          return;
+        }
 
-      const fechaInicio =
-        semana.fechaInicio
-          .toISOString()
-          .split("T")[0];
+        counter[actividad] =
+          (counter[
+            actividad
+          ] || 0) + 1;
+      });
 
-      const fechaFin =
-        semana.fechaFin
-          .toISOString()
-          .split("T")[0];
+      let max = 0;
 
-      const data = await getHorariosSemana(
-        documento,
-        fechaInicio,
-        fechaFin
+      let actividadMax =
+        "Sin datos";
+
+      Object.entries(
+        counter
+      ).forEach(
+        ([key, value]) => {
+          if (value > max) {
+            max = value;
+
+            actividadMax =
+              key;
+          }
+        }
       );
 
-      setHorarios(data);
-    } catch (error) {
-      console.error(
-        "Error cargando horarios",
-        error
-      );
-    }
-  };
-
-  const totalHoras = useMemo(() => {
-    return horarios.reduce((total, item) => {
-      const inicio =
-        item.attributes?.hora_inicio;
-
-      const fin =
-        item.attributes?.hora_fin;
-
-      if (!inicio || !fin) return total;
-
-      const [h1, m1] =
-        inicio.split(":").map(Number);
-
-      const [h2, m2] =
-        fin.split(":").map(Number);
-
-      return (
-        total +
-        ((h2 * 60 + m2 -
-          (h1 * 60 + m1)) /
-          60)
-      );
-    }, 0);
-  }, [horarios]);
+      return actividadMax;
+    }, [horarios]);
 
   return {
-    navigate,
-    user,
-    horarios,
+    totalEventos,
+
     totalHoras,
-    infoSemana,
-    showProfileModal,
-    setShowProfileModal,
-    formatearFecha,
-    formatearRangoFechas
+
+    totalPDVS,
+
+    actividadTop,
   };
 };

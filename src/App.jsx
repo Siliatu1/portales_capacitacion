@@ -27,9 +27,13 @@ import GestionInstructoras from "./Portal_Lineas_producto/pages/GestionInstructo
 
 import ProtectedViewRoute from "./auth/components/ProtectedViewRoute";
 
+import Programacion from "./Portal_Instructoras/pages/ProgramacionHorarios";
+
 import Dashboard from "./Portal_Instructoras/pages/Dashboard";
 
-import Programacion from "./Portal_Instructoras/pages/ProgramacionHorarios";
+import ProgramacionHorarios from "./Portal_Instructoras/pages/ProgramacionHorarios";
+
+import VistaAdministrativa from "./Portal_Instructoras/pages/VistaAdministrativa";
 
 function App() {
   const user = null;
@@ -122,23 +126,15 @@ function App() {
         />
 
         {/* PORTAL INSTRUCTORAS */}
-        <Route
-          path="/lineas-producto/panel-instructora"
-          element={
-            <ProtectedViewRoute view="PANELINSTRUCTORA">
-              <Dashboard />
-            </ProtectedViewRoute>
-          }
-        />
 
         <Route
-          path="/portal-instructoras/programacion"
+          path="/portal-instructoras/dashboard"
           element={
-            <ProtectedViewRoute view="PROGRAMACION">
-              <Programacion />
-            </ProtectedViewRoute>
+            <Dashboard />
           }
         />
+        
+
 
         <Route
           path="/dashboard"
@@ -150,7 +146,29 @@ function App() {
             )
           }
         />
+         <Route
+          path="/portal-instructoras/programacion"
+          element={
+            <ProgramacionHorarios />
+          }
+        />
 
+        <Route
+          path="/portal-instructoras/administrativo"
+          element={
+            <VistaAdministrativa />
+          }
+        />
+         <Route
+          path="*"
+          element={
+            <Navigate
+              to="/portal-instructoras/dashboard"
+              replace
+            />
+          }
+        />
+        
         <Route
           path="*"
           element={<Navigate to="/" />}
