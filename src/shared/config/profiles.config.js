@@ -47,6 +47,7 @@ export const PROFILE_CONFIG = {
       "FORM_TODERA",
       "PANELINSTRUCTORA",
       "PROGRAMACION",
+      "ADMINISTRATIVO",
       "GESTION_INSTRUCTORAS",
     ],
 
@@ -97,6 +98,9 @@ export const VIEW_ROUTES = {
   PROGRAMACION:
     "/portal-instructoras/dashboard",
 
+  ADMINISTRATIVO:
+    "/portal-instructoras/administrativo",
+
   GESTION_INSTRUCTORAS:
     "/lineas-producto/gestion-instructoras",
 };
@@ -115,6 +119,8 @@ export const PORTAL_LINEAS_PRODUCTO_VIEWS = [
   "PANELINSTRUCTORA",
 
   "PROGRAMACION",
+
+  "ADMINISTRATIVO",
 
   "GESTION_INSTRUCTORAS",
 ];

@@ -5,23 +5,37 @@ const URL =
 
 let menuCache = null;
 
+let menuPromise = null;
+
 export const getMenu = async () => {
   try {
+    // cache final
     if (menuCache) {
       return menuCache;
     }
 
-    const response = await fetch(URL);
-
-    if (!response.ok) {
-      throw new Error("Error al obtener menú");
+    // petición en curso
+    if (menuPromise) {
+      return menuPromise;
     }
 
-    const json = await response.json();
+    menuPromise = fetch(URL)
+      .then(async (response) => {
+        if (!response.ok) {
+          throw new Error("Error al obtener menú");
+        }
 
-    menuCache = mapMenuData(json.data);
+        const json = await response.json();
 
-    return menuCache;
+        menuCache = mapMenuData(json.data);
+
+        return menuCache;
+      })
+      .finally(() => {
+        menuPromise = null;
+      });
+
+    return menuPromise;
   } catch (error) {
     console.error("MENU API ERROR:", error);
 

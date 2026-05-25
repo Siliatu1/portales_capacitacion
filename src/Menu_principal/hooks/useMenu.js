@@ -31,7 +31,8 @@ export const useMenu = () => {
     );
 
   const canAccessPortalInstructoras =
-    canAccessView("PROGRAMACION");
+    canAccessView("PROGRAMACION") ||
+    canAccessView("ADMINISTRATIVO");
 
   useEffect(() => {
     const fetchMenu = async () => {

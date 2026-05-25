@@ -27,13 +27,11 @@ import GestionInstructoras from "./Portal_Lineas_producto/pages/GestionInstructo
 
 import ProtectedViewRoute from "./auth/components/ProtectedViewRoute";
 
-import Programacion from "./Portal_Instructoras/pages/ProgramacionHorarios";
+import Dashboard from "./Portal_Instructoras/components/Dashboard";
 
-import Dashboard from "./Portal_Instructoras/pages/Dashboard";
+import ProgramacionHorarios from "./Portal_Instructoras/components/ProgramacionHorarios";
 
-import ProgramacionHorarios from "./Portal_Instructoras/pages/ProgramacionHorarios";
-
-import VistaAdministrativa from "./Portal_Instructoras/pages/VistaAdministrativa";
+import VistaAdministrativa from "./Portal_Instructoras/components/VistaAdministrativa";
 
 function App() {
   const user = null;
