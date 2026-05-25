@@ -1,6 +1,6 @@
 export const PROFILE_CONFIG = {
   TEAM_LEAD: {
-    views: ["FORM_HELADERIA", "PANEL"],
+    views: ["FORM_HELADERIA", "PANEL", "INSCRIPCIONES_CAFE"],
 
     permissions: {
       filterByPDV: true,
@@ -12,7 +12,7 @@ export const PROFILE_CONFIG = {
   },
 
   ADMIN_GENERAL: {
-    views: ["FORM_HELADERIA", "PANEL"],
+    views: ["FORM_HELADERIA", "PANEL", "INSCRIPCIONES_CAFE"],
 
     permissions: {
       filterByPDV: false,
@@ -28,6 +28,8 @@ export const PROFILE_CONFIG = {
       "FORM_RESTAURANTE",
       "PANEL",
       "FORM_TODERA",
+      "INSCRIPCIONES_CAFE",
+      "INSCRIPCIONES_TODERA",
     ],
 
     permissions: {
@@ -45,6 +47,8 @@ export const PROFILE_CONFIG = {
       "FORM_HELADERIA",
       "FORM_RESTAURANTE",
       "FORM_TODERA",
+      "INSCRIPCIONES_CAFE",
+      "INSCRIPCIONES_TODERA",
       "PANELINSTRUCTORA",
       "PROGRAMACION",
       "ADMINISTRATIVO",
@@ -103,6 +107,12 @@ export const VIEW_ROUTES = {
 
   GESTION_INSTRUCTORAS:
     "/lineas-producto/gestion-instructoras",
+
+  INSCRIPCIONES_CAFE:
+    "/lineas-producto/inscripciones/cafe",
+
+  INSCRIPCIONES_TODERA:
+    "/lineas-producto/inscripciones/todera",
 };
 
 export const PORTAL_LINEAS_PRODUCTO_VIEWS = [
@@ -123,4 +133,8 @@ export const PORTAL_LINEAS_PRODUCTO_VIEWS = [
   "ADMINISTRATIVO",
 
   "GESTION_INSTRUCTORAS",
+
+  "INSCRIPCIONES_CAFE",
+
+  "INSCRIPCIONES_TODERA",
 ];

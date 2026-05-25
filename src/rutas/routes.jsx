@@ -118,7 +118,7 @@ const AppRoutes = () => (
     <Route
       path="/lineas-producto/inscripciones/cafe"
       element={
-        <ProtectedViewRoute view="PANEL">
+        <ProtectedViewRoute view="INSCRIPCIONES_CAFE">
           <InscripcionesCafe />
         </ProtectedViewRoute>
       }
@@ -127,7 +127,7 @@ const AppRoutes = () => (
     <Route
       path="/lineas-producto/inscripciones/todera"
       element={
-        <ProtectedViewRoute view="PANEL">
+        <ProtectedViewRoute view="INSCRIPCIONES_TODERA">
           <InscripcionesTodera />
         </ProtectedViewRoute>
       }

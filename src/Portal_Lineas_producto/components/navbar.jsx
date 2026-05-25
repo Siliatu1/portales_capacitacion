@@ -58,12 +58,18 @@ const INSCRIPCIONES_ITEMS = [
     label:
       "Escuela Café",
 
+    view:
+      "INSCRIPCIONES_CAFE",
+
     route:
       "/lineas-producto/inscripciones/cafe",
   },
 
   {
     label: "Todera",
+
+    view:
+      "INSCRIPCIONES_TODERA",
 
     route:
       "/lineas-producto/inscripciones/todera",
@@ -189,7 +195,12 @@ const Navbar = ({
 
             {openSubmenu && (
               <div className="submenu-items">
-                {INSCRIPCIONES_ITEMS.map(
+                {INSCRIPCIONES_ITEMS.filter(
+                  (item) =>
+                    canAccessView(
+                      item.view
+                    )
+                ).map(
                   (item) => {
                     const isActive =
                       location.pathname ===
