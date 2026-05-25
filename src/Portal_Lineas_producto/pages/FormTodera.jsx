@@ -17,6 +17,7 @@ import {
 import Swal from "sweetalert2";
 
 import BuscarEmpleado from "../components/BuscarEmpleado";
+import Navbar from "../components/navbar";
 
 import useEmpleado from "../hooks/useEmpleado";
 
@@ -33,6 +34,7 @@ import {
 } from "../utils/toderaOptions.js";
 
 import "../styles/formtodera.css";
+import "../styles/formLayout.css";
 
 const getPdvFromStorage =
   () => {
@@ -388,7 +390,10 @@ const FormTodera = () => {
     };
 
   return (
-    <div className="form-todera-wrapper">
+    <>
+      <Navbar />
+      <div className="lineas-form-content">
+        <div className="form-todera-wrapper">
       <div className="todera-page-header">
         <button
           type="button"
@@ -669,7 +674,9 @@ const FormTodera = () => {
           </div>
         </div>
       )}
-    </div>
+        </div>
+      </div>
+    </>
   );
 };
 

@@ -4,10 +4,11 @@ import {
   Table,
   Tag,
 } from "antd";
+import { AlertTriangle } from "lucide-react";
 
 import { useAuth } from "../../auth/hooks/useAuth";
 
-import "../styles/Table.css";
+import "../styles/table.css";
 
 import {
   mapAsistencia,
@@ -42,6 +43,120 @@ export default function InscripcionesTable({
     )
       ? 0
       : parsed;
+  };
+
+  const parseLocalDate = (
+    value
+  ) => {
+    if (!value) {
+      return null;
+    }
+
+    if (
+      value instanceof Date &&
+      !Number.isNaN(value.getTime())
+    ) {
+      return new Date(
+        value.getFullYear(),
+        value.getMonth(),
+        value.getDate()
+      );
+    }
+
+    const raw = String(value);
+    const isoMatch = raw.match(
+      /^(\d{4})-(\d{2})-(\d{2})/
+    );
+
+    if (isoMatch) {
+      return new Date(
+        Number(isoMatch[1]),
+        Number(isoMatch[2]) - 1,
+        Number(isoMatch[3])
+      );
+    }
+
+    const parsed = new Date(raw);
+
+    if (Number.isNaN(parsed.getTime())) {
+      return null;
+    }
+
+    return new Date(
+      parsed.getFullYear(),
+      parsed.getMonth(),
+      parsed.getDate()
+    );
+  };
+
+  const formatDate = (value) => {
+    const parsed = parseLocalDate(value);
+
+    if (!parsed) {
+      return value || "-";
+    }
+
+    return parsed.toLocaleDateString("es-CO");
+  };
+
+  const isPendingEvaluation = (
+    value
+  ) => {
+    if (value === true || value === 1) {
+      return false;
+    }
+
+    const normalized = String(
+      value ?? ""
+    )
+      .trim()
+      .toLowerCase();
+
+    return ![
+      "true",
+      "1",
+      "aprobado",
+      "aprobada",
+      "evaluado",
+      "evaluada",
+      "certificado",
+      "certificada",
+    ].includes(normalized);
+  };
+
+  const isOverdueEvaluation = (
+    record
+  ) => {
+    if (
+      !isPendingEvaluation(
+        record?.estado
+      )
+    ) {
+      return false;
+    }
+
+    const inscriptionDate =
+      parseLocalDate(record?.dia);
+
+    if (!inscriptionDate) {
+      return false;
+    }
+
+    const today = new Date();
+    const todayStart = new Date(
+      today.getFullYear(),
+      today.getMonth(),
+      today.getDate()
+    );
+    const msPerDay =
+      24 * 60 * 60 * 1000;
+    const diffDays = Math.floor(
+      (todayStart -
+        inscriptionDate) /
+        msPerDay
+    );
+
+    return diffDays >= 15;
   };
 
   const handleDelete =
@@ -153,15 +268,7 @@ export default function InscripcionesTable({
           return "-";
         }
 
-        try {
-          return new Date(
-            value
-          ).toLocaleDateString(
-            "es-CO"
-          );
-        } catch {
-          return value;
-        }
+        return formatDate(value);
       },
     },
   ];
@@ -384,20 +491,37 @@ export default function InscripcionesTable({
       defaultSortOrder:
         "descend",
 
-      render: (value) => {
+      render: (
+        value,
+        record
+      ) => {
         if (!value) {
           return "-";
         }
 
-        try {
-          return new Date(
-            value
-          ).toLocaleDateString(
-            "es-CO"
-          );
-        } catch {
-          return value;
+        const label =
+          formatDate(value);
+
+        if (
+          !isOverdueEvaluation(
+            record
+          )
+        ) {
+          return label;
         }
+
+        return (
+          <div
+            className="overdue-date-badge"
+            title="Pendiente por evaluar hace 15 dias o mas"
+          >
+            <span>{label}</span>
+            <AlertTriangle
+              size={14}
+              strokeWidth={2.4}
+            />
+          </div>
+        );
       },
     },
 
@@ -439,7 +563,10 @@ export default function InscripcionesTable({
 
       responsive: ["xl"],
 
-      ellipsis: true,
+      width: 320,
+
+      className:
+        "todera-observacion-cell",
 
       render: (value) =>
         value ||

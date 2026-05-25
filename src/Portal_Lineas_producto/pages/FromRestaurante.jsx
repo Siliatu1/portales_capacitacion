@@ -5,12 +5,14 @@ import { useAuth } from "../../auth/hooks/useAuth";
 import { getCuposFechaCapCafe, guardarInscripcion } from "../services/formulario.service";
 import { getInitialFormState, buildInscripcionAttributes } from "../utils/formularioHel.utils";
 import EmpleadoInfo from "../components/EmpleadoInfo";
+import Navbar from "../components/navbar";
 import { useState, useMemo, useEffect } from "react";
 import { ArrowLeft, Lock, Unlock } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 
 import "../styles/formularioHel.css";
+import "../styles/formLayout.css";
 
 const MAX_CUPOS_POR_FECHA = 3;
 
@@ -168,7 +170,10 @@ const FormRestaurante = () => {
   };
 
   return (
-    <div className="inscripcion-container">
+    <>
+      <Navbar />
+      <div className="lineas-form-content">
+        <div className="inscripcion-container">
       <div className="inscripcion-card">
         <div className="form-page-header">
           <button
@@ -295,7 +300,9 @@ const FormRestaurante = () => {
         </div>
 
       </div>
-    </div>
+        </div>
+      </div>
+    </>
   );
 };
 

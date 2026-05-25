@@ -14,6 +14,7 @@ import {
   DownloadOutlined,
   CalendarOutlined,
   ArrowRightOutlined,
+  EditOutlined,
 } from '@ant-design/icons';
 
 import 'antd/dist/reset.css';
@@ -28,6 +29,7 @@ import {
   formatearFecha,
   formatearFechaCompleta,
   formatearRangoFechas,
+  getActividadTagColor,
   getDiaSemana,
   getInitials,
 } from './dashboard.helpers';
@@ -61,8 +63,82 @@ function Dashboard() {
     semanaPreview,
     modalEditar,
     showMoreMotivos,
+    filaExpandida,
     formDataModal,
   } = ui;
+
+  const formatHorario = (record) =>
+    record.horaInicio === '00:00:00'
+      ? 'Todo el dia'
+      : `${record.horaInicio?.substring(
+          0,
+          5
+        )} - ${record.horaFin?.substring(
+          0,
+          5
+        )}`;
+
+  const renderActividadesSemana = () => (
+    <div className="dashboard-week-detail">
+      <Table
+        className="dashboard-week-detail-table"
+        dataSource={horariosDetalles}
+        rowKey={(record) => String(record.apiId)}
+        pagination={false}
+        size="small"
+        columns={[
+          {
+            title: 'Fecha',
+            dataIndex: 'fecha',
+            key: 'fecha',
+            render: (fecha) => (
+              <div className="dashboard-program-date">
+                <strong>{getDiaSemana(fecha)}</strong>
+                <span>{formatearFechaCompleta(fecha)}</span>
+              </div>
+            ),
+          },
+          {
+            title: 'Punto de venta',
+            dataIndex: 'pdv',
+            key: 'pdv',
+            render: (pdv) => pdv || 'N/A',
+          },
+          {
+            title: 'Actividad',
+            dataIndex: 'actividad',
+            key: 'actividad',
+            render: (actividad) => (
+              <Tag color={getActividadTagColor(actividad || '')}>
+                {actividad || 'Sin actividad'}
+              </Tag>
+            ),
+          },
+          {
+            title: 'Horario',
+            key: 'horario',
+            render: (_, record) => formatHorario(record),
+          },
+          {
+            title: 'Acciones',
+            key: 'acciones',
+            render: (_, record) => (
+              <Tooltip title="Editar actividad">
+                <Button
+                  type="text"
+                  icon={<EditOutlined />}
+                  onClick={() => actions.editarActividad(record)}
+                />
+              </Tooltip>
+            ),
+          },
+        ]}
+        locale={{
+          emptyText: 'No hay actividades registradas para esta semana',
+        }}
+      />
+    </div>
+  );
 
   const handleDescargarPDF = (
     semana
@@ -357,6 +433,24 @@ function Dashboard() {
                 Total:{' '}
                 {totalHoras.toFixed(1)}h
               </Tag>
+
+              {infoSemana && (
+                <Tooltip title="Descargar PDF">
+                  <Button
+                    type="text"
+                    icon={<DownloadOutlined />}
+                    onClick={() =>
+                      handleDescargarPDF({
+                        fechaInicio: infoSemana.fechaInicio,
+                        fechaFin: infoSemana.fechaFin,
+                        totalHoras,
+                      })
+                    }
+                  >
+                    PDF
+                  </Button>
+                </Tooltip>
+              )}
             </div>
 
           </div>
@@ -365,19 +459,28 @@ function Dashboard() {
 
             <Table
               dataSource={horariosData}
+              rowKey={(record) => record.key}
               pagination={false}
               bordered
               columns={[
                 {
-                  title: 'Fechas',
+                  title: 'Semana',
 
-                  key: 'fechas',
+                  key: 'semana',
 
-                  render: (_, r) =>
-                    formatearRangoFechas(
-                      r.fechaInicio,
-                      r.fechaFin
-                    ),
+                  render: (_, record) => (
+                    <div className="dashboard-week-summary">
+                      <strong>
+                        {formatearRangoFechas(
+                          record.fechaInicio,
+                          record.fechaFin
+                        )}
+                      </strong>
+                      <span>
+                        {horariosDetalles.length} actividades programadas
+                      </span>
+                    </div>
+                  ),
                 },
 
                 {
@@ -387,9 +490,21 @@ function Dashboard() {
 
                   key: 'totalHoras',
 
-                  render: (h) => (
-                    <Tag color="cyan">
-                      {h.toFixed(1)}h
+                  render: (hours) => (
+                    <Tag color="green">
+                      {hours.toFixed(1)}h
+                    </Tag>
+                  ),
+                },
+
+                {
+                  title: 'Estado',
+
+                  key: 'estado',
+
+                  render: () => (
+                    <Tag color="gold">
+                      Semana abierta
                     </Tag>
                   ),
                 },
@@ -401,39 +516,37 @@ function Dashboard() {
 
                   render: (_, record) => (
                     <Space size="small">
-
-                      <Tooltip title="Ver detalle">
-                        <Button
-                          type="text"
-                          icon={
-                            <EyeOutlined />
-                          }
-                          onClick={() =>
-                            actions.verSemana(
-                              record
-                            )
-                          }
-                        />
-                      </Tooltip>
-
                       <Tooltip title="Descargar PDF">
                         <Button
                           type="text"
-                          icon={
-                            <DownloadOutlined />
-                          }
+                          icon={<DownloadOutlined />}
                           onClick={() =>
-                            handleDescargarPDF(
-                              record
-                            )
+                            handleDescargarPDF(record)
                           }
                         />
                       </Tooltip>
-
                     </Space>
                   ),
                 },
               ]}
+              expandable={{
+                expandedRowRender:
+                  renderActividadesSemana,
+                expandedRowKeys:
+                  filaExpandida
+                    ? [filaExpandida]
+                    : [],
+                onExpand: (expanded, record) =>
+                  actions.setFilaExpandida(
+                    expanded ? record.key : null
+                  ),
+                rowExpandable: () =>
+                  horariosDetalles.length > 0,
+              }}
+              locale={{
+                emptyText:
+                  'No hay programacion registrada para esta semana',
+              }}
             />
 
           </Card>

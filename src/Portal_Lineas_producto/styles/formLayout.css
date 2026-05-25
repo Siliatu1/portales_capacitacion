@@ -1,0 +1,33 @@
+.lineas-form-content {
+  min-height: 100vh;
+  width: calc(100% - 260px);
+  margin-left: 260px;
+  padding: 32px;
+  background: #f8f3ec;
+  overflow-x: hidden;
+}
+
+.lineas-form-content .inscripcion-container,
+.lineas-form-content .form-todera-wrapper {
+  min-height: calc(100vh - 64px);
+  padding: 0;
+  background: transparent;
+}
+
+.lineas-form-content .inscripcion-card,
+.lineas-form-content .form-todera-wrapper > * {
+  max-width: 980px;
+}
+
+@media (max-width: 768px) {
+  .lineas-form-content {
+    width: 100%;
+    margin-left: 0;
+    padding: 20px;
+  }
+
+  .lineas-form-content .inscripcion-container,
+  .lineas-form-content .form-todera-wrapper {
+    min-height: auto;
+  }
+}

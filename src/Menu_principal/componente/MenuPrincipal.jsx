@@ -1,14 +1,34 @@
 import { useMenu } from "../hooks/useMenu";
 import "../styles/menu.css";
 import { useAuth } from "../../auth/hooks/useAuth";
+import { useNavigate } from "react-router-dom";
+import { LogOut } from "lucide-react";
 
 const MenuPrincipal = () => {
   const { menu, loading, goTo } = useMenu();
-  const { user } = useAuth();
+  const { user, logout } = useAuth();
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    logout();
+    navigate("/", { replace: true });
+  };
+
+  const getCardClassName = (title = "") => {
+    const normalizedTitle = title
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .toLowerCase();
+
+    if (normalizedTitle.includes("instructora")) {
+      return "menu-card menu-card-instructoras animate-fade-in";
+    }
+
+    return "menu-card menu-card-lineas animate-fade-in";
+  };
 
   return (
     <div className="menu-container">
-      {/* HEADER / NAVBAR */}
       <header className="menu-header">
         <div className="header-content">
           <div className="user-info">
@@ -16,11 +36,19 @@ const MenuPrincipal = () => {
             <div className="user-details">
               <p className="user-name">{user?.nombre || "Usuario"}</p>
             </div>
+            <button
+              type="button"
+              className="logout-button"
+              onClick={handleLogout}
+              aria-label="Cerrar sesion"
+            >
+              <LogOut size={18} />
+              Cerrar sesion
+            </button>
           </div>
         </div>
       </header>
 
-      {/* MAIN CONTENT */}
       <main className="menu-body">
         {loading ? (
           <div className="loading-container">
@@ -37,7 +65,7 @@ const MenuPrincipal = () => {
               {menu.map((item, index) => (
                 <article
                   key={item.id}
-                  className="menu-card animate-fade-in"
+                  className={getCardClassName(item.title)}
                   style={{ animationDelay: `${index * 0.1}s` }} /* Detalle extra para entrada escalonada */
                   onClick={() => goTo(item.route)}
                 >

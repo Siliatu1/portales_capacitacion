@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react';
 import { useAuth } from '../../auth/hooks/useAuth';
 import { updateHorario } from '../services/horariosInstructoras.service';
+import Swal from 'sweetalert2';
 import {
   buildBaseUser,
   buildEditFormData,
@@ -46,8 +47,14 @@ export function useDashboardController() {
     (response) => buildHorariosState(response?.data, semana)
   );
 
-  const horariosDetalles = horariosQuery.data?.detalles || [];
-  const horariosData = horariosQuery.data?.filas || [];
+  const horariosDetalles = useMemo(
+    () => horariosQuery.data?.detalles || [],
+    [horariosQuery.data]
+  );
+  const horariosData = useMemo(
+    () => horariosQuery.data?.filas || [],
+    [horariosQuery.data]
+  );
   const infoSemana = horariosQuery.data?.infoSemana || {
     numero: semana.numeroSemana,
     fechaInicio: semana.lunes,
@@ -105,20 +112,48 @@ export function useDashboardController() {
 
       const validationError = validateEditForm(formDataModal);
       if (validationError) {
-        alert(validationError);
+        Swal.fire({
+          title: 'Datos incompletos',
+          text: validationError,
+          icon: 'warning',
+          confirmButtonColor: '#6B4E3D',
+        });
         return;
       }
 
       const { payload } = buildHorarioPayload(formDataModal, eventoEditar, user.documento, puntosVenta);
+
+      const result = await Swal.fire({
+        title: 'Confirmar cambios',
+        text: 'Deseas guardar los cambios de esta actividad?',
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonText: 'Guardar',
+        cancelButtonText: 'Cancelar',
+        confirmButtonColor: '#6B4E3D',
+        cancelButtonColor: '#c9a984',
+      });
+
+      if (!result.isConfirmed) return;
 
       try {
         setGuardando(true);
         await updateHorario(eventoEditar.apiId, payload);
         await horariosQuery.refetch();
         cerrarModal();
-        alert('Actividad actualizada exitosamente');
+        Swal.fire({
+          title: 'Actividad actualizada',
+          text: 'Los cambios fueron guardados correctamente',
+          icon: 'success',
+          confirmButtonColor: '#6B4E3D',
+        });
       } catch {
-        alert('Error al guardar los cambios. Por favor intenta nuevamente.');
+        Swal.fire({
+          title: 'Error',
+          text: 'No fue posible guardar los cambios. Intenta nuevamente.',
+          icon: 'error',
+          confirmButtonColor: '#6B4E3D',
+        });
       } finally {
         setGuardando(false);
       }

@@ -6,7 +6,7 @@ import { Button, Input, Modal, Popconfirm, Switch, Table, Tag } from "antd";
 import { useState } from "react";
 import { useAuth } from "../../auth/hooks/useAuth";
 import { mapAsistencia } from "../utils/asistencia.utils";
-import "../styles/Table.css";
+import "../styles/table.css";
 
 const { TextArea } = Input;
 

@@ -536,7 +536,8 @@
   border-radius: 12px;
   padding: 24px;
   margin: 24px 40px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  border: 1px solid rgba(91, 57, 40, 0.08);
+  box-shadow: 0 12px 30px rgba(91, 57, 40, 0.06);
 }
 
 .table-header {
@@ -585,6 +586,36 @@
 
 .dashboard-table-card {
   margin: 20px 40px;
+}
+
+.dashboard-week-summary,
+.dashboard-program-date {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  color: #4e3416;
+}
+
+.dashboard-week-summary strong {
+  font-size: 15px;
+}
+
+.dashboard-week-summary span,
+.dashboard-program-date span {
+  color: #666;
+  font-size: 12px;
+}
+
+.dashboard-week-detail {
+  padding: 16px;
+  background: #fbf7f2;
+  border: 1px solid #eadfd6;
+  border-radius: 12px;
+}
+
+.dashboard-week-detail-table .ant-table {
+  overflow: hidden;
+  border-radius: 10px;
 }
 
 .dashboard-action-btn--view {
@@ -786,20 +817,45 @@
 }
 
 .horarios-table-section .ant-table-thead > tr > th {
-  background: white;
-  color: #4e3416;
-  font-weight: 700;
-  font-size: 14px;
-  border-bottom: 2px solid #e0e0e0;
+  background: #f5e9dc !important;
+  color: #7a5840 !important;
+  font-weight: 800 !important;
+  font-size: 13px;
+  border-bottom: 1px solid #eadfd6 !important;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+}
+
+.horarios-table-section .ant-table-tbody > tr > td {
+  border-color: #f2ebe5 !important;
+  color: #3c1f1c;
 }
 
 .horarios-table-section .ant-table-tbody > tr:hover > td {
-  background: white;
+  background: #fcf9f6 !important;
 }
 
 .horarios-table-section .ant-tag {
   font-weight: 600;
   border: none;
+}
+
+.horarios-table-section .ant-btn-text {
+  color: #6b4a38;
+}
+
+.horarios-table-section .ant-btn-text:hover {
+  background: #fff5e4 !important;
+  color: #4e3124 !important;
+}
+
+.horarios-table-section .ant-table-expanded-row > td {
+  background: #fffaf5 !important;
+}
+
+.horarios-table-section .ant-table-row-expand-icon {
+  border-color: #d7c7b8;
+  color: #6b4a38;
 }
 
 /* Responsive */

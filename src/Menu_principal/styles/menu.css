@@ -69,7 +69,12 @@ body,
 
     var(--bg-color);
 
-  padding: 40px 24px 60px;
+  padding: 32px 24px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 
 /* =========================
@@ -82,7 +87,7 @@ body,
   display: flex;
   justify-content: center;
 
-  margin-bottom: 50px;
+  margin-bottom: 30px;
 }
 
 .header-content {
@@ -121,16 +126,16 @@ body,
 }
 
 .user-avatar {
-  width: 95px;
-  height: 95px;
+  width: 148px;
+  height: 148px;
 
   border-radius: 50%;
 
   object-fit: cover;
 
-  border: 4px solid rgba(91, 57, 40, 0.1);
+  border: 5px solid rgba(91, 57, 40, 0.1);
 
-  box-shadow: 0 8px 18px rgba(91, 57, 40, 0.12);
+  box-shadow: 0 10px 24px rgba(91, 57, 40, 0.14);
 }
 
 .user-details {
@@ -146,6 +151,32 @@ body,
   line-height: 1.4;
 }
 
+.logout-button {
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  padding: 0.75rem 1.15rem;
+  border: 1px solid rgba(91, 57, 40, 0.14);
+  border-radius: 14px;
+  background: #ffffff;
+  color: var(--primary);
+  font-family: inherit;
+  font-size: 0.92rem;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 8px 18px rgba(91, 57, 40, 0.08);
+  transition: var(--transition);
+}
+
+.logout-button:hover {
+  background: #fff5ec;
+  border-color: rgba(91, 57, 40, 0.24);
+  transform: translateY(-2px);
+  box-shadow: 0 12px 22px rgba(91, 57, 40, 0.12);
+}
+
 /* =========================
    MAIN BODY
 ========================= */
@@ -155,11 +186,15 @@ body,
 
   display: flex;
   justify-content: center;
+  align-items: center;
 }
 
 .menu-wrapper {
   width: 100%;
-  max-width: 1200px;
+  max-width: 1180px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 /* =========================
@@ -169,7 +204,7 @@ body,
 .menu-header-section {
   text-align: center;
 
-  margin-bottom: 45px;
+  margin-bottom: 34px;
 
   animation: fadeUp 0.7s ease;
 }
@@ -202,9 +237,11 @@ body,
 .menu-cards {
   display: grid;
 
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(380px, 480px));
+  justify-content: center;
 
-  gap: 28px;
+  gap: 32px;
+  width: 100%;
 }
 
 .menu-card {
@@ -214,7 +251,9 @@ body,
 
   border-radius: var(--radius-lg);
 
-  padding: 32px 28px;
+  min-height: 210px;
+
+  padding: 42px 34px;
 
   cursor: pointer;
 
@@ -251,6 +290,32 @@ body,
   transition: var(--transition);
 }
 
+.menu-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background-image:
+    linear-gradient(
+      rgba(255, 255, 255, 0.62),
+      rgba(255, 255, 255, 0.72)
+    ),
+    var(--menu-card-image);
+  background-size: 118%;
+  background-position: center;
+  opacity: 0.82;
+  filter: saturate(0.95) contrast(1.04);
+  transition: var(--transition);
+}
+
+.menu-card-lineas {
+  --menu-card-image: url("https://tse2.mm.bing.net/th/id/OIP.pGNp6kQzxZ8bO2Z_kfYyWgHaE7?w=1240&h=825&rs=1&pid=ImgDetMain&o=7&rm=3");
+}
+
+.menu-card-instructoras {
+  --menu-card-image: url("https://tse4.mm.bing.net/th/id/OIP.4mH_J4WjYTknveKDjycPUAAAAA?rs=1&pid=ImgDetMain&o=7&rm=3");
+}
+
 .menu-card:hover {
   transform: translateY(-6px);
 
@@ -261,12 +326,20 @@ body,
   opacity: 1;
 }
 
+.menu-card:hover::after {
+  opacity: 0.94;
+  transform: scale(1.03);
+}
+
 .card-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
 
   margin-bottom: 18px;
+
+  position: relative;
+  z-index: 1;
 }
 
 .card-header h3 {
@@ -296,6 +369,9 @@ body,
   color: var(--text-soft);
 
   line-height: 1.6;
+
+  position: relative;
+  z-index: 1;
 }
 
 /* =========================
@@ -362,6 +438,7 @@ body,
 @media (max-width: 768px) {
   .menu-container {
     padding: 32px 20px 50px;
+    justify-content: flex-start;
   }
 
   .menu-header-section h2 {
@@ -369,6 +446,7 @@ body,
   }
 
   .menu-cards {
+    grid-template-columns: minmax(0, 1fr);
     gap: 22px;
   }
 }
@@ -389,12 +467,16 @@ body,
   }
 
   .user-avatar {
-    width: 80px;
-    height: 80px;
+    width: 118px;
+    height: 118px;
   }
 
   .user-name {
     font-size: 1rem;
+  }
+
+  .logout-button {
+    width: 100%;
   }
 
   .menu-header-section {

@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button, Modal } from 'antd';
+import Swal from 'sweetalert2';
 import 'antd/dist/reset.css';
 import '../styles/ProgramacionHorarios.css';
 import ProgramacionHorariosModal from './ProgramacionHorariosModal';
@@ -34,7 +35,7 @@ function ProgramacionHorarios() {
   const [formDataModal, setFormDataModal] = useState(INITIAL_MODAL_FORM);
   const [showMoreMotivosModal, setShowMoreMotivosModal] = useState(false);
   const [guardandoDia, setGuardandoDia] = useState(false);
-  const [semanaOffset] = useState(0);
+  const [semanaOffset, setSemanaOffset] = useState(0);
   const [fotoPerfilError, setFotoPerfilError] = useState(false);
   const {
     user,
@@ -108,7 +109,30 @@ function ProgramacionHorarios() {
       );
 
       if (error) {
-        alert(error);
+        await Swal.fire({
+          title: 'Revisa la informacion',
+          text: error,
+          icon: 'warning',
+          confirmButtonText: 'Entendido',
+          confirmButtonColor: '#503629',
+        });
+        return;
+      }
+
+      const confirmacion = await Swal.fire({
+        title: eventoEditarModal ? 'Actualizar actividad' : 'Guardar actividad',
+        text: eventoEditarModal
+          ? 'Deseas guardar los cambios de esta actividad?'
+          : 'Deseas agendar esta actividad?',
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonText: eventoEditarModal ? 'Actualizar' : 'Agendar',
+        cancelButtonText: 'Cancelar',
+        confirmButtonColor: '#503629',
+        cancelButtonColor: '#9c7b60',
+      });
+
+      if (!confirmacion.isConfirmed) {
         return;
       }
 
@@ -145,10 +169,22 @@ function ProgramacionHorarios() {
         });
 
         resetModalState();
-        alert(eventoEditarModal ? 'Actividad actualizada correctamente' : 'Actividad guardada correctamente');
+        await Swal.fire({
+          title: 'Listo',
+          text: eventoEditarModal ? 'Actividad actualizada correctamente' : 'Actividad guardada correctamente',
+          icon: 'success',
+          confirmButtonText: 'Aceptar',
+          confirmButtonColor: '#503629',
+        });
       } catch (saveError) {
         console.error('Error al guardar actividad:', saveError);
-        alert('No fue posible guardar la actividad. Intenta nuevamente.');
+        await Swal.fire({
+          title: 'No se pudo guardar',
+          text: 'No fue posible guardar la actividad. Intenta nuevamente.',
+          icon: 'error',
+          confirmButtonText: 'Aceptar',
+          confirmButtonColor: '#503629',
+        });
       } finally {
         setGuardandoDia(false);
       }
@@ -159,7 +195,18 @@ function ProgramacionHorarios() {
         return;
       }
 
-      if (!window.confirm(`¿Marcar ${DIAS_SEMANA_LABEL[index]} como día de descanso?`)) {
+      const confirmacion = await Swal.fire({
+        title: 'Marcar descanso',
+        text: `Deseas marcar ${DIAS_SEMANA_LABEL[index]} como dia de descanso?`,
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonText: 'Marcar descanso',
+        cancelButtonText: 'Cancelar',
+        confirmButtonColor: '#503629',
+        cancelButtonColor: '#9c7b60',
+      });
+
+      if (!confirmacion.isConfirmed) {
         return;
       }
 
@@ -176,17 +223,40 @@ function ProgramacionHorarios() {
           [dia]: [eventoDescanso]
         }));
 
-        alert(`${DIAS_SEMANA_LABEL[index]} marcado como descanso`);
+        await Swal.fire({
+          title: 'Listo',
+          text: `${DIAS_SEMANA_LABEL[index]} marcado como descanso`,
+          icon: 'success',
+          confirmButtonText: 'Aceptar',
+          confirmButtonColor: '#503629',
+        });
       } catch (error) {
         console.error('Error al guardar día de descanso:', error);
-        alert('No fue posible registrar el día de descanso.');
+        await Swal.fire({
+          title: 'No se pudo guardar',
+          text: 'No fue posible registrar el dia de descanso.',
+          icon: 'error',
+          confirmButtonText: 'Aceptar',
+          confirmButtonColor: '#503629',
+        });
       } finally {
         setGuardandoDia(false);
       }
     };
 
-    const handleQuitarDescanso = (dia) => {
-      if (!window.confirm('¿Quitar el día de descanso de esta fecha?')) {
+    const handleQuitarDescanso = async (dia) => {
+      const confirmacion = await Swal.fire({
+        title: 'Quitar descanso',
+        text: 'Deseas quitar el dia de descanso de esta fecha?',
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonText: 'Quitar descanso',
+        cancelButtonText: 'Cancelar',
+        confirmButtonColor: '#503629',
+        cancelButtonColor: '#9c7b60',
+      });
+
+      if (!confirmacion.isConfirmed) {
         return;
       }
 
@@ -194,6 +264,14 @@ function ProgramacionHorarios() {
         ...prev,
         [dia]: []
       }));
+
+      await Swal.fire({
+        title: 'Listo',
+        text: 'Dia de descanso quitado correctamente',
+        icon: 'success',
+        confirmButtonText: 'Aceptar',
+        confirmButtonColor: '#503629',
+      });
     };
 
     const handleDescargarPDF = () => {
@@ -286,14 +364,45 @@ function ProgramacionHorarios() {
       setTimeout(() => printWindow.print(), 500);
     };
 
-    const handleLogoutClick = () => {
-      if (!window.confirm('¿Estás segura de que deseas cerrar sesión?')) {
+    const handleLogoutClick = async () => {
+      const result = await Swal.fire({
+        title: 'Cerrar sesion',
+        text: 'Deseas salir del portal de instructoras?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Cerrar sesion',
+        cancelButtonText: 'Cancelar',
+        confirmButtonColor: '#503629',
+        cancelButtonColor: '#9c7b60',
+      });
+
+      if (!result.isConfirmed) {
         return;
       }
 
       setShowProfileModal(false);
       logout();
       navigate('/cap/cafe', { replace: true });
+    };
+
+    const handleCerrarProgramacion = async () => {
+      const result = await Swal.fire({
+        title: 'Cerrar programacion',
+        text: 'Deseas cerrar esta programacion y pasar a la semana siguiente?',
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonText: 'Cerrar programacion',
+        cancelButtonText: 'Cancelar',
+        confirmButtonColor: '#503629',
+        cancelButtonColor: '#9c7b60',
+      });
+
+      if (!result.isConfirmed) {
+        return;
+      }
+
+      resetModalState();
+      setSemanaOffset((prev) => prev + 1);
     };
 
     return (
@@ -359,6 +468,22 @@ function ProgramacionHorarios() {
                 </span>
               </div>
             </div>
+
+            <button
+              type="button"
+              className="btn-descargar-pdf"
+              onClick={handleDescargarPDF}
+            >
+              Descargar PDF
+            </button>
+
+            <button
+              type="button"
+              className="btn-cerrar-programacion"
+              onClick={handleCerrarProgramacion}
+            >
+              Cerrar programación
+            </button>
           </div>
 
           <div className="agenda-section-simplified">
