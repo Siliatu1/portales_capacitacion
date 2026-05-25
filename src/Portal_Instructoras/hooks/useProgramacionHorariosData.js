@@ -1,9 +1,8 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useReducer } from 'react';
 import { useAuth } from '../../auth/hooks/useAuth';
 import {
   buildProgramacionFromApi,
   createEmptyProgramacionSemanal,
-  createProgramacionStoragePayload,
   getFechasSemana,
   getInfoSemana,
 } from '../components/programacionHorarios.helpers';
@@ -26,18 +25,26 @@ const mapPdvIps = (items) => items
   .filter((pdv) => pdv.nombre)
   .sort((a, b) => a.nombre.localeCompare(b.nombre));
 
+const programacionReducer = (state, action) => {
+  if (typeof action === 'function') {
+    return action(state);
+  }
+
+  if (action?.type === 'replace') {
+    return action.payload;
+  }
+
+  return action;
+};
+
 export function useProgramacionHorariosData(semanaOffset) {
   const { user: userData, logout } = useAuth();
-  const user = useMemo(() => (userData ? buildUser(userData) : null), [userData]);
-  const fechasSemana = useMemo(() => getFechasSemana(semanaOffset), [semanaOffset]);
-  const infoSemana = useMemo(() => getInfoSemana(fechasSemana), [fechasSemana]);
-  const storageKey = useMemo(() => {
-    if (!user?.documento || fechasSemana.length === 0) return null;
-    return `programacion_${user.documento}_${fechasSemana[0].toISOString().slice(0, 10)}`;
-  }, [fechasSemana, user?.documento]);
+  const user = userData ? buildUser(userData) : null;
+  const fechasSemana = getFechasSemana(semanaOffset);
+  const infoSemana = getInfoSemana(fechasSemana);
 
   const puntosVentaQuery = usePdvIpsQuery('populate=*&pagination[pageSize]=1000');
-  const puntosVenta = useMemo(() => mapPdvIps(puntosVentaQuery.data || []), [puntosVentaQuery.data]);
+  const puntosVenta = mapPdvIps(puntosVentaQuery.data || []);
 
   const fechaInicio = fechasSemana[0].toISOString().slice(0, 10);
   const fechaFin = fechasSemana[6].toISOString().slice(0, 10);
@@ -51,7 +58,17 @@ export function useProgramacionHorariosData(semanaOffset) {
     (response) => (Array.isArray(response?.data) ? response.data : [])
   );
 
-  const [programacionSemanal, setProgramacionSemanal] = useState(createEmptyProgramacionSemanal);
+  const [programacionSemanal, dispatchProgramacion] = useReducer(
+    programacionReducer,
+    undefined,
+    createEmptyProgramacionSemanal
+  );
+
+  useEffect(() => {
+    Object.keys(localStorage)
+      .filter((key) => key.startsWith('programacion_'))
+      .forEach((key) => localStorage.removeItem(key));
+  }, []);
 
   useEffect(() => {
     if (!userData) {
@@ -62,33 +79,15 @@ export function useProgramacionHorariosData(semanaOffset) {
     if (horariosQuery.isLoading) return;
 
     if (horariosQuery.data?.length > 0) {
-      setProgramacionSemanal(buildProgramacionFromApi(horariosQuery.data, fechasSemana));
+      dispatchProgramacion({
+        type: 'replace',
+        payload: buildProgramacionFromApi(horariosQuery.data, getFechasSemana(semanaOffset))
+      });
       return;
     }
 
-    if (storageKey) {
-      const localData = localStorage.getItem(storageKey);
-      if (localData) {
-        try {
-          const payload = JSON.parse(localData);
-          setProgramacionSemanal(payload?.programacion || createEmptyProgramacionSemanal());
-          return;
-        } catch {
-          localStorage.removeItem(storageKey);
-        }
-      }
-    }
-
-    setProgramacionSemanal(createEmptyProgramacionSemanal());
-  }, [fechasSemana, horariosQuery.data, horariosQuery.isLoading, logout, storageKey, userData]);
-
-  useEffect(() => {
-    if (!storageKey) return;
-    localStorage.setItem(
-      storageKey,
-      JSON.stringify(createProgramacionStoragePayload(programacionSemanal, fechasSemana))
-    );
-  }, [fechasSemana, programacionSemanal, storageKey]);
+    dispatchProgramacion({ type: 'replace', payload: createEmptyProgramacionSemanal() });
+  }, [horariosQuery.data, horariosQuery.isLoading, logout, semanaOffset, userData]);
 
   return {
     user,
@@ -96,9 +95,10 @@ export function useProgramacionHorariosData(semanaOffset) {
     infoSemana,
     puntosVenta,
     programacionSemanal,
-    setProgramacionSemanal,
+    setProgramacionSemanal: dispatchProgramacion,
     loadingPuntos: puntosVentaQuery.isFetching,
     loadingProgramacion: horariosQuery.isFetching,
+    refetchProgramacion: horariosQuery.refetch,
     logout,
   };
 }

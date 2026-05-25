@@ -98,6 +98,15 @@
   overflow: hidden !important;
 }
 
+.table-container,
+.table-card {
+  max-width: 100%;
+}
+
+.table-container {
+  overflow-x: auto;
+}
+
 /* =========================
    FILTER CONTAINER
 ========================= */
@@ -178,4 +187,29 @@
 
   box-shadow:
     0 12px 30px rgba(91, 57, 40, 0.05);
+}
+
+@media (max-width: 760px) {
+  .cw-table .ant-table-thead > tr > th,
+  .cw-table .ant-table-tbody > tr > td {
+    padding: 12px 10px !important;
+    font-size: 12px !important;
+  }
+
+  .table-card {
+    padding: 12px;
+  }
+
+  .page-title-card {
+    padding: 18px;
+  }
+
+  .page-title-card h2 {
+    font-size: 1.45rem;
+  }
+
+  .cw-table .todera-observacion-cell {
+    width: 240px;
+    max-width: 240px;
+  }
 }

@@ -422,10 +422,18 @@
 @media (max-width: 768px) {
   .navbar-content {
     padding: 15px 20px;
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 14px;
   }
 
   .navbar-title {
     font-size: 22px;
+  }
+
+  .navbar-actions {
+    width: 100%;
+    flex-wrap: wrap;
   }
 
   .profile-avatar,
@@ -450,6 +458,44 @@
   .filters-card,
   .vista-admin-container .ant-card:not(.filters-card) {
     margin: 10px 20px !important;
+  }
+
+  .vista-admin-filters-layout,
+  .vista-admin-filters-layout .ant-space-item,
+  .vista-admin-select--linea,
+  .vista-admin-select--instructora,
+  .vista-admin-datepicker {
+    width: 100% !important;
+    min-width: 0;
+  }
+
+  .vista-admin-week-nav {
+    align-items: stretch;
+    flex-direction: column;
+  }
+}
+
+@media (max-width: 480px) {
+  .navbar-content,
+  .welcome-section {
+    padding: 14px;
+  }
+
+  .navbar-left {
+    align-items: flex-start;
+  }
+
+  .navbar-title {
+    font-size: 19px;
+  }
+
+  .navbar-subtitle {
+    font-size: 12px;
+  }
+
+  .filters-card,
+  .vista-admin-container .ant-card:not(.filters-card) {
+    margin: 10px 12px !important;
   }
 }
 

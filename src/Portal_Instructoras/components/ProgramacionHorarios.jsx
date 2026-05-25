@@ -1,11 +1,11 @@
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button, Modal } from 'antd';
 import Swal from 'sweetalert2';
 import 'antd/dist/reset.css';
 import '../styles/ProgramacionHorarios.css';
 import ProgramacionHorariosModal from './ProgramacionHorariosModal';
-import { createHorario, updateHorario } from '../services/horariosInstructoras.service';
+import { createHorario, deleteHorario, updateHorario } from '../services/horariosInstructoras.service';
 import { useProgramacionHorariosData } from '../hooks/useProgramacionHorariosData';
 import {
   buildDescansoEvent,
@@ -45,13 +45,11 @@ function ProgramacionHorarios() {
     programacionSemanal,
     setProgramacionSemanal,
     loadingPuntos,
+    refetchProgramacion,
     logout,
   } = useProgramacionHorariosData(semanaOffset);
 
-  const totalHorasSemana = useMemo(
-    () => calculateTotalHorasSemana(programacionSemanal),
-    [programacionSemanal]
-  );
+  const totalHorasSemana = calculateTotalHorasSemana(programacionSemanal);
 
 
     const resetModalState = () => {
@@ -136,13 +134,17 @@ function ProgramacionHorarios() {
         return;
       }
 
+      const diaActual = diaSeleccionado;
+      const eventoActual = eventoEditarModal;
+      const formDataActual = formDataModal;
+      resetModalState();
       setGuardandoDia(true);
 
       try {
-        const fecha = fechasSemana[diaSeleccionado.index];
-        const { datosAPI } = buildHorarioApiPayload(formDataModal, fecha, user.documento, puntosVenta);
+        const fecha = fechasSemana[diaActual.index];
+        const { datosAPI } = buildHorarioApiPayload(formDataActual, fecha, user.documento, puntosVenta);
 
-        let idAPI = eventoEditarModal?.idAPI || null;
+        let idAPI = eventoActual?.idAPI || null;
 
         if (idAPI) {
           await updateHorario(idAPI, datosAPI);
@@ -151,27 +153,27 @@ function ProgramacionHorarios() {
           idAPI = response?.data?.id || response?.id || Date.now();
         }
 
-        const eventoLocal = buildEventoLocal(formDataModal, idAPI, puntosVenta);
+        const eventoLocal = buildEventoLocal(formDataActual, idAPI, puntosVenta);
 
         setProgramacionSemanal((prev) => {
-          const eventosDia = [...prev[diaSeleccionado.dia]];
+          const eventosDia = [...prev[diaActual.dia]];
 
-          if (eventoEditarModal) {
-            eventosDia[eventoEditarModal.index] = eventoLocal;
+          if (eventoActual) {
+            eventosDia[eventoActual.index] = eventoLocal;
           } else {
             eventosDia.push(eventoLocal);
           }
 
           return {
             ...prev,
-            [diaSeleccionado.dia]: eventosDia
+            [diaActual.dia]: eventosDia
           };
         });
 
-        resetModalState();
+        await refetchProgramacion();
         await Swal.fire({
           title: 'Listo',
-          text: eventoEditarModal ? 'Actividad actualizada correctamente' : 'Actividad guardada correctamente',
+          text: eventoActual ? 'Actividad actualizada correctamente' : 'Actividad guardada correctamente',
           icon: 'success',
           confirmButtonText: 'Aceptar',
           confirmButtonColor: '#503629',
@@ -223,6 +225,7 @@ function ProgramacionHorarios() {
           [dia]: [eventoDescanso]
         }));
 
+        await refetchProgramacion();
         await Swal.fire({
           title: 'Listo',
           text: `${DIAS_SEMANA_LABEL[index]} marcado como descanso`,
@@ -244,13 +247,15 @@ function ProgramacionHorarios() {
       }
     };
 
-    const handleQuitarDescanso = async (dia) => {
+    const handleEliminarEvento = async (dia, evento, eventoIndex) => {
       const confirmacion = await Swal.fire({
-        title: 'Quitar descanso',
-        text: 'Deseas quitar el dia de descanso de esta fecha?',
+        title: evento?.motivo === 'dia_descanso' ? 'Quitar descanso' : 'Eliminar actividad',
+        text: evento?.motivo === 'dia_descanso'
+          ? 'Deseas quitar el dia de descanso de esta fecha?'
+          : 'Deseas eliminar esta actividad?',
         icon: 'question',
         showCancelButton: true,
-        confirmButtonText: 'Quitar descanso',
+        confirmButtonText: evento?.motivo === 'dia_descanso' ? 'Quitar descanso' : 'Eliminar',
         cancelButtonText: 'Cancelar',
         confirmButtonColor: '#503629',
         cancelButtonColor: '#9c7b60',
@@ -260,18 +265,51 @@ function ProgramacionHorarios() {
         return;
       }
 
-      setProgramacionSemanal((prev) => ({
-        ...prev,
-        [dia]: []
-      }));
+      setGuardandoDia(true);
 
-      await Swal.fire({
-        title: 'Listo',
-        text: 'Dia de descanso quitado correctamente',
-        icon: 'success',
-        confirmButtonText: 'Aceptar',
-        confirmButtonColor: '#503629',
-      });
+      try {
+        if (evento?.idAPI) {
+          await deleteHorario(evento.idAPI);
+        }
+
+        setProgramacionSemanal((prev) => ({
+          ...prev,
+          [dia]: prev[dia].filter((item, index) => (
+            evento?.idAPI ? item.idAPI !== evento.idAPI : index !== eventoIndex
+          ))
+        }));
+
+        resetModalState();
+        await refetchProgramacion();
+        await Swal.fire({
+          title: 'Listo',
+          text: evento?.motivo === 'dia_descanso'
+            ? 'Dia de descanso quitado correctamente'
+            : 'Actividad eliminada correctamente',
+          icon: 'success',
+          confirmButtonText: 'Aceptar',
+          confirmButtonColor: '#503629',
+        });
+      } catch (error) {
+        console.error('Error al eliminar actividad:', error);
+        await Swal.fire({
+          title: 'No se pudo eliminar',
+          text: 'No fue posible eliminar la actividad. Intenta nuevamente.',
+          icon: 'error',
+          confirmButtonText: 'Aceptar',
+          confirmButtonColor: '#503629',
+        });
+      } finally {
+        setGuardandoDia(false);
+      }
+    };
+
+    const handleEliminarActividadModal = () => {
+      if (!diaSeleccionado || !eventoEditarModal) {
+        return;
+      }
+
+      handleEliminarEvento(diaSeleccionado.dia, eventoEditarModal, eventoEditarModal.index);
     };
 
     const handleDescargarPDF = () => {
@@ -518,7 +556,7 @@ function ProgramacionHorarios() {
                                 className={`evento-item ${esDescanso ? 'evento-item-readonly' : ''}`}
                                 onClick={() => {
                                   if (esDescanso) {
-                                    handleQuitarDescanso(dia);
+                                    handleEliminarEvento(dia, evento, eventoIndex);
                                     return;
                                   }
 
@@ -602,6 +640,7 @@ function ProgramacionHorarios() {
           showMoreMotivos={showMoreMotivosModal}
           onClose={handleCerrarModal}
           onSave={handleGuardarEdicionModal}
+          onDelete={handleEliminarActividadModal}
           onFieldChange={(field, value) => setFormDataModal((prev) => ({ ...prev, [field]: value }))}
           onSelectMotivo={handleSelectMotivo}
           onToggleMotivos={() => setShowMoreMotivosModal((prev) => !prev)}

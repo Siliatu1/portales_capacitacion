@@ -267,7 +267,7 @@
   }
 }
 
-@media (max-width: 768px) {
+@media (max-width: 900px) {
   .sidebar {
     position: relative;
 
@@ -296,5 +296,28 @@
 
   .hero-carousel {
     height: 350px;
+  }
+}
+
+@media (max-width: 520px) {
+  .sidebar {
+    padding: 18px 14px;
+  }
+
+  .brand h2 {
+    font-size: 1.65rem;
+  }
+
+  .sidebar-menu {
+    margin-top: 24px;
+    gap: 10px;
+  }
+
+  .menu-item,
+  .submenu-toggle,
+  .submenu-item,
+  .logout-btn {
+    padding: 12px 14px;
+    font-size: 0.9rem;
   }
 }

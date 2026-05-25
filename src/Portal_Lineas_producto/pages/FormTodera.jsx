@@ -32,6 +32,10 @@ import {
 import {
   opcionesCargoEvaluar,
 } from "../utils/toderaOptions.js";
+import {
+  showDocumentRequiredAlert,
+  showRequiredFieldAlert,
+} from "../utils/formAlerts";
 
 import "../styles/formtodera.css";
 import "../styles/formLayout.css";
@@ -146,6 +150,11 @@ const FormTodera = () => {
 
   const handleBuscarEmpleado =
     async () => {
+      if (!String(documento || "").trim()) {
+        await showDocumentRequiredAlert();
+        return;
+      }
+
       try {
         const empleadoEncontrado =
           await buscarEmpleado(
@@ -275,27 +284,38 @@ const FormTodera = () => {
 
   const handleSubmit =
     async () => {
-      if (!empleado) {
-        message.warning(
-          "Primero busca un empleado"
-        );
+      if (!String(documento || "").trim()) {
+        await showDocumentRequiredAlert();
+        return;
+      }
 
+      if (!empleado) {
+        await showRequiredFieldAlert("buscar el empleado");
+        return;
+      }
+
+      if (!String(telefono || "").trim()) {
+        await showRequiredFieldAlert("ingresar el teléfono");
+        return;
+      }
+
+      if (!String(pdvEfectivo || "").trim()) {
+        await showRequiredFieldAlert("ingresar el punto de venta");
         return;
       }
 
       if (!categoria) {
-        message.warning(
-          "Selecciona una categoria"
-        );
-
+        await showRequiredFieldAlert("seleccionar la categoría a evaluar");
         return;
       }
 
       if (!cargoEvaluar) {
-        message.warning(
-          "Selecciona el cargo a evaluar"
-        );
+        await showRequiredFieldAlert("seleccionar el cargo a evaluar");
+        return;
+      }
 
+      if (!String(instructora || "").trim() || instructora === "Sin instructora asignada") {
+        await showRequiredFieldAlert("tener una instructora asignada");
         return;
       }
 

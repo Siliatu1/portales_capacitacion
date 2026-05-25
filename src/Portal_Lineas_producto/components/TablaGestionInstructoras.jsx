@@ -157,6 +157,9 @@ const TablaGestionInstructoras = ({
         rowClassName={() =>
           "fila-tabla"
         }
+        scroll={{
+          x: 900,
+        }}
       />
     </div>
   );

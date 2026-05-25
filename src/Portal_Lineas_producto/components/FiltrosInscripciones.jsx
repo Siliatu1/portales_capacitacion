@@ -1,11 +1,20 @@
 import { Input, Space, Button, Select } from "antd";
 import "../styles/FiltrosInscripciones.css";
 
+const getDateOnly = (value) => String(value || "").split("T")[0];
+
 export default function FiltrosInscripciones({
   filtros,
   setFiltros,
   fechasDisponibles = [],
 }) {
+  const fechaOptions = Array.from(
+    new Set((fechasDisponibles || []).map(getDateOnly).filter(Boolean))
+  ).map((fecha) => ({
+    label: fecha,
+    value: fecha,
+  }));
+
   return (
     <div className="filtros-container">
       <Space className="filtros-space" wrap size="middle">
@@ -43,11 +52,16 @@ export default function FiltrosInscripciones({
               fecha: value || "",
             })
           }
-          options={(fechasDisponibles || []).map((f) => ({
-            label: f,
-            value: f,
-          }))}
+          options={fechaOptions}
           allowClear
+          showSearch
+          optionFilterProp="label"
+          filterOption={(input, option) =>
+            String(option?.label || "")
+              .toLowerCase()
+              .includes(input.toLowerCase())
+          }
+          notFoundContent="No se encontraron fechas"
         />
 
         <Button

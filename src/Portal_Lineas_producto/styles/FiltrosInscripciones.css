@@ -25,3 +25,21 @@
 .filtro-btn {
   min-width: 120px;
 }
+
+@media (max-width: 760px) {
+  .filtros-container {
+    padding: 14px;
+  }
+
+  .filtros-space,
+  .filtros-space .ant-space-item {
+    width: 100%;
+  }
+
+  .filtro-input,
+  .filtro-select,
+  .filtro-btn {
+    width: 100%;
+    min-width: 0;
+  }
+}

@@ -18,7 +18,12 @@ const requestJson = async (url, options) => {
     throw new Error(`Error API ${response.status}: ${url}`);
   }
 
-  return response.json();
+  if (response.status === 204) {
+    return null;
+  }
+
+  const text = await response.text();
+  return text ? JSON.parse(text) : null;
 };
 
 const getCollection = (endpoint, query) => requestJson(buildUrl(endpoint, query));
@@ -35,6 +40,11 @@ const updateRecord = (endpoint, id, payload) =>
     body: JSON.stringify(payload),
   });
 
+const deleteRecord = (endpoint, id) =>
+  requestJson(buildUrl(`${endpoint}/${id}`), {
+    method: "DELETE",
+  });
+
 export const getCapInstructoras = (query = "") => getCollection("cap-instructoras", query);
 
 export const getCapPdvs = (query = "") => getCollection("cap-pdvs", query);
@@ -49,3 +59,6 @@ export const createHorarioInstructora = (payload) =>
 
 export const updateHorarioInstructora = (id, payload) =>
   updateRecord("horarios-instructoras", id, payload);
+
+export const deleteHorarioInstructora = (id) =>
+  deleteRecord("horarios-instructoras", id);

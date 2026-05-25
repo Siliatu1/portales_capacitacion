@@ -4,6 +4,7 @@ import { useFechas } from "../hooks/useFechas";
 import { useAuth } from "../../auth/hooks/useAuth";
 import { getCuposFechaCapCafe, guardarInscripcion } from "../services/formulario.service";
 import { getInitialFormState, buildInscripcionAttributes } from "../utils/formularioHel.utils";
+import { showDocumentRequiredAlert, showRequiredFieldAlert } from "../utils/formAlerts";
 import EmpleadoInfo from "../components/EmpleadoInfo";
 import Navbar from "../components/navbar";
 import { useState, useMemo, useEffect } from "react";
@@ -79,6 +80,11 @@ const FormHeladeria = () => {
   const onSearch = async () => {
     setMessage(null);
 
+    if (!String(formData.documento || "").trim()) {
+      await showDocumentRequiredAlert();
+      return;
+    }
+
     try {
       await buscarEmpleado(formData.documento);
 
@@ -135,13 +141,28 @@ const FormHeladeria = () => {
     setMessage(null);
 
     try {
-      // validar fecha seleccionada y disponibilidad
-      if (!formData.fecha) {
-        setMessage({
-          type: "error",
-          text: "Seleccione una fecha",
-        });
+      if (!String(formData.documento || "").trim()) {
+        await showDocumentRequiredAlert();
+        return;
+      }
 
+      if (!empleado) {
+        await showRequiredFieldAlert("buscar el empleado");
+        return;
+      }
+
+      if (!String(formData.telefono || empleado?.telefono || empleado?.celular || "").trim()) {
+        await showRequiredFieldAlert("ingresar el teléfono");
+        return;
+      }
+
+      if (!String(formData.area_nombre || empleado?.area_nombre || empleado?.pdv || "").trim()) {
+        await showRequiredFieldAlert("ingresar el punto de venta");
+        return;
+      }
+
+      if (!formData.fecha) {
+        await showRequiredFieldAlert("seleccionar una fecha");
         return;
       }
 

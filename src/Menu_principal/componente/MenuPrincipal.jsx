@@ -58,7 +58,7 @@ const MenuPrincipal = () => {
         ) : (
           <div className="menu-wrapper">
             <div className="menu-header-section">
-              <h2>Bienvenido</h2>
+              <h2>Bienvenida</h2>
               <p>Selecciona una opción para continuar</p>
             </div>
             <div className="menu-cards">

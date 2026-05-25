@@ -4,6 +4,7 @@ import {
   getCapPdvs,
   getHorariosInstructoras,
   getPdvIps,
+  deleteHorarioInstructora,
   updateHorarioInstructora,
 } from '../../services/apiService';
 
@@ -18,3 +19,5 @@ export const fetchHorariosInstructoras = (query = '') => getHorariosInstructoras
 export const createHorario = (payload) => createHorarioInstructora(payload);
 
 export const updateHorario = (id, payload) => updateHorarioInstructora(id, payload);
+
+export const deleteHorario = (id) => deleteHorarioInstructora(id);

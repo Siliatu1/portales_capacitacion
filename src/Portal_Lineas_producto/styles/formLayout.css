@@ -19,7 +19,7 @@
   max-width: 980px;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 900px) {
   .lineas-form-content {
     width: 100%;
     margin-left: 0;
@@ -29,5 +29,11 @@
   .lineas-form-content .inscripcion-container,
   .lineas-form-content .form-todera-wrapper {
     min-height: auto;
+  }
+}
+
+@media (max-width: 520px) {
+  .lineas-form-content {
+    padding: 14px;
   }
 }

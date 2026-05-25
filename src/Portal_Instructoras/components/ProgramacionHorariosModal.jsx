@@ -14,6 +14,7 @@ function ProgramacionHorariosModal({
   showMoreMotivos,
   onClose,
   onSave,
+  onDelete,
   onFieldChange,
   onSelectMotivo,
   onToggleMotivos,
@@ -149,6 +150,11 @@ function ProgramacionHorariosModal({
         </div>
 
         <div className="modal-footer">
+          {editing && (
+            <button className="btn-eliminar-modal" onClick={onDelete} disabled={guardandoDia}>
+              {guardandoDia ? 'Procesando...' : 'Eliminar'}
+            </button>
+          )}
           <button className="btn-cancelar-modal" onClick={onClose} disabled={guardandoDia}>
             Cancelar
           </button>

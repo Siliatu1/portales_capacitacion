@@ -95,3 +95,58 @@
 
   font-weight: 600;
 }
+
+.tabla-container-custom {
+  width: 100%;
+  overflow-x: auto;
+  background: white;
+  border-radius: 18px;
+}
+
+.categoria-cell {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  min-width: 150px;
+}
+
+.pdv-text,
+.nombre-instructora,
+.sin-asignar {
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 900px) {
+  .gestion-page {
+    padding: 24px 18px;
+  }
+
+  .gestion-filtros-container {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .gestion-filtros-left,
+  .gestion-filtros-left .ant-space,
+  .gestion-filtros-left .ant-input,
+  .gestion-filtros-left .ant-btn,
+  .btn-nueva-instructora {
+    width: 100%;
+  }
+}
+
+@media (max-width: 520px) {
+  .gestion-page {
+    padding: 18px 12px;
+  }
+
+  .gestion-header h1 {
+    font-size: 1.65rem;
+  }
+
+  .gestion-filtros-container {
+    padding: 14px;
+    border-radius: 14px;
+  }
+}
