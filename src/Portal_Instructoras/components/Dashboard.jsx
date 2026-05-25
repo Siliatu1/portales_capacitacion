@@ -12,9 +12,8 @@ import {
 import {
   EyeOutlined,
   DownloadOutlined,
-  EditOutlined,
-  DownOutlined,
-  UpOutlined,
+  CalendarOutlined,
+  ArrowRightOutlined,
 } from '@ant-design/icons';
 
 import 'antd/dist/reset.css';
@@ -29,7 +28,6 @@ import {
   formatearFecha,
   formatearFechaCompleta,
   formatearRangoFechas,
-  getActividadTagColor,
   getDiaSemana,
   getInitials,
 } from './dashboard.helpers';
@@ -46,6 +44,8 @@ function Dashboard() {
 
   const canAccessAdministrativo =
     canAccessView('ADMINISTRATIVO');
+  const canAccessProgramacion =
+    canAccessView('PROGRAMACION');
 
   const {
     puntosVenta,
@@ -61,7 +61,6 @@ function Dashboard() {
     semanaPreview,
     modalEditar,
     showMoreMotivos,
-    filaExpandida,
     formDataModal,
   } = ui;
 
@@ -273,6 +272,62 @@ function Dashboard() {
             }!
           </h2>
         </div>
+
+        {(canAccessProgramacion || canAccessAdministrativo) && (
+          <div className="dashboard-cards">
+            {canAccessProgramacion && (
+              <button
+                type="button"
+                className="dashboard-card"
+                onClick={() =>
+                  navigate('/portal-instructoras/programacion')
+                }
+              >
+                <div className="card-icon">
+                  <CalendarOutlined />
+                </div>
+
+                <div className="card-content">
+                  <h3 className="card-title">
+                    Programar Horarios
+                  </h3>
+
+                  <p className="card-description">
+                    Programa tu disponibilidad semanal
+                  </p>
+                </div>
+
+                <ArrowRightOutlined className="card-arrow" />
+              </button>
+            )}
+
+            {canAccessAdministrativo && (
+              <button
+                type="button"
+                className="dashboard-card"
+                onClick={() =>
+                  navigate('/portal-instructoras/vista-administrativa')
+                }
+              >
+                <div className="card-icon">
+                  <EyeOutlined />
+                </div>
+
+                <div className="card-content">
+                  <h3 className="card-title">
+                    Vista Administrativa
+                  </h3>
+
+                  <p className="card-description">
+                    Consulta horarios de instructoras
+                  </p>
+                </div>
+
+                <ArrowRightOutlined className="card-arrow" />
+              </button>
+            )}
+          </div>
+        )}
 
         {/* TABLA */}
         <div className="horarios-table-section">

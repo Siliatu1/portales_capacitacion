@@ -99,7 +99,7 @@ export const VIEW_ROUTES = {
     "/portal-instructoras/dashboard",
 
   ADMINISTRATIVO:
-    "/portal-instructoras/administrativo",
+    "/portal-instructoras/vista-administrativa",
 
   GESTION_INSTRUCTORAS:
     "/lineas-producto/gestion-instructoras",

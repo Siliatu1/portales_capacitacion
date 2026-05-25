@@ -1,4 +1,6 @@
 export const MENU_ROUTES = {
-  "Portal Líneas de Producto": "/lineas-producto",
-  "Portal Horarios Instructoras": "/portal-instructoras/dashboard",
+  "portal lineas de producto": "/lineas-producto",
+  "portal lineas producto": "/lineas-producto",
+  "portal horarios instructoras": "/portal-instructoras",
+  "portal instructoras": "/portal-instructoras",
 };

@@ -7,6 +7,9 @@ const EMPTY_PROFILE_CONFIG = {
 
 const PROFILE_ALIASES = {
   "CAPACITADORA(A)": "CAPACITADORA",
+  "CAPACITADOR(A)": "CAPACITADORA",
+  CAPACITADOR: "CAPACITADORA",
+  "SUPER ADMIN": "SUPER_ADMIN",
 };
 
 const getRawProfile = (rawUser) => {
@@ -22,7 +25,17 @@ const getRawProfile = (rawUser) => {
 };
 
 const normalizeProfile = (rawProfile) => {
-  return PROFILE_ALIASES[rawProfile] || rawProfile;
+  const aliasedProfile = PROFILE_ALIASES[rawProfile] || rawProfile;
+
+  if (aliasedProfile.includes("SUPER_ADMIN") || aliasedProfile.includes("SUPER ADMIN")) {
+    return "SUPER_ADMIN";
+  }
+
+  if (/\bCAPACITADOR(?:A)?\b/.test(aliasedProfile)) {
+    return "CAPACITADORA";
+  }
+
+  return aliasedProfile;
 };
 
 export const getProfileConfig = (profile) => {
@@ -62,4 +75,18 @@ export const getDefaultRouteForUser = (user) => {
 
   const firstAllowedView = user.views?.find((view) => VIEW_ROUTES[view]);
   return firstAllowedView ? VIEW_ROUTES[firstAllowedView] : "/menu";
+};
+
+export const getDefaultPortalInstructorasRoute = (user) => {
+  if (!user) return "/";
+
+  if (canUserAccessView(user, "ADMINISTRATIVO")) {
+    return VIEW_ROUTES.ADMINISTRATIVO;
+  }
+
+  if (canUserAccessView(user, "PROGRAMACION")) {
+    return VIEW_ROUTES.PROGRAMACION;
+  }
+
+  return getDefaultRouteForUser(user);
 };

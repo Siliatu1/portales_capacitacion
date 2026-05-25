@@ -26,12 +26,25 @@ import InscripcionesTodera from "./Portal_Lineas_producto/pages/InscripcionesTod
 import GestionInstructoras from "./Portal_Lineas_producto/pages/GestionInstructoras";
 
 import ProtectedViewRoute from "./auth/components/ProtectedViewRoute";
+import { useAuth } from "./auth/hooks/useAuth";
+import { getDefaultPortalInstructorasRoute } from "./auth/utils/auth-user.utils";
 
 import Dashboard from "./Portal_Instructoras/components/Dashboard";
 
 import ProgramacionHorarios from "./Portal_Instructoras/components/ProgramacionHorarios";
 
 import VistaAdministrativa from "./Portal_Instructoras/components/VistaAdministrativa";
+
+const PortalInstructorasRedirect = () => {
+  const { user } = useAuth();
+
+  return (
+    <Navigate
+      to={getDefaultPortalInstructorasRoute(user)}
+      replace
+    />
+  );
+};
 
 function App() {
   const user = null;
@@ -95,7 +108,7 @@ function App() {
           }
         />
 
-        {/* NUEVA RUTA */}
+        {/* Control de evaluacion y calificacion , escuela del cafe */}
         <Route
           path="/lineas-producto/gestion-instructoras"
           element={
@@ -126,9 +139,34 @@ function App() {
         {/* PORTAL INSTRUCTORAS */}
 
         <Route
+          path="/portal-instructoras"
+          element={<PortalInstructorasRedirect />}
+        />
+
+        <Route
+          path="/portal/horarios-instructoras/instructor"
+          element={
+            <ProtectedViewRoute view="PROGRAMACION">
+              <Dashboard />
+            </ProtectedViewRoute>
+          }
+        />
+
+        <Route
+          path="/portal/horarios-instructoras/admin"
+          element={
+            <ProtectedViewRoute view="ADMINISTRATIVO">
+              <VistaAdministrativa />
+            </ProtectedViewRoute>
+          }
+        />
+
+        <Route
           path="/portal-instructoras/dashboard"
           element={
-            <Dashboard />
+            <ProtectedViewRoute view="PROGRAMACION">
+              <Dashboard />
+            </ProtectedViewRoute>
           }
         />
         
@@ -147,14 +185,28 @@ function App() {
          <Route
           path="/portal-instructoras/programacion"
           element={
-            <ProgramacionHorarios />
+            <ProtectedViewRoute view="PROGRAMACION">
+              <ProgramacionHorarios />
+            </ProtectedViewRoute>
           }
         />
 
         <Route
           path="/portal-instructoras/administrativo"
           element={
-            <VistaAdministrativa />
+            <Navigate
+              to="/portal-instructoras/vista-administrativa"
+              replace
+            />
+          }
+        />
+
+        <Route
+          path="/portal-instructoras/vista-administrativa"
+          element={
+            <ProtectedViewRoute view="ADMINISTRATIVO">
+              <VistaAdministrativa />
+            </ProtectedViewRoute>
           }
         />
          <Route

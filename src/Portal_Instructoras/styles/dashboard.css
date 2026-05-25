@@ -187,6 +187,9 @@
   align-items: center;
   gap: 20px;
   cursor: pointer;
+  width: 100%;
+  font: inherit;
+  text-align: left;
   transition: all 0.3s ease;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
   border: 2px solid transparent;

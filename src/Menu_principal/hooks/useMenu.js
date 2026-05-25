@@ -5,6 +5,7 @@ import { useAuth } from "../../auth/hooks/useAuth";
 
 import {
   getDefaultRouteForUser,
+  getDefaultPortalInstructorasRoute,
 } from "../../auth/utils/auth-user.utils";
 
 import {
@@ -71,7 +72,7 @@ export const useMenu = () => {
         if (item.route === "/portal-instructoras") {
           return {
             ...item,
-            route: "/portal-instructoras/dashboard",
+            route: getDefaultPortalInstructorasRoute(user),
           };
         }
 
