@@ -15,6 +15,22 @@ import {
 } from "../utils/userPdv.utils";
 import "../styles/panel.css";
 
+const normalizeText = (value) =>
+  String(value || "")
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase();
+
+const isHeladeriaPdv = (item) => {
+  const puntoVenta = normalizeText(
+    item.puntoVenta ||
+      item.area_nombre ||
+      ""
+  );
+
+  return puntoVenta.includes("heladeria");
+};
+
 export default function InscripcionesCafe({
   userData,
   onLogout,
@@ -27,8 +43,8 @@ export default function InscripcionesCafe({
   const [filtros, setFiltros] =
     useState({
       cedula: "",
-      puntoVenta: "",
-      fecha: "",
+      puntoVenta: [],
+      fecha: [],
       formulario: "todos",
     });
 
@@ -55,6 +71,18 @@ export default function InscripcionesCafe({
       ]
     );
 
+  const isAdminGeneral =
+    String(
+      user?.profile ||
+        user?.perfil ||
+        userData?.profile ||
+        userData?.perfil ||
+        ""
+    )
+      .trim()
+      .toUpperCase() ===
+    "ADMIN_GENERAL";
+
   const {
     data,
     loading,
@@ -67,12 +95,22 @@ export default function InscripcionesCafe({
 
   const inscripcionesCafe =
     useMemo(() => {
-      return data.filter(
-        (item) =>
+      return data.filter((item) => {
+        const isCafe =
           item.sourceEndpoint ===
-          "cap-cafes"
-      );
-    }, [data]);
+          "cap-cafes";
+
+        if (!isCafe) {
+          return false;
+        }
+
+        if (!isAdminGeneral) {
+          return true;
+        }
+
+        return isHeladeriaPdv(item);
+      });
+    }, [data, isAdminGeneral]);
 
   const dataFiltrada =
     useMemo(
@@ -99,6 +137,20 @@ export default function InscripcionesCafe({
       );
     }, [inscripcionesCafe]);
 
+  const puntosVentaDisponibles =
+    useMemo(() => {
+      return Array.from(
+        new Set(
+          inscripcionesCafe
+            .map((item) =>
+              item.puntoVenta ||
+              item.area_nombre
+            )
+            .filter(Boolean)
+        )
+      );
+    }, [inscripcionesCafe]);
+
   return (
     <>
       <Navbar
@@ -118,6 +170,9 @@ export default function InscripcionesCafe({
           setFiltros={setFiltros}
           fechasDisponibles={
             fechasDisponibles
+          }
+          puntosVentaDisponibles={
+            puntosVentaDisponibles
           }
         />
 

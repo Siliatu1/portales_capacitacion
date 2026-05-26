@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Button, Card, DatePicker, Modal, Select, Space } from 'antd';
-import { DownloadOutlined, FileExcelOutlined, LeftOutlined, RightOutlined } from '@ant-design/icons';
+import { Button, Card, DatePicker, Input, Modal, Select, Space } from 'antd';
+import { DownloadOutlined, FileExcelOutlined, LeftOutlined, PlusOutlined, RightOutlined } from '@ant-design/icons';
 import dayjs from 'dayjs';
 import * as XLSX from 'xlsx';
 import 'antd/dist/reset.css';
@@ -14,6 +14,7 @@ import {
   buildEditFormData,
   buildHorarioUpdatePayload,
   buildWeeklyRows,
+  createCustomMotivoOption,
   EXPANDABLE_MOTIVOS,
   getDefaultLunes,
   getInitials,
@@ -21,8 +22,10 @@ import {
   getWeekRangeLabel,
   INITIAL_MODAL_FORM,
   LINEA_OPTIONS,
+  loadCustomMotivoOptions,
   MOTIVO_OPTIONS_BASE,
   MOTIVO_OPTIONS_EXTRA,
+  saveCustomMotivoOptions,
   shiftWeek,
   toMonday,
   validateHorarioForm,
@@ -38,6 +41,9 @@ function VistaAdministrativa() {
   const [horarioEditar, setHorarioEditar] = useState(null);
   const [formDataModal, setFormDataModal] = useState(INITIAL_MODAL_FORM);
   const [showMoreMotivosModal, setShowMoreMotivosModal] = useState(false);
+  const [showCrearMotivoModal, setShowCrearMotivoModal] = useState(false);
+  const [nuevoMotivo, setNuevoMotivo] = useState('');
+  const [customMotivoOptions, setCustomMotivoOptions] = useState(loadCustomMotivoOptions);
   const { user, logout, puntosVenta, instructoras, horariosTodos, refetch } = useVistaAdministrativaData({ semanaLunes, lineaSeleccionada });
 
   useEffect(() => {
@@ -66,9 +72,18 @@ function VistaAdministrativa() {
     label: pdv.nombre,
   })), [puntosVenta]);
 
-  const motivoOptions = useMemo(() => (
-    showMoreMotivosModal ? [...MOTIVO_OPTIONS_BASE, ...MOTIVO_OPTIONS_EXTRA] : MOTIVO_OPTIONS_BASE
-  ), [showMoreMotivosModal]);
+  const allBaseMotivoOptions = useMemo(
+    () => [...MOTIVO_OPTIONS_BASE, ...MOTIVO_OPTIONS_EXTRA],
+    []
+  );
+
+  const motivoOptions = useMemo(() => {
+    const baseOptions = showMoreMotivosModal
+      ? allBaseMotivoOptions
+      : MOTIVO_OPTIONS_BASE;
+
+    return [...baseOptions, ...customMotivoOptions];
+  }, [allBaseMotivoOptions, customMotivoOptions, showMoreMotivosModal]);
 
   const datosSemanal = useMemo(
     () => buildWeeklyRows(fechasSemana, horariosFiltered, instructoras),
@@ -87,8 +102,57 @@ function VistaAdministrativa() {
     setShowMoreMotivosModal(false);
   };
 
+  const handleCerrarCrearMotivo = () => {
+    setShowCrearMotivoModal(false);
+    setNuevoMotivo('');
+  };
+
+  const handleCrearMotivo = () => {
+    const label = nuevoMotivo.trim().replace(/\s+/g, ' ');
+
+    if (!label) {
+      Modal.warning({
+        title: 'Motivo requerido',
+        content: 'Escribe el nombre del motivo que quieres crear.',
+      });
+      return;
+    }
+
+    const existeMotivo = [...allBaseMotivoOptions, ...customMotivoOptions].some(
+      (option) => option.label.toLowerCase() === label.toLowerCase()
+    );
+
+    if (existeMotivo) {
+      Modal.warning({
+        title: 'Motivo duplicado',
+        content: 'Ese motivo ya existe en la lista.',
+      });
+      return;
+    }
+
+    const nuevoMotivoOption = createCustomMotivoOption(label, customMotivoOptions);
+    const nextOptions = [...customMotivoOptions, nuevoMotivoOption];
+
+    setCustomMotivoOptions(nextOptions);
+    saveCustomMotivoOptions(nextOptions);
+
+    if (modalEditar) {
+      setFormDataModal((prev) => ({
+        ...prev,
+        motivo: nuevoMotivoOption.value,
+        detalleOtro: '',
+      }));
+    }
+
+    handleCerrarCrearMotivo();
+    Modal.success({
+      title: 'Motivo creado',
+      content: 'Ya aparece en el selector de motivos.',
+    });
+  };
+
   const handleEditarHorario = (horario) => {
-    const { formData, showMoreMotivos } = buildEditFormData(horario, puntosVenta);
+    const { formData, showMoreMotivos } = buildEditFormData(horario, puntosVenta, customMotivoOptions);
     setFormDataModal(formData);
     setShowMoreMotivosModal(showMoreMotivos);
     setHorarioEditar(horario);
@@ -104,7 +168,7 @@ function VistaAdministrativa() {
       return;
     }
 
-    const { datosAPI } = buildHorarioUpdatePayload(formDataModal, horarioEditar, puntosVenta);
+    const { datosAPI } = buildHorarioUpdatePayload(formDataModal, horarioEditar, puntosVenta, customMotivoOptions);
 
     try {
       await updateHorario(horarioEditar.id, datosAPI);
@@ -329,6 +393,14 @@ function VistaAdministrativa() {
             <Space>
               <Button
                 type="primary"
+                icon={<PlusOutlined />}
+                onClick={() => setShowCrearMotivoModal(true)}
+                className="vista-admin-btn vista-admin-btn--motivo"
+              >
+                Crear motivo
+              </Button>
+              <Button
+                type="primary"
                 icon={<FileExcelOutlined />}
                 onClick={handleDescargarExcel}
                 className="vista-admin-btn vista-admin-btn--excel"
@@ -372,6 +444,33 @@ function VistaAdministrativa() {
             <h3 className="vista-admin-profile-name">{user?.nombre}</h3>
             <p className="vista-admin-profile-text"><strong>Cargo:</strong> {user?.cargo}</p>
             <p className="vista-admin-profile-text"><strong>Documento:</strong> {user?.documento}</p>
+          </div>
+        </Modal>
+
+        <Modal
+          title="Crear motivo"
+          open={showCrearMotivoModal}
+          onCancel={handleCerrarCrearMotivo}
+          onOk={handleCrearMotivo}
+          okText="Crear"
+          cancelText="Cancelar"
+          okButtonProps={{ className: 'vista-admin-btn vista-admin-btn--motivo' }}
+        >
+          <div className="vista-admin-create-motivo">
+            <label className="vista-admin-create-motivo__label">
+              Nombre del motivo
+            </label>
+            <Input
+              value={nuevoMotivo}
+              onChange={(event) => setNuevoMotivo(event.target.value)}
+              onPressEnter={handleCrearMotivo}
+              placeholder="Ejemplo: Inventario"
+              maxLength={60}
+              autoFocus
+            />
+            <p className="vista-admin-create-motivo__hint">
+              Se guarda como prueba en este navegador y queda disponible en el selector de motivos.
+            </p>
           </div>
         </Modal>
 

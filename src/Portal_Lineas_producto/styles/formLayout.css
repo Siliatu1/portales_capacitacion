@@ -16,7 +16,7 @@
 
 .lineas-form-content .inscripcion-card,
 .lineas-form-content .form-todera-wrapper > * {
-  max-width: 980px;
+  max-width: 1160px;
 }
 
 @media (max-width: 900px) {

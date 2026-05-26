@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button, Modal } from 'antd';
 import Swal from 'sweetalert2';
@@ -23,8 +23,13 @@ import {
   getActividadLabel,
   getInitials,
   INITIAL_MODAL_FORM,
+  EXTRA_MOTIVOS,
+  PRIMARY_MOTIVOS,
   validateEventoForm,
 } from './programacionHorarios.helpers';
+import {
+  loadCustomMotivoOptions,
+} from './vistaAdministrativa.helpers';
 
 function ProgramacionHorarios() {
   const navigate = useNavigate();
@@ -37,6 +42,7 @@ function ProgramacionHorarios() {
   const [guardandoDia, setGuardandoDia] = useState(false);
   const [semanaOffset, setSemanaOffset] = useState(0);
   const [fotoPerfilError, setFotoPerfilError] = useState(false);
+  const [customMotivoOptions] = useState(loadCustomMotivoOptions);
   const {
     user,
     fechasSemana,
@@ -50,6 +56,17 @@ function ProgramacionHorarios() {
   } = useProgramacionHorariosData(semanaOffset);
 
   const totalHorasSemana = calculateTotalHorasSemana(programacionSemanal);
+  const allMotivoOptions = useMemo(
+    () => [...PRIMARY_MOTIVOS, ...EXTRA_MOTIVOS],
+    []
+  );
+  const motivoOptionsModal = useMemo(() => {
+    const baseOptions = showMoreMotivosModal
+      ? allMotivoOptions
+      : PRIMARY_MOTIVOS;
+
+    return [...baseOptions, ...customMotivoOptions];
+  }, [allMotivoOptions, customMotivoOptions, showMoreMotivosModal]);
 
 
     const resetModalState = () => {
@@ -78,7 +95,12 @@ function ProgramacionHorarios() {
           : null
       );
       setFormDataModal(formData);
-      setShowMoreMotivosModal(Boolean(evento?.motivo && EXPANDABLE_MOTIVOS.has(evento.motivo)));
+      setShowMoreMotivosModal(Boolean(
+        evento?.motivo && (
+          EXPANDABLE_MOTIVOS.has(evento.motivo) ||
+          customMotivoOptions.some((option) => option.value === evento.motivo)
+        )
+      ));
       setModalEditar(true);
     };
 
@@ -142,7 +164,13 @@ function ProgramacionHorarios() {
 
       try {
         const fecha = fechasSemana[diaActual.index];
-        const { datosAPI } = buildHorarioApiPayload(formDataActual, fecha, user.documento, puntosVenta);
+        const { datosAPI } = buildHorarioApiPayload(
+          formDataActual,
+          fecha,
+          user.documento,
+          puntosVenta,
+          customMotivoOptions
+        );
 
         let idAPI = eventoActual?.idAPI || null;
 
@@ -320,7 +348,7 @@ function ProgramacionHorarios() {
           actividades.push({
             dia: DIAS_SEMANA_LABEL[index],
             fecha: formatFechaCompleta(fechasSemana[index]),
-            actividad: getActividadLabel(evento),
+            actividad: getActividadLabel(evento, customMotivoOptions),
             hora: evento.motivo === 'dia_descanso' || evento.motivo === 'vacaciones'
               ? 'Todo el día'
               : `${evento.horaInicio} - ${evento.horaFin}`,
@@ -570,7 +598,7 @@ function ProgramacionHorarios() {
                                 </div>
                                 <div className="evento-info">
                                   <div className="evento-pdv">{evento.puntoVenta || 'N/A'}</div>
-                                  <div className="evento-motivo">{getActividadLabel(evento)}</div>
+                                  <div className="evento-motivo">{getActividadLabel(evento, customMotivoOptions)}</div>
                                 </div>
                               </div>
                             );
@@ -638,6 +666,7 @@ function ProgramacionHorarios() {
           loadingPuntos={loadingPuntos}
           guardandoDia={guardandoDia}
           showMoreMotivos={showMoreMotivosModal}
+          motivoOptions={motivoOptionsModal}
           onClose={handleCerrarModal}
           onSave={handleGuardarEdicionModal}
           onDelete={handleEliminarActividadModal}

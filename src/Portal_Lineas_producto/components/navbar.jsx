@@ -14,14 +14,14 @@ import { useAuth } from "../../auth/hooks/useAuth";
 const NAV_ITEMS = [
   {
     view: "FORM_HELADERIA",
-    label: "Formulario Heladería",
+    label: "Formulario Inscripción Heladería",
     route:
       "/lineas-producto/form-heladeria",
   },
 
   {
     view: "FORM_RESTAURANTE",
-    label: "Formulario Restaurante",
+    label: "Formulario Inscripción Restaurante",
     route:
       "/lineas-producto/form-restaurante",
   },
@@ -35,7 +35,7 @@ const NAV_ITEMS = [
 
   {
     view: "FORM_TODERA",
-    label: "Formulario Todera",
+    label: "Formulario Inscripción Todera",
     route:
       "/lineas-producto/form-todera",
   },
@@ -92,7 +92,6 @@ const Navbar = ({
   ] = useState(true);
 
   const {
-    logout,
     canAccessView,
   } = useAuth();
 
@@ -107,9 +106,7 @@ const Navbar = ({
 
   const handleLogout =
     () => {
-      logout();
-
-      navigate("/");
+      navigate("/menu");
     };
 
   return (

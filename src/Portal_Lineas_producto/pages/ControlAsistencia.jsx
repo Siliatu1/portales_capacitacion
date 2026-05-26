@@ -82,8 +82,8 @@ export default function ControlAsistencia({ userData, onLogout }) {
 
   const [filtros, setFiltros] = useState({
     cedula: "",
-    puntoVenta: "",
-    fecha: "",
+    puntoVenta: [],
+    fecha: [],
     formulario: 'todos'
   });
 
@@ -124,6 +124,16 @@ export default function ControlAsistencia({ userData, onLogout }) {
     );
   }, [data]);
 
+  const puntosVentaDisponibles = useMemo(() => {
+    return Array.from(
+      new Set(
+        (data || [])
+          .map((item) => item.puntoVenta || item.area_nombre)
+          .filter(Boolean)
+      )
+    );
+  }, [data]);
+
   const pageTitle = isCafeInstructor
     ? "Control de asistencia Café"
     : "Control de asistencia Todera";
@@ -157,6 +167,7 @@ export default function ControlAsistencia({ userData, onLogout }) {
           filtros={filtros}
           setFiltros={setFiltros}
           fechasDisponibles={fechasDisponibles}
+          puntosVentaDisponibles={puntosVentaDisponibles}
         />
 
         <div className="table-card attendance-card">

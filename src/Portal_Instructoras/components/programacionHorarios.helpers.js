@@ -205,8 +205,11 @@ export function createProgramacionStoragePayload(programacionSemanal, fechasSema
   };
 }
 
-export function buildProgramacionFromApi(items, fechasSemana) {
+export function buildProgramacionFromApi(items, fechasSemana, customMotivoOptions = []) {
   const nuevaProgramacion = createEmptyProgramacionSemanal();
+  const customMotivos = Object.fromEntries(
+    customMotivoOptions.map((option) => [option.label, option.value])
+  );
 
   items.forEach((item) => {
     const fechaStr = item.attributes.fecha;
@@ -223,7 +226,7 @@ export function buildProgramacionFromApi(items, fechasSemana) {
     }
 
     const actividad = item.attributes.actividad;
-    const motivo = ACTIVIDAD_A_MOTIVO[actividad] || 'otro';
+    const motivo = ACTIVIDAD_A_MOTIVO[actividad] || customMotivos[actividad] || 'otro';
 
     nuevaProgramacion[DIAS_SEMANA[diaIndex]].push({
       puntoVenta: item.attributes.pdv_nombre,
@@ -232,7 +235,7 @@ export function buildProgramacionFromApi(items, fechasSemana) {
       horaFin: item.attributes.hora_fin ? item.attributes.hora_fin.substring(0, 5) : '',
       motivo,
       detalleCubrir: '',
-      detalleOtro: ACTIVIDAD_A_MOTIVO[actividad] ? '' : actividad,
+      detalleOtro: ACTIVIDAD_A_MOTIVO[actividad] || customMotivos[actividad] ? '' : actividad,
       fechaModificacion: item.attributes.updatedAt || item.attributes.createdAt,
       horaModificacion: new Date(item.attributes.updatedAt || item.attributes.createdAt).toLocaleTimeString('es-CO', { hour: '2-digit', minute: '2-digit' }),
       idAPI: item.id
@@ -302,8 +305,11 @@ export function validateEventoForm(formData, programacionSemanal, dia, eventoEdi
   return null;
 }
 
-export function buildHorarioApiPayload(formData, fecha, documento, puntosVenta = []) {
-  let actividad = MOTIVOS_LABELS[formData.motivo] || formData.motivo;
+export function buildHorarioApiPayload(formData, fecha, documento, puntosVenta = [], customMotivoOptions = []) {
+  const customMotivosReverse = Object.fromEntries(
+    customMotivoOptions.map((option) => [option.value, option.label])
+  );
+  let actividad = customMotivosReverse[formData.motivo] || MOTIVOS_LABELS[formData.motivo] || formData.motivo;
   if (formData.motivo === 'cubrir_puesto') {
     actividad = `Cubrir Puesto - ${formData.detalleCubrir}`;
   } else if (formData.motivo === 'otro') {
@@ -393,7 +399,7 @@ export function buildModalFormFromEvento(evento, puntosVenta = []) {
   };
 }
 
-export function getActividadLabel(evento) {
+export function getActividadLabel(evento, customMotivoOptions = []) {
   if (evento.motivo === 'otro') {
     return evento.detalleOtro;
   }
@@ -402,5 +408,9 @@ export function getActividadLabel(evento) {
     return `Cubrir - ${evento.detalleCubrir}`;
   }
 
-  return MOTIVOS_LABELS[evento.motivo] || evento.motivo;
+  const customMotivosReverse = Object.fromEntries(
+    customMotivoOptions.map((option) => [option.value, option.label])
+  );
+
+  return customMotivosReverse[evento.motivo] || MOTIVOS_LABELS[evento.motivo] || evento.motivo;
 }

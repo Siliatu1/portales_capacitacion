@@ -27,8 +27,9 @@ export default function InscripcionesTodera({
   const [filtros, setFiltros] =
     useState({
       cedula: "",
-      puntoVenta: "",
-      fecha: "",
+      puntoVenta: [],
+      fecha: [],
+      instructora: [],
       formulario: "todos",
     });
 
@@ -102,6 +103,34 @@ export default function InscripcionesTodera({
       );
     }, [inscripcionesTodera]);
 
+  const puntosVentaDisponibles =
+    useMemo(() => {
+      return Array.from(
+        new Set(
+          inscripcionesTodera
+            .map((item) =>
+              item.puntoVenta ||
+              item.area_nombre
+            )
+            .filter(Boolean)
+        )
+      );
+    }, [inscripcionesTodera]);
+
+  const instructorasDisponibles =
+    useMemo(() => {
+      return Array.from(
+        new Set(
+          inscripcionesTodera
+            .map((item) =>
+              item.instructora ||
+              item.lider
+            )
+            .filter(Boolean)
+        )
+      );
+    }, [inscripcionesTodera]);
+
   return (
     <>
       <Navbar
@@ -122,6 +151,13 @@ export default function InscripcionesTodera({
           fechasDisponibles={
             fechasDisponibles
           }
+          puntosVentaDisponibles={
+            puntosVentaDisponibles
+          }
+          instructorasDisponibles={
+            instructorasDisponibles
+          }
+          showInstructoraFilter
         />
 
         <div className="table-card">

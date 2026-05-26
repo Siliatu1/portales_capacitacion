@@ -1,8 +1,4 @@
 import { Select } from 'antd';
-import {
-  EXTRA_MOTIVOS,
-  PRIMARY_MOTIVOS,
-} from './programacionHorarios.helpers';
 
 function ProgramacionHorariosModal({
   open,
@@ -12,6 +8,7 @@ function ProgramacionHorariosModal({
   loadingPuntos,
   guardandoDia,
   showMoreMotivos,
+  motivoOptions,
   onClose,
   onSave,
   onDelete,
@@ -23,7 +20,7 @@ function ProgramacionHorariosModal({
     return null;
   }
 
-  const motivos = showMoreMotivos ? [...PRIMARY_MOTIVOS, ...EXTRA_MOTIVOS] : PRIMARY_MOTIVOS;
+  const motivos = motivoOptions || [];
   const puntosVentaOptions = puntosVenta.map((puntoVenta) => ({
     value: String(puntoVenta.id),
     label: puntoVenta.nombre,

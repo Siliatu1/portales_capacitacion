@@ -215,6 +215,35 @@
   border-color: #AECE82;
 }
 
+.vista-admin-btn--motivo {
+  background: #8f684d;
+  border-color: #8f684d;
+}
+
+.vista-admin-btn--motivo:hover,
+.vista-admin-btn--motivo:focus {
+  background: #735138 !important;
+  border-color: #735138 !important;
+}
+
+.vista-admin-create-motivo {
+  display: grid;
+  gap: 10px;
+  padding-top: 8px;
+}
+
+.vista-admin-create-motivo__label {
+  color: #6B4E3D;
+  font-weight: 700;
+}
+
+.vista-admin-create-motivo__hint {
+  margin: 0;
+  color: #7b6b5b;
+  font-size: 13px;
+  line-height: 1.4;
+}
+
 .vista-admin-day-header {
   background: #4A7C59 !important;
   color: white !important;

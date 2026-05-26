@@ -12,26 +12,26 @@
 }
 
 .form-todera-wrapper > * {
-  width: min(100%, 980px);
+  width: min(100%, 1160px);
   margin-left: auto;
   margin-right: auto;
 }
 
 .alert-warning {
-  padding: 16px 22px;
-  margin-bottom: 28px;
-  border: 1px solid #f3c47f;
+  padding: 20px 26px;
+  margin-bottom: 32px;
+  border: 1px solid #e3a29b;
   border-radius: 16px;
-  background: #fff3df;
-  color: #9a5b18;
-  font-size: 14px;
+  background: #fff0ed;
+  color: #9b3f36;
+  font-size: 16px;
   font-weight: 800;
   letter-spacing: 0.2px;
 }
 
 .form-todera-wrapper .buscar-empleado-container {
-  margin-bottom: 20px;
-  padding: 22px;
+  margin-bottom: 24px;
+  padding: 26px;
   border: 1px solid rgba(80, 54, 41, 0.08);
   border-radius: 16px;
   box-shadow: 0 12px 30px rgba(80, 54, 41, 0.08);
@@ -40,32 +40,34 @@
 .form-todera-wrapper .buscar-empleado-label,
 .form-todera-wrapper .form-field label {
   color: #6f4b32;
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 800;
   letter-spacing: 0.35px;
 }
 
 .form-todera-wrapper .search-input-container {
   display: flex;
-  gap: 12px;
+  gap: 14px;
   align-items: center;
-  padding: 8px;
+  padding: 10px;
   border-radius: 16px;
   background: #fff5e4;
 }
 
 .form-todera-wrapper .buscar-empleado-input {
   min-width: 0;
-  height: 42px;
+  height: 50px;
   background: #fff;
   color: #3c1f1c;
+  font-size: 16px;
 }
 
 .form-todera-wrapper .buscar-empleado-btn {
-  height: 42px;
-  min-width: 92px;
+  height: 50px;
+  min-width: 112px;
   border-radius: 10px;
   background: #503629;
+  font-size: 15px;
 }
 
 .form-todera-wrapper .buscar-empleado-btn:hover {

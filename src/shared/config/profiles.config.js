@@ -16,7 +16,7 @@ export const PROFILE_CONFIG = {
 
     permissions: {
       filterByPDV: false,
-      canDelete: true,
+      canDelete: false,
       canViewAll: true,
       canViewEstadoObs: true,
       canBlockDates: true,

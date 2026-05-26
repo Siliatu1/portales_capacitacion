@@ -132,9 +132,10 @@
     position: relative;
     background: #ffffff;
     border-radius: 10px;
-    padding: 1.25rem 1rem 1.3rem;
+    width: min(100%, 820px);
+    padding: 1.5rem 1.6rem 1.6rem;
     margin: 1.5rem auto 2rem;
-    max-width: 520px;
+    max-width: none;
     border: 1px solid rgba(80, 54, 41, 0.12);
     box-shadow: 0 8px 24px rgba(80, 54, 41, 0.16);
     animation: fadeIn 0.3s ease-out;
@@ -245,8 +246,8 @@
     background: #f7f2ea;
     border: 1px solid rgba(80, 54, 41, 0.18);
     border-radius: 8px;
-    padding: 0.68rem 0.78rem;
-    font-size: 0.86rem;
+    padding: 0.78rem 0.95rem;
+    font-size: 0.95rem;
     color: #1f2933;
     box-sizing: border-box;
   }

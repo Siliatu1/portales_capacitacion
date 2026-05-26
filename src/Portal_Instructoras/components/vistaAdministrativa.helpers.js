@@ -32,11 +32,18 @@ const MOTIVO_LABEL_PAIRS = [
   ['Licencia por Luto', 'licencia_luto']
 ];
 
+const CUSTOM_MOTIVOS_STORAGE_KEY = 'portal_instructoras_custom_motivos';
+
 const BASE_MOTIVO_VALUES = new Set([
   'retroalimentacion',
   'acompañamiento',
   'capacitacion',
   'dia_descanso'
+]);
+
+const ALL_MOTIVO_VALUES = new Set([
+  ...MOTIVO_LABEL_PAIRS.map(([, value]) => value),
+  'otro',
 ]);
 
 export const INITIAL_MODAL_FORM = {
@@ -87,6 +94,59 @@ export const MOTIVO_OPTIONS_EXTRA = [
     .map(([label, value]) => ({ value, label })),
   { value: 'otro', label: 'Otro' },
 ];
+
+export function loadCustomMotivoOptions() {
+  if (typeof window === 'undefined') return [];
+
+  try {
+    const raw = window.localStorage.getItem(CUSTOM_MOTIVOS_STORAGE_KEY);
+    const parsed = raw ? JSON.parse(raw) : [];
+
+    if (!Array.isArray(parsed)) return [];
+
+    const seen = new Set();
+    return parsed
+      .filter((item) => item && typeof item.value === 'string' && typeof item.label === 'string')
+      .map((item) => ({ value: item.value.trim(), label: item.label.trim() }))
+      .filter((item) => item.value && item.label && !seen.has(item.value) && seen.add(item.value));
+  } catch {
+    return [];
+  }
+}
+
+export function saveCustomMotivoOptions(options) {
+  if (typeof window === 'undefined') return;
+
+  window.localStorage.setItem(CUSTOM_MOTIVOS_STORAGE_KEY, JSON.stringify(options));
+}
+
+export function createCustomMotivoOption(label, existingOptions = []) {
+  const cleanLabel = label.trim().replace(/\s+/g, ' ');
+  const baseValue = cleanLabel
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '_')
+    .replace(/^_+|_+$/g, '') || 'motivo';
+
+  const usedValues = new Set([
+    ...ALL_MOTIVO_VALUES,
+    ...existingOptions.map((option) => option.value),
+  ]);
+
+  let value = `custom_${baseValue}`;
+  let counter = 2;
+
+  while (usedValues.has(value)) {
+    value = `custom_${baseValue}_${counter}`;
+    counter += 1;
+  }
+
+  return {
+    value,
+    label: cleanLabel,
+  };
+}
 
 export function getDefaultLunes() {
   const hoy = new Date();
@@ -171,8 +231,11 @@ export function buildInstructorasList(horarios, instructorasMap) {
     .sort((a, b) => a.nombre.localeCompare(b.nombre));
 }
 
-export function buildEditFormData(horario, puntosVenta) {
-  const motivo = MOTIVOS_LABELS[horario.actividad] || 'otro';
+export function buildEditFormData(horario, puntosVenta, customMotivoOptions = []) {
+  const customMotivos = Object.fromEntries(
+    customMotivoOptions.map((option) => [option.label, option.value])
+  );
+  const motivo = MOTIVOS_LABELS[horario.actividad] || customMotivos[horario.actividad] || 'otro';
   const pdvEncontrado = puntosVenta.find((puntoVenta) => puntoVenta.nombre === horario.pdv);
 
   return {
@@ -217,12 +280,15 @@ export function validateHorarioForm(formData) {
   return null;
 }
 
-export function buildHorarioUpdatePayload(formData, horario, puntosVenta) {
+export function buildHorarioUpdatePayload(formData, horario, puntosVenta, customMotivoOptions = []) {
   const puntoVentaObj = puntosVenta.find((puntoVenta) => String(puntoVenta.id) === formData.puntoVenta);
   const puntoVentaNombre = puntoVentaObj ? puntoVentaObj.nombre : '';
+  const customMotivosReverse = Object.fromEntries(
+    customMotivoOptions.map((option) => [option.value, option.label])
+  );
   const actividad = formData.motivo === 'otro'
     ? formData.detalleOtro
-    : MOTIVOS_LABELS_REVERSE[formData.motivo] || formData.motivo;
+    : customMotivosReverse[formData.motivo] || MOTIVOS_LABELS_REVERSE[formData.motivo] || formData.motivo;
   const isAllDayActivity = formData.motivo === 'dia_descanso' || formData.motivo === 'vacaciones';
 
   return {

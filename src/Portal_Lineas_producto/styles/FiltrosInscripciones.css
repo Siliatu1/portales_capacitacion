@@ -22,6 +22,10 @@
   min-width: 180px;
 }
 
+.filtro-select-wide {
+  min-width: 260px;
+}
+
 .filtro-btn {
   min-width: 120px;
 }
@@ -38,6 +42,7 @@
 
   .filtro-input,
   .filtro-select,
+  .filtro-select-wide,
   .filtro-btn {
     width: 100%;
     min-width: 0;

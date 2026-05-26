@@ -6,6 +6,7 @@ import {
   getFechasSemana,
   getInfoSemana,
 } from '../components/programacionHorarios.helpers';
+import { loadCustomMotivoOptions } from '../components/vistaAdministrativa.helpers';
 import { useHorariosQuery, usePdvIpsQuery } from './useHorariosInstructorasQueries';
 
 const buildUser = (userData) => ({
@@ -81,7 +82,11 @@ export function useProgramacionHorariosData(semanaOffset) {
     if (horariosQuery.data?.length > 0) {
       dispatchProgramacion({
         type: 'replace',
-        payload: buildProgramacionFromApi(horariosQuery.data, getFechasSemana(semanaOffset))
+        payload: buildProgramacionFromApi(
+          horariosQuery.data,
+          getFechasSemana(semanaOffset),
+          loadCustomMotivoOptions()
+        )
       });
       return;
     }
