@@ -88,6 +88,8 @@
 
   align-items: center;
 
+  flex-wrap: wrap;
+
   gap: 24px;
 
   background: rgba(255, 255, 255, 0.72);
@@ -100,6 +102,39 @@
 
   box-shadow:
     0 6px 18px rgba(0, 0, 0, 0.04);
+}
+
+.page-header h2 {
+  margin: 0;
+
+  flex: 1 1 280px;
+}
+
+.page-header .export-excel-btn {
+  min-height: 42px;
+
+  display: inline-flex;
+
+  align-items: center;
+
+  gap: 8px;
+
+  margin-left: auto;
+
+  border: none;
+
+  border-radius: 12px;
+
+  background: #4f7f52;
+
+  font-weight: 700;
+
+  box-shadow:
+    0 8px 18px rgba(79, 127, 82, 0.18);
+}
+
+.page-header .export-excel-btn:not(:disabled):hover {
+  background: #416f44 !important;
 }
 
 /* =========================

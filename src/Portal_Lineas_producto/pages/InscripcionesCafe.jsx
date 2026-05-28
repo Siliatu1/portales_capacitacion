@@ -2,12 +2,16 @@ import {
   useMemo,
   useState,
 } from "react";
+import { Button } from "antd";
+import { FileSpreadsheet } from "lucide-react";
 
 import Navbar from "../components/navbar";
 import FiltrosInscripciones from "../components/FiltrosInscripciones";
 import InscripcionesTable from "../components/InscripcionesTable";
 import { useAuth } from "../../auth/hooks/useAuth";
 import { useInscripciones } from "../hooks/useInscripciones";
+import { downloadInscripcionesExcel } from "../utils/exportInscripcionesExcel";
+import { inscripcionEstadoLabel } from "../utils/estadoInscripcion.utils";
 import { filtrarInscripciones } from "../utils/filters";
 import {
   getStoredUser,
@@ -45,6 +49,7 @@ export default function InscripcionesCafe({
       cedula: "",
       puntoVenta: [],
       fecha: [],
+      estado: [],
       formulario: "todos",
     });
 
@@ -151,6 +156,28 @@ export default function InscripcionesCafe({
       );
     }, [inscripcionesCafe]);
 
+  const estadosDisponibles =
+    useMemo(() => {
+      return Array.from(
+        new Set(
+          inscripcionesCafe
+            .map(inscripcionEstadoLabel)
+            .filter(Boolean)
+        )
+      );
+    }, [inscripcionesCafe]);
+
+  const handleExportExcel = () => {
+    downloadInscripcionesExcel({
+      data: dataFiltrada,
+      formType: "heladeria",
+      fileName:
+        "inscripciones_escuela_cafe",
+      sheetName:
+        "Inscripciones Escuela Cafe",
+    });
+  };
+
   return (
     <>
       <Navbar
@@ -163,6 +190,23 @@ export default function InscripcionesCafe({
           <h2>
             Inscripciones Escuela del Café
           </h2>
+          <Button
+            type="primary"
+            className="export-excel-btn"
+            icon={
+              <FileSpreadsheet
+                size={17}
+                strokeWidth={2.2}
+              />
+            }
+            onClick={handleExportExcel}
+            disabled={
+              loading ||
+              dataFiltrada.length === 0
+            }
+          >
+            Exportar Excel
+          </Button>
         </div>
 
         <FiltrosInscripciones
@@ -170,6 +214,9 @@ export default function InscripcionesCafe({
           setFiltros={setFiltros}
           fechasDisponibles={
             fechasDisponibles
+          }
+          estadosDisponibles={
+            estadosDisponibles
           }
           puntosVentaDisponibles={
             puntosVentaDisponibles

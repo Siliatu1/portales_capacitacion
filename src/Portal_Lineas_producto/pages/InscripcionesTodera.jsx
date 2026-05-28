@@ -2,12 +2,16 @@ import {
   useMemo,
   useState,
 } from "react";
+import { Button } from "antd";
+import { FileSpreadsheet } from "lucide-react";
 
 import Navbar from "../components/navbar";
 import FiltrosInscripciones from "../components/FiltrosInscripciones";
 import InscripcionesTable from "../components/InscripcionesTable";
 import { useAuth } from "../../auth/hooks/useAuth";
 import { useInscripciones } from "../hooks/useInscripciones";
+import { downloadInscripcionesExcel } from "../utils/exportInscripcionesExcel";
+import { inscripcionEstadoLabel } from "../utils/estadoInscripcion.utils";
 import { filtrarInscripciones } from "../utils/filters";
 import {
   getStoredUser,
@@ -29,6 +33,7 @@ export default function InscripcionesTodera({
       cedula: "",
       puntoVenta: [],
       fecha: [],
+      estado: [],
       instructora: [],
       formulario: "todos",
     });
@@ -117,6 +122,17 @@ export default function InscripcionesTodera({
       );
     }, [inscripcionesTodera]);
 
+  const estadosDisponibles =
+    useMemo(() => {
+      return Array.from(
+        new Set(
+          inscripcionesTodera
+            .map(inscripcionEstadoLabel)
+            .filter(Boolean)
+        )
+      );
+    }, [inscripcionesTodera]);
+
   const instructorasDisponibles =
     useMemo(() => {
       return Array.from(
@@ -131,6 +147,17 @@ export default function InscripcionesTodera({
       );
     }, [inscripcionesTodera]);
 
+  const handleExportExcel = () => {
+    downloadInscripcionesExcel({
+      data: dataFiltrada,
+      formType: "todera",
+      fileName:
+        "inscripciones_todera",
+      sheetName:
+        "Inscripciones Todera",
+    });
+  };
+
   return (
     <>
       <Navbar
@@ -143,6 +170,23 @@ export default function InscripcionesTodera({
           <h2>
             Inscripciones Todera
           </h2>
+          <Button
+            type="primary"
+            className="export-excel-btn"
+            icon={
+              <FileSpreadsheet
+                size={17}
+                strokeWidth={2.2}
+              />
+            }
+            onClick={handleExportExcel}
+            disabled={
+              loading ||
+              dataFiltrada.length === 0
+            }
+          >
+            Exportar Excel
+          </Button>
         </div>
 
         <FiltrosInscripciones
@@ -150,6 +194,9 @@ export default function InscripcionesTodera({
           setFiltros={setFiltros}
           fechasDisponibles={
             fechasDisponibles
+          }
+          estadosDisponibles={
+            estadosDisponibles
           }
           puntosVentaDisponibles={
             puntosVentaDisponibles

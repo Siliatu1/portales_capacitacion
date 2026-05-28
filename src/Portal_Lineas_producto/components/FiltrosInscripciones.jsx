@@ -8,6 +8,7 @@ export default function FiltrosInscripciones({
   setFiltros,
   fechasDisponibles = [],
   puntosVentaDisponibles = [],
+  estadosDisponibles = [],
   instructorasDisponibles = [],
   showInstructoraFilter = false,
 }) {
@@ -36,6 +37,7 @@ export default function FiltrosInscripciones({
   }));
 
   const puntoVentaOptions = buildOptions(puntosVentaDisponibles);
+  const estadoOptions = buildOptions(estadosDisponibles);
   const instructoraOptions = buildOptions(instructorasDisponibles);
 
   return (
@@ -100,6 +102,30 @@ export default function FiltrosInscripciones({
           notFoundContent="No se encontraron fechas"
         />
 
+        <Select
+          className="filtro-select"
+          mode="multiple"
+          placeholder="Estado"
+          value={toArrayValue(filtros.estado)}
+          onChange={(value) =>
+            setFiltros({
+              ...filtros,
+              estado: value,
+            })
+          }
+          options={estadoOptions}
+          allowClear
+          showSearch
+          maxTagCount="responsive"
+          optionFilterProp="label"
+          filterOption={(input, option) =>
+            String(option?.label || "")
+              .toLowerCase()
+              .includes(input.toLowerCase())
+          }
+          notFoundContent="No se encontraron estados"
+        />
+
         {showInstructoraFilter && (
           <Select
             className="filtro-select filtro-select-wide"
@@ -133,6 +159,7 @@ export default function FiltrosInscripciones({
               cedula: "",
               puntoVenta: [],
               fecha: [],
+              estado: [],
               instructora: [],
               formulario: "todos",
             })

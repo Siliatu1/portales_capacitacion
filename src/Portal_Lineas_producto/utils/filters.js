@@ -1,3 +1,5 @@
+import { inscripcionEstadoLabel } from "./estadoInscripcion.utils";
+
 const getDateOnly = (value) => String(value || "").split("T")[0];
 
 const hasValues = (value) => (
@@ -33,6 +35,7 @@ export const filtrarInscripciones = (data, filtros) => {
       includesAny(puntoVenta, filtros.puntoVenta) &&
       includesAny(getDateOnly(item.dia), filtros.fecha, true) &&
       includesAny(instructora, filtros.instructora) &&
+      includesAny(inscripcionEstadoLabel(item), filtros.estado, true) &&
       (!filtros.lider || item.lider?.toLowerCase().includes(filtros.lider.toLowerCase())) &&
       (!filtros.formulario || filtros.formulario === 'todos' || (item.tipo_formulario || '').toLowerCase() === filtros.formulario.toLowerCase())
     );
