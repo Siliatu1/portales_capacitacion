@@ -1,10 +1,17 @@
 import {
   Button,
+  Modal,
   Popconfirm,
+  Select,
   Table,
   Tag,
+  message,
 } from "antd";
-import { AlertTriangle } from "lucide-react";
+import {
+  AlertTriangle,
+  UserRoundCheck,
+} from "lucide-react";
+import { useState } from "react";
 
 import { useAuth } from "../../auth/hooks/useAuth";
 
@@ -19,6 +26,9 @@ export default function InscripcionesTable({
   loading,
   formType,
   onDelete,
+  onSetInstructora,
+  canReassignInstructora = false,
+  instructorasPorCategoria = {},
 }) {
   const { hasPermission } =
     useAuth();
@@ -27,6 +37,11 @@ export default function InscripcionesTable({
     hasPermission(
       "canDelete"
     );
+
+  const [
+    reassigningRecordId,
+    setReassigningRecordId,
+  ] = useState(null);
 
   const parseDate = (
     value
@@ -178,6 +193,193 @@ export default function InscripcionesTable({
         );
       }
     };
+
+  const handleSetInstructora =
+    async (record, value) => {
+      if (
+        typeof onSetInstructora !==
+        "function"
+      ) {
+        return;
+      }
+
+      setReassigningRecordId(
+        record.id
+      );
+
+      await onSetInstructora(
+        record.id,
+        value,
+        record.sourceEndpoint
+      );
+
+      setReassigningRecordId(
+        null
+      );
+
+      message.success(
+        "Instructora reasignada"
+      );
+    };
+
+  const confirmSetInstructora =
+    (
+      record,
+      nextValue,
+      currentValue
+    ) => {
+      if (
+        !nextValue ||
+        nextValue === currentValue
+      ) {
+        return;
+      }
+
+      Modal.confirm({
+        title:
+          "Confirmar cambio de instructora",
+        content: (
+          <div className="reassign-confirm-content">
+            <p>
+              Esta inscripci&oacute;n quedar&aacute; asignada a la nueva instructora seleccionada.
+            </p>
+            <div>
+              <span>Actual</span>
+              <strong>
+                {currentValue || "-"}
+              </strong>
+            </div>
+            <div>
+              <span>Nueva</span>
+              <strong>
+                {nextValue}
+              </strong>
+            </div>
+          </div>
+        ),
+        okText:
+          "Confirmar cambio",
+        cancelText:
+          "Cancelar",
+        centered: true,
+        onOk: async () => {
+          try {
+            await handleSetInstructora(
+              record,
+              nextValue
+            );
+          } catch (err) {
+            setReassigningRecordId(
+              null
+            );
+            console.error(
+              "Reasignar instructora fallo",
+              err
+            );
+            message.error(
+              "No se pudo reasignar la instructora"
+            );
+            throw err;
+          }
+        },
+      });
+    };
+
+  const renderInstructora = (
+    value,
+    record
+  ) => {
+    const currentValue = String(
+      value ||
+        record.lider ||
+        ""
+    ).trim();
+
+    if (
+      !canReassignInstructora
+    ) {
+      return currentValue || "-";
+    }
+
+    const categoriaKey = String(
+      record.categoria || ""
+    )
+      .trim()
+      .toLowerCase();
+
+    const instructorasCategoria =
+      instructorasPorCategoria[
+        categoriaKey
+      ] ||
+      instructorasPorCategoria.__all ||
+      [];
+
+    const options = Array.from(
+      new Set(
+        [
+          currentValue,
+          ...instructorasCategoria,
+        ].filter(Boolean)
+      )
+    )
+      .sort((a, b) =>
+        a.localeCompare(b, "es")
+      )
+      .map((name) => ({
+        label: name,
+        value: name,
+      }));
+
+    return (
+      <Select
+        size="small"
+        className="instructora-reassign-select"
+        popupClassName="instructora-reassign-dropdown"
+        value={
+          currentValue ||
+          undefined
+        }
+        options={options}
+        showSearch
+        optionFilterProp="label"
+        placeholder="Seleccione instructora"
+        disabled={
+          options.length === 0 ||
+          reassigningRecordId ===
+            record.id
+        }
+        loading={
+          reassigningRecordId ===
+          record.id
+        }
+        suffixIcon={
+          <UserRoundCheck
+            size={15}
+            strokeWidth={2.2}
+          />
+        }
+        onChange={(nextValue) =>
+          confirmSetInstructora(
+            record,
+            nextValue,
+            currentValue
+          )
+        }
+        filterOption={(
+          input,
+          option
+        ) =>
+          String(
+            option?.label || ""
+          )
+            .toLowerCase()
+            .includes(
+              input.toLowerCase()
+            )
+        }
+      />
+    );
+  };
 
   /* =========================================
      COLUMNAS GENERALES
@@ -453,10 +655,12 @@ export default function InscripcionesTable({
 
       responsive: ["xl"],
 
-      ellipsis: true,
+      width: canReassignInstructora
+        ? 320
+        : undefined,
 
-      render: (value) =>
-        value || "-",
+      render:
+        renderInstructora,
     },
 
     {

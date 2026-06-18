@@ -31,6 +31,15 @@ const NAV_ITEMS = [
     label: "Asistencia",
     route:
       "/lineas-producto/control-asistencia",
+    hidden: true,
+  },
+
+  {
+    view: "CONTROL_ASISTENCIA_TODERA",
+    label: "Todera",
+    route:
+      "/lineas-producto/control-asistencia/todera",
+    hidden: true,
   },
 
   {
@@ -91,9 +100,8 @@ const Navbar = ({
     setOpenSubmenu,
   ] = useState(true);
 
-  const {
-    canAccessView,
-  } = useAuth();
+  const { canAccessView } =
+    useAuth();
 
   const visibleViewSet =
     Array.isArray(
@@ -128,14 +136,23 @@ const Navbar = ({
       {/* MENU */}
       <nav className="sidebar-menu">
         {NAV_ITEMS.filter(
-          (item) =>
-            canAccessView(
-              item.view
-            ) &&
-            (!visibleViewSet ||
-              visibleViewSet.has(
+          (item) => {
+            const isForcedVisible =
+              visibleViewSet?.has(
                 item.view
-              ))
+              );
+
+            return (
+              (!item.hidden ||
+                isForcedVisible) &&
+              (canAccessView(
+                item.view
+              ) ||
+                isForcedVisible) &&
+              (!visibleViewSet ||
+                isForcedVisible)
+            );
+          }
         ).map((item) => {
           const isActive =
             location.pathname ===

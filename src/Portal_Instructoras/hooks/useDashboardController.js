@@ -12,6 +12,9 @@ import {
   MOTIVOS_BASICOS,
   validateEditForm,
 } from '../components/dashboard.helpers';
+import {
+  loadManagedMotivoOptions,
+} from '../components/vistaAdministrativa.helpers';
 import { useHorariosQuery, usePdvIpsQuery } from './useHorariosInstructorasQueries';
 
 export function useDashboardController() {
@@ -27,6 +30,7 @@ export function useDashboardController() {
   const [filaExpandida, setFilaExpandida] = useState(null);
   const [formDataModal, setFormDataModal] = useState(INITIAL_MODAL_FORM);
   const [guardando, setGuardando] = useState(false);
+  const [managedMotivoOptions] = useState(loadManagedMotivoOptions);
 
   const semana = useMemo(() => buildSemanaQuery(semanaOffset), [semanaOffset]);
   const puntosVentaQuery = usePdvIpsQuery('populate=*&pagination[pageSize]=1000', Boolean(user.documento));
@@ -87,7 +91,7 @@ export function useDashboardController() {
       setShowPreviewModal(true);
     },
     editarActividad: (detalle) => {
-      const { formData, showMoreMotivos: expanded } = buildEditFormData(detalle, puntosVenta);
+      const { formData, showMoreMotivos: expanded } = buildEditFormData(detalle, puntosVenta, managedMotivoOptions);
       setFormDataModal(formData);
       setShowMoreMotivos(expanded);
       setEventoEditar(detalle);
@@ -121,7 +125,7 @@ export function useDashboardController() {
         return;
       }
 
-      const { payload } = buildHorarioPayload(formDataModal, eventoEditar, user.documento, puntosVenta);
+      const { payload } = buildHorarioPayload(formDataModal, eventoEditar, user.documento, puntosVenta, managedMotivoOptions);
 
       const result = await Swal.fire({
         title: 'Confirmar cambios',
@@ -170,6 +174,7 @@ export function useDashboardController() {
       horariosData,
       infoSemana,
       totalHoras,
+      managedMotivoOptions,
     },
     ui: {
       showProfileModal,

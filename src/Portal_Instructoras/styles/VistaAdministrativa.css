@@ -244,6 +244,70 @@
   line-height: 1.4;
 }
 
+.vista-admin-custom-motivos {
+  display: grid;
+  gap: 10px;
+  margin-top: 10px;
+  padding-top: 14px;
+  border-top: 1px solid #efe4da;
+}
+
+.vista-admin-custom-motivos__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  color: #6B4E3D;
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.vista-admin-custom-motivos__header strong {
+  min-width: 26px;
+  padding: 3px 8px;
+  border-radius: 999px;
+  background: #f5eadf;
+  color: #735138;
+  text-align: center;
+}
+
+.vista-admin-custom-motivos__list {
+  display: grid;
+  gap: 8px;
+  max-height: 220px;
+  overflow: auto;
+  padding-right: 4px;
+}
+
+.vista-admin-custom-motivos__item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 9px 10px 9px 12px;
+  border: 1px solid #efe4da;
+  border-radius: 10px;
+  background: #fffaf5;
+}
+
+.vista-admin-custom-motivos__item span {
+  min-width: 0;
+  color: #4e3416;
+  font-size: 13px;
+  font-weight: 700;
+  overflow-wrap: anywhere;
+}
+
+.vista-admin-custom-motivos__empty {
+  margin: 0;
+  padding: 12px;
+  border: 1px dashed #d8c8b7;
+  border-radius: 10px;
+  color: #8B7355;
+  font-size: 13px;
+  text-align: center;
+}
+
 .vista-admin-day-header {
   background: #4A7C59 !important;
   color: white !important;

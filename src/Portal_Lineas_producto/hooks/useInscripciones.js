@@ -26,10 +26,16 @@ export const useInscripciones = ({
   const [error, setError] =
     useState(null);
 
-  const fetchedRef = useRef(false);
+  const requestIdRef = useRef(0);
 
   const fetchData = useCallback(
     async () => {
+      const requestId =
+        requestIdRef.current + 1;
+
+      requestIdRef.current =
+        requestId;
+
       try {
         setLoading(true);
 
@@ -47,6 +53,13 @@ export const useInscripciones = ({
             instructora,
           });
 
+        if (
+          requestId !==
+          requestIdRef.current
+        ) {
+          return;
+        }
+
         console.log(
           "RESPUESTA INSCRIPCIONES:",
           response
@@ -58,6 +71,13 @@ export const useInscripciones = ({
             : []
         );
       } catch (err) {
+        if (
+          requestId !==
+          requestIdRef.current
+        ) {
+          return;
+        }
+
         console.error(
           "ERROR FETCH INSCRIPCIONES:",
           err
@@ -67,7 +87,12 @@ export const useInscripciones = ({
 
         setData([]);
       } finally {
-        setLoading(false);
+        if (
+          requestId ===
+          requestIdRef.current
+        ) {
+          setLoading(false);
+        }
       }
     },
     [
@@ -203,12 +228,6 @@ export const useInscripciones = ({
     );
 
   useEffect(() => {
-    if (fetchedRef.current) {
-      return;
-    }
-
-    fetchedRef.current = true;
-
     fetchData();
   }, [fetchData]);
 

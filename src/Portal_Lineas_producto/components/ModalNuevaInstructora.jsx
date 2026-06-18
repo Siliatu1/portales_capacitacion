@@ -53,10 +53,6 @@ const ModalNuevaInstructora =
                 bebidas:
                   values.bebidas ||
                   false,
-
-                brunch:
-                  values.brunch ||
-                  false,
               },
             };
 
@@ -144,15 +140,6 @@ const ModalNuevaInstructora =
           >
             <Checkbox>
               Bebidas
-            </Checkbox>
-          </Form.Item>
-
-          <Form.Item
-            name="brunch"
-            valuePropName="checked"
-          >
-            <Checkbox>
-              Brunch
             </Checkbox>
           </Form.Item>
         </Form>

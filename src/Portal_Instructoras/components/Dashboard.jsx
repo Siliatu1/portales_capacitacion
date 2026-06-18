@@ -55,6 +55,7 @@ function Dashboard() {
     horariosData,
     infoSemana,
     totalHoras,
+    managedMotivoOptions,
   } = data;
 
   const {
@@ -660,6 +661,7 @@ function Dashboard() {
             (prev) => !prev
           )
         }
+        motivoOptions={managedMotivoOptions}
         variant="buttons"
         title="Editar Actividad"
         centered

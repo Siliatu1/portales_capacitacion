@@ -1,4 +1,5 @@
 import {
+  useEffect,
   useMemo,
   useState,
 } from "react";
@@ -10,6 +11,7 @@ import FiltrosInscripciones from "../components/FiltrosInscripciones";
 import InscripcionesTable from "../components/InscripcionesTable";
 import { useAuth } from "../../auth/hooks/useAuth";
 import { useInscripciones } from "../hooks/useInscripciones";
+import { obtenerInstructoras } from "../services/instructorasService";
 import { downloadInscripcionesExcel } from "../utils/exportInscripcionesExcel";
 import { ESTADOS_INSCRIPCIONES_TODERA } from "../utils/estadoInscripcion.utils";
 import { filtrarInscripciones } from "../utils/filters";
@@ -18,6 +20,20 @@ import {
   getUserPdv,
 } from "../utils/userPdv.utils";
 import "../styles/panel.css";
+
+const getInstructoraName = (item) =>
+  item?.attributes?.Nombre ||
+  item?.Nombre ||
+  "";
+
+const isSuperAdminProfile = (value) => {
+  const normalized = String(value || "")
+    .trim()
+    .toUpperCase()
+    .replace(/\s+/g, "_");
+
+  return normalized === "SUPER_ADMIN";
+};
 
 export default function InscripcionesTodera({
   userData,
@@ -38,13 +54,33 @@ export default function InscripcionesTodera({
       formulario: "todos",
     });
 
+  const [
+    instructorasPorCategoria,
+    setInstructorasPorCategoria,
+  ] = useState({});
+
   const storedUser =
     useMemo(() => getStoredUser(), []);
+
+  const activeUser =
+    storedUser ||
+    user ||
+    userData ||
+    {};
 
   const shouldFilterByPdv =
     hasPermission(
       "filterByPDV"
     );
+
+  const canReassignInstructora =
+    hasPermission(
+      "canReassignInstructora"
+    ) ||
+    isSuperAdminProfile(user?.profile) ||
+    isSuperAdminProfile(user?.perfil) ||
+    isSuperAdminProfile(activeUser?.profile) ||
+    isSuperAdminProfile(activeUser?.perfil);
 
   const userPdv =
     useMemo(
@@ -65,6 +101,7 @@ export default function InscripcionesTodera({
     data,
     loading,
     deleteInscripcion,
+    setInstructora,
   } = useInscripciones({
     pdv: shouldFilterByPdv
       ? userPdv
@@ -79,6 +116,59 @@ export default function InscripcionesTodera({
           "cap-toderas"
       );
     }, [data]);
+
+  useEffect(() => {
+    if (
+      !canReassignInstructora
+    ) {
+      setInstructorasPorCategoria({});
+      return;
+    }
+
+    let cancelled = false;
+
+    const cargarInstructoras = async () => {
+      try {
+        const result =
+          await obtenerInstructoras();
+
+        const instructoras =
+          Array.from(
+            new Set(
+              (result?.data || [])
+                .map(getInstructoraName)
+                .map((name) =>
+                  String(name || "").trim()
+                )
+                .filter(Boolean)
+            )
+          ).sort((a, b) =>
+            a.localeCompare(b, "es")
+          );
+
+        if (!cancelled) {
+          setInstructorasPorCategoria(
+            {
+              __all: instructoras,
+            }
+          );
+        }
+      } catch (error) {
+        console.error(
+          "Error cargando instructoras para reasignar",
+          error
+        );
+      }
+    };
+
+    cargarInstructoras();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [
+    canReassignInstructora,
+  ]);
 
   const dataFiltrada =
     useMemo(
@@ -159,9 +249,7 @@ export default function InscripcionesTodera({
 
       <div className="admin-content">
         <div className="page-header">
-          <h2>
-            Inscripciones Todera
-          </h2>
+          <h2>Inscripciones Todera</h2>
           <Button
             type="primary"
             className="export-excel-btn"
@@ -201,7 +289,6 @@ export default function InscripcionesTodera({
 
         <div className="table-card">
           <div className="table-header">
-          
           </div>
 
           <InscripcionesTable
@@ -210,6 +297,17 @@ export default function InscripcionesTodera({
             formType="todera"
             onDelete={
               deleteInscripcion
+            }
+            onSetInstructora={
+              canReassignInstructora
+                ? setInstructora
+                : undefined
+            }
+            canReassignInstructora={
+              canReassignInstructora
+            }
+            instructorasPorCategoria={
+              instructorasPorCategoria
             }
           />
         </div>

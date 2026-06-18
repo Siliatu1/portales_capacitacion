@@ -128,21 +128,6 @@ const TablaGestionInstructoras = ({
           eliminarAsignacion
         ),
     },
-
-    {
-      title: "BRUNCH",
-
-      dataIndex: "brunch",
-
-      render: (value, record) =>
-        renderCategoria(
-          value,
-          record.pdvId,
-          "brunch",
-          abrirModal,
-          eliminarAsignacion
-        ),
-    },
   ];
 
   return (

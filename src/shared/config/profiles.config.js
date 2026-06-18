@@ -47,6 +47,7 @@ export const PROFILE_CONFIG = {
       "FORM_HELADERIA",
       "FORM_RESTAURANTE",
       "FORM_TODERA",
+      "CONTROL_ASISTENCIA",
       "INSCRIPCIONES_CAFE",
       "INSCRIPCIONES_TODERA",
       "PANELINSTRUCTORA",
@@ -61,6 +62,7 @@ export const PROFILE_CONFIG = {
       canViewAll: true,
       canViewEstadoObs: true,
       canBlockDates: true,
+      canReassignInstructora: true,
     },
   },
 

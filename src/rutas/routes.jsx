@@ -89,6 +89,15 @@ const AppRoutes = () => (
     />
 
     <Route
+      path="/lineas-producto/control-asistencia/todera"
+      element={
+        <ProtectedViewRoute view="CONTROL_ASISTENCIA">
+          <ControlAsistencia forcedMode="todera" />
+        </ProtectedViewRoute>
+      }
+    />
+
+    <Route
       path="/lineas-producto/form-todera"
       element={
         <ProtectedViewRoute view="FORM_TODERA">

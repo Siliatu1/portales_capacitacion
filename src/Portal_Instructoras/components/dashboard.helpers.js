@@ -171,9 +171,30 @@ export function buildHorariosState(items, semana) {
   };
 }
 
-export function buildEditFormData(detalle, puntosVenta) {
+const getMotivoMaps = (motivoOptions = []) => {
+  const managedLabels = Object.fromEntries(
+    motivoOptions
+      .filter((option) => option?.value && option?.label)
+      .map((option) => [option.value, option.label])
+  );
+  const labels = {
+    ...MOTIVOS_LABELS,
+    ...managedLabels,
+  };
+  const actividadAMotivo = Object.fromEntries(
+    Object.entries(labels).map(([key, value]) => [value, key])
+  );
+
+  return {
+    labels,
+    actividadAMotivo,
+  };
+};
+
+export function buildEditFormData(detalle, puntosVenta, motivoOptions = []) {
   const pdvEncontrado = puntosVenta.find((pdv) => pdv.nombre === detalle.pdv);
-  const motivo = ACTIVIDAD_A_MOTIVO[detalle.actividad] || 'otro';
+  const { actividadAMotivo } = getMotivoMaps(motivoOptions);
+  const motivo = actividadAMotivo[detalle.actividad] || 'otro';
 
   return {
     formData: {
@@ -182,7 +203,7 @@ export function buildEditFormData(detalle, puntosVenta) {
       horaFin: detalle.horaFin?.substring(0, 5) ?? '',
       motivo,
       detalleCubrir: '',
-      detalleOtro: ACTIVIDAD_A_MOTIVO[detalle.actividad] ? '' : detalle.actividad,
+      detalleOtro: actividadAMotivo[detalle.actividad] ? '' : detalle.actividad,
     },
     showMoreMotivos: !MOTIVOS_BASICOS.includes(motivo),
   };
@@ -217,12 +238,13 @@ export function validateEditForm(formData) {
   return null;
 }
 
-export function buildHorarioPayload(formData, eventoEditar, documento, puntosVenta) {
+export function buildHorarioPayload(formData, eventoEditar, documento, puntosVenta, motivoOptions = []) {
   const pdvObj = puntosVenta.find((pdv) => String(pdv.id) === formData.puntoVenta);
   const pdvNombre = pdvObj?.nombre ?? '';
+  const { labels } = getMotivoMaps(motivoOptions);
   const actividad = formData.motivo === 'otro'
     ? formData.detalleOtro
-    : (MOTIVOS_LABELS[formData.motivo] ?? formData.motivo);
+    : (labels[formData.motivo] ?? formData.motivo);
   const horaInicio = MOTIVOS_SIN_HORA.includes(formData.motivo) ? '00:00:00' : `${formData.horaInicio}:00`;
   const horaFin = MOTIVOS_SIN_HORA.includes(formData.motivo) ? '00:00:00' : `${formData.horaFin}:00`;
   const fecha = eventoEditar.fecha;

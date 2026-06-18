@@ -26,18 +26,96 @@ export const obtenerGestionInstructoras =
 
 export const obtenerInstructoras =
   async () => {
-    const response =
+    const pageSize = 100;
+    const firstResponse =
       await fetch(
-        `${API}/cap-instructoras`
+        `${API}/cap-instructoras?pagination[page]=1&pagination[pageSize]=${pageSize}`
       );
 
-    if (!response.ok) {
+    if (!firstResponse.ok) {
       throw new Error(
         "No fue posible cargar instructoras"
       );
     }
 
-    return response.json();
+    const firstData =
+      await firstResponse.json();
+
+    const pageCount =
+      firstData?.meta
+        ?.pagination
+        ?.pageCount || 1;
+
+    const allInstructoras = [
+      ...(firstData?.data || []),
+    ];
+
+    for (
+      let page = 2;
+      page <= pageCount;
+      page += 1
+    ) {
+      const response =
+        await fetch(
+          `${API}/cap-instructoras?pagination[page]=${page}&pagination[pageSize]=${pageSize}`
+        );
+
+      if (!response.ok) {
+        continue;
+      }
+
+      const data =
+        await response.json();
+
+      allInstructoras.push(
+        ...(data?.data || [])
+      );
+    }
+
+    return {
+      ...firstData,
+      data: allInstructoras,
+    };
+  };
+
+export const obtenerInstructoraPorDocumento =
+  async (documento) => {
+    const cleanDocumento =
+      String(documento || "").trim();
+
+    if (!cleanDocumento) {
+      return null;
+    }
+
+    const documentFields = [
+      "documento",
+      "Documento",
+      "document_number",
+      "cedula",
+    ];
+
+    for (const field of documentFields) {
+      const response =
+        await fetch(
+          `${API}/cap-instructoras?filters[${field}][$eq]=${encodeURIComponent(cleanDocumento)}&pagination[pageSize]=1`
+        );
+
+      if (!response.ok) {
+        continue;
+      }
+
+      const data =
+        await response.json();
+
+      const instructora =
+        data?.data?.[0];
+
+      if (instructora) {
+        return instructora;
+      }
+    }
+
+    return null;
   };
 
 export const eliminarInstructoraDePDV =

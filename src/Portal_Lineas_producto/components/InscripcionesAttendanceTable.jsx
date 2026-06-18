@@ -29,6 +29,7 @@ export default function InscripcionesAttendanceTable({
   onSetEstado,
   onSaveObservacion,
   onSetInstructora,
+  canReassignInstructora = false,
   instructorasPorCategoria = {},
   mode = "cafe",
 }) {
@@ -199,6 +200,11 @@ const renderEstado = (value, record) => {
       .trim()
       .toLowerCase();
     const currentValue = String(value || record.lider || "").trim();
+
+    if (!canReassignInstructora) {
+      return currentValue || "-";
+    }
+
     const instructorasCategoria = instructorasPorCategoria[categoriaKey] || [];
     const options = Array.from(
       new Set([

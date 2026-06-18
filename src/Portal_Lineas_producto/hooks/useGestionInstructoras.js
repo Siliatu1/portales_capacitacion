@@ -75,7 +75,6 @@ export const useGestionInstructoras =
                   sal: null,
                   dulce: null,
                   bebidas: null,
-                  brunch: null,
                 };
 
               instructoras.forEach(
@@ -129,17 +128,6 @@ export const useGestionInstructoras =
                       };
                   }
 
-                  if (
-                    attrs.brunch ===
-                    true
-                  ) {
-                    categoriaMap.brunch =
-                      {
-                        instructoraId,
-                        instructoraNombre:
-                          nombre,
-                      };
-                  }
                 }
               );
 
@@ -153,8 +141,6 @@ export const useGestionInstructoras =
                   categoriaMap.dulce,
                 bebidas:
                   categoriaMap.bebidas,
-                brunch:
-                  categoriaMap.brunch,
               });
             }
           );

@@ -33,6 +33,7 @@ const MOTIVO_LABEL_PAIRS = [
 ];
 
 const CUSTOM_MOTIVOS_STORAGE_KEY = 'portal_instructoras_custom_motivos';
+const MANAGED_MOTIVOS_STORAGE_KEY = 'portal_instructoras_managed_motivos';
 
 const BASE_MOTIVO_VALUES = new Set([
   'retroalimentacion',
@@ -95,6 +96,20 @@ export const MOTIVO_OPTIONS_EXTRA = [
   { value: 'otro', label: 'Otro' },
 ];
 
+export const DEFAULT_MOTIVO_OPTIONS = [
+  ...MOTIVO_LABEL_PAIRS.map(([label, value]) => ({ value, label })),
+  { value: 'otro', label: 'Otro' },
+];
+
+const sanitizeMotivoOptions = (options) => {
+  const seen = new Set();
+
+  return (Array.isArray(options) ? options : [])
+    .filter((item) => item && typeof item.value === 'string' && typeof item.label === 'string')
+    .map((item) => ({ value: item.value.trim(), label: item.label.trim() }))
+    .filter((item) => item.value && item.label && !seen.has(item.value) && seen.add(item.value));
+};
+
 export function loadCustomMotivoOptions() {
   if (typeof window === 'undefined') return [];
 
@@ -102,13 +117,7 @@ export function loadCustomMotivoOptions() {
     const raw = window.localStorage.getItem(CUSTOM_MOTIVOS_STORAGE_KEY);
     const parsed = raw ? JSON.parse(raw) : [];
 
-    if (!Array.isArray(parsed)) return [];
-
-    const seen = new Set();
-    return parsed
-      .filter((item) => item && typeof item.value === 'string' && typeof item.label === 'string')
-      .map((item) => ({ value: item.value.trim(), label: item.label.trim() }))
-      .filter((item) => item.value && item.label && !seen.has(item.value) && seen.add(item.value));
+    return sanitizeMotivoOptions(parsed);
   } catch {
     return [];
   }
@@ -118,6 +127,34 @@ export function saveCustomMotivoOptions(options) {
   if (typeof window === 'undefined') return;
 
   window.localStorage.setItem(CUSTOM_MOTIVOS_STORAGE_KEY, JSON.stringify(options));
+}
+
+export function loadManagedMotivoOptions() {
+  if (typeof window === 'undefined') return DEFAULT_MOTIVO_OPTIONS;
+
+  try {
+    const raw = window.localStorage.getItem(MANAGED_MOTIVOS_STORAGE_KEY);
+
+    if (!raw) {
+      return DEFAULT_MOTIVO_OPTIONS;
+    }
+
+    const parsed = JSON.parse(raw);
+    const options = sanitizeMotivoOptions(parsed);
+
+    return options.length ? options : DEFAULT_MOTIVO_OPTIONS;
+  } catch {
+    return DEFAULT_MOTIVO_OPTIONS;
+  }
+}
+
+export function saveManagedMotivoOptions(options) {
+  if (typeof window === 'undefined') return;
+
+  window.localStorage.setItem(
+    MANAGED_MOTIVOS_STORAGE_KEY,
+    JSON.stringify(sanitizeMotivoOptions(options))
+  );
 }
 
 export function createCustomMotivoOption(label, existingOptions = []) {

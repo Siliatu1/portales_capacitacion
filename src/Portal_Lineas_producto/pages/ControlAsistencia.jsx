@@ -1,4 +1,8 @@
-import { useEffect, useMemo, useState } from "react";
+import {
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import Navbar from "../components/navbar";
 import { useInscripciones } from "../hooks/useInscripciones";
 import { filtrarInscripciones } from "../utils/filters";
@@ -8,20 +12,16 @@ import FiltrosInscripciones from "../components/FiltrosInscripciones";
 import { useAuth } from "../../auth/hooks/useAuth";
 import { getStoredUser } from "../utils/userPdv.utils";
 import { ESTADOS_INSCRIPCIONES_TODERA } from "../utils/estadoInscripcion.utils";
-import { obtenerInstructorasPorCategoria } from "../services/instructorasService";
+import { obtenerInstructoraPorDocumento } from "../services/instructorasService";
 
 
 const CAFE_ATTENDANCE_INSTRUCTOR = "35512822";
+const CAFE_TODERA_INSTRUCTOR_FILTER = "CLEDIA";
 const ESTADOS_CONTROL_ASISTENCIA_CAFE = [
   "Pendiente",
   "Asisti\u00f3",
   "No asisti\u00f3",
 ];
-
-const getInstructoraName = (item) =>
-  item?.attributes?.Nombre ||
-  item?.Nombre ||
-  "";
 
 const pickUserDocument = (user) => {
   return String(
@@ -43,6 +43,13 @@ const pickUserName = (user) => {
     ""
   );
 };
+
+const getInstructoraName = (item) =>
+  item?.attributes?.Nombre ||
+  item?.attributes?.nombre ||
+  item?.Nombre ||
+  item?.nombre ||
+  "";
 
 const isEvaluado = (value) => {
   const normalized = String(value || "").trim().toLowerCase();
@@ -66,7 +73,11 @@ const isNoEvaluado = (value) => {
   );
 };
 
-export default function ControlAsistencia({ userData, onLogout }) {
+export default function ControlAsistencia({
+  userData,
+  onLogout,
+  forcedMode,
+}) {
   const { user } = useAuth();
 
   const storedUser = useMemo(() => getStoredUser(), []);
@@ -74,11 +85,76 @@ export default function ControlAsistencia({ userData, onLogout }) {
   const userDocument = pickUserDocument(activeUser);
   const instructorName = pickUserName(activeUser);
   const isCafeInstructor = userDocument === CAFE_ATTENDANCE_INSTRUCTOR;
-  const attendanceMode = isCafeInstructor ? "cafe" : "todera";
+  const [
+    cafeToderaInstructorName,
+    setCafeToderaInstructorName,
+  ] = useState("");
+  const attendanceMode =
+    forcedMode === "todera"
+      ? "todera"
+      : isCafeInstructor
+        ? "cafe"
+        : "todera";
   const endpoints = useMemo(
-    () => [isCafeInstructor ? "cap-cafes" : "cap-toderas"],
-    [isCafeInstructor]
+    () => [
+      attendanceMode === "cafe"
+        ? "cap-cafes"
+        : "cap-toderas",
+    ],
+    [attendanceMode]
   );
+
+  useEffect(() => {
+    if (
+      attendanceMode !== "todera" ||
+      !isCafeInstructor ||
+      !userDocument
+    ) {
+      setCafeToderaInstructorName("");
+      return;
+    }
+
+    let cancelled = false;
+
+    const cargarInstructora = async () => {
+      try {
+        const result =
+          await obtenerInstructoraPorDocumento(
+            userDocument
+          );
+
+        if (!cancelled) {
+          setCafeToderaInstructorName(
+            getInstructoraName(result)
+          );
+        }
+      } catch (error) {
+        console.error(
+          "Error cargando instructora por documento",
+          error
+        );
+      }
+    };
+
+    cargarInstructora();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [
+    attendanceMode,
+    isCafeInstructor,
+    userDocument,
+  ]);
+
+  const instructoraFilter =
+    attendanceMode === "cafe"
+      ? ""
+      : isCafeInstructor
+        ? cafeToderaInstructorName ||
+          instructorName ||
+          CAFE_TODERA_INSTRUCTOR_FILTER
+        : instructorName;
 
   const {
     data,
@@ -87,16 +163,10 @@ export default function ControlAsistencia({ userData, onLogout }) {
     setAsistencia,
     setEstado,
     saveObservacion,
-    setInstructora,
   } = useInscripciones({
     endpoints,
-    instructora: isCafeInstructor ? "" : instructorName,
+    instructora: instructoraFilter,
   });
-
-  const [
-    instructorasPorCategoria,
-    setInstructorasPorCategoria,
-  ] = useState({});
 
   const [filtros, setFiltros] = useState({
     cedula: "",
@@ -114,7 +184,7 @@ export default function ControlAsistencia({ userData, onLogout }) {
   const resumen = useMemo(() => {
     const total = dataFiltrada.length;
 
-    if (!isCafeInstructor) {
+    if (attendanceMode !== "cafe") {
       const evaluados = dataFiltrada.filter((item) => isEvaluado(item.estado)).length;
       const noEvaluados = dataFiltrada.filter((item) => isNoEvaluado(item.estado)).length;
 
@@ -135,7 +205,7 @@ export default function ControlAsistencia({ userData, onLogout }) {
       rechazados: noAsistieron,
       pendientes: total - asistieron - noAsistieron,
     };
-  }, [dataFiltrada, isCafeInstructor]);
+  }, [dataFiltrada, attendanceMode]);
 
   const fechasDisponibles = useMemo(() => {
     return Array.from(new Set((data || []).map((i) => i.dia).filter(Boolean))).sort((a, b) =>
@@ -153,93 +223,38 @@ export default function ControlAsistencia({ userData, onLogout }) {
     );
   }, [data]);
 
-  const categoriasDisponibles = useMemo(
-    () =>
-      Array.from(
-        new Set(
-          (data || [])
-            .map((item) =>
-              String(item.categoria || "")
-                .trim()
-                .toLowerCase()
-            )
-            .filter(Boolean)
-        )
-      ),
-    [data]
-  );
+  const estadosDisponibles =
+    attendanceMode === "cafe"
+      ? ESTADOS_CONTROL_ASISTENCIA_CAFE
+      : ESTADOS_INSCRIPCIONES_TODERA;
 
-  useEffect(() => {
-    if (
-      attendanceMode !== "todera" ||
-      categoriasDisponibles.length === 0
-    ) {
-      setInstructorasPorCategoria({});
-      return;
-    }
-
-    let cancelled = false;
-
-    const cargarInstructoras = async () => {
-      try {
-        const entries = await Promise.all(
-          categoriasDisponibles.map(
-            async (categoriaItem) => {
-              const result =
-                await obtenerInstructorasPorCategoria(
-                  categoriaItem
-                );
-
-              return [
-                categoriaItem,
-                (result?.data || [])
-                  .map(getInstructoraName)
-                  .map((name) =>
-                    String(name || "").trim()
-                  )
-                  .filter(Boolean),
-              ];
-            }
-          )
-        );
-
-        if (!cancelled) {
-          setInstructorasPorCategoria(
-            Object.fromEntries(entries)
-          );
-        }
-      } catch (error) {
-        console.error(
-          "Error cargando instructoras para reasignar",
-          error
-        );
-      }
-    };
-
-    cargarInstructoras();
-
-    return () => {
-      cancelled = true;
-    };
-  }, [attendanceMode, categoriasDisponibles]);
-
-  const estadosDisponibles = isCafeInstructor
-    ? ESTADOS_CONTROL_ASISTENCIA_CAFE
-    : ESTADOS_INSCRIPCIONES_TODERA;
-
-  const pageTitle = isCafeInstructor
-    ? "Control de asistencia Café"
+  const pageTitle = attendanceMode === "cafe"
+    ? "Control de asistencia Caf\u00e9"
     : "Control de asistencia Todera";
 
-  const completedLabel = isCafeInstructor ? "Asistieron" : "Evaluados";
-  const rejectedLabel = isCafeInstructor ? "No asistieron" : "No evaluados";
+  const visibleSidebarViews =
+    isCafeInstructor
+      ? [
+          "CONTROL_ASISTENCIA",
+          "CONTROL_ASISTENCIA_TODERA",
+        ]
+      : ["CONTROL_ASISTENCIA"];
+
+  const completedLabel =
+    attendanceMode === "cafe"
+      ? "Asistieron"
+      : "Evaluados";
+  const rejectedLabel =
+    attendanceMode === "cafe"
+      ? "No asistieron"
+      : "No evaluados";
 
   return (
     <>
       <Navbar
         userData={userData}
         onLogout={onLogout}
-        visibleViews={["CONTROL_ASISTENCIA"]}
+        visibleViews={visibleSidebarViews}
         showInscripciones={false}
       />
 
@@ -249,7 +264,9 @@ export default function ControlAsistencia({ userData, onLogout }) {
             <h2>{pageTitle}</h2>
             <p>
               {isCafeInstructor
-                ? "Confirmacion exclusiva para las inscripciones de la escuela del Café."
+                ? attendanceMode === "cafe"
+                  ? "Confirmacion exclusiva para las inscripciones de la escuela del Cafe."
+                  : "Aqui aparecen solo las inscripciones de Toderas asignadas a tu nombre."
                 : "Aqui aparecen solo las inscripciones de Toderas asignadas a tu nombre."}
             </p>
           </div>
@@ -265,8 +282,6 @@ export default function ControlAsistencia({ userData, onLogout }) {
         />
 
         <div className="table-card attendance-card">
-         
-
           <InscripcionesAttendanceTable
             data={dataFiltrada}
             loading={loading}
@@ -275,8 +290,6 @@ export default function ControlAsistencia({ userData, onLogout }) {
             onSetAsistencia={setAsistencia}
             onSetEstado={setEstado}
             onSaveObservacion={saveObservacion}
-            onSetInstructora={setInstructora}
-            instructorasPorCategoria={instructorasPorCategoria}
           />
         </div>
       </div>

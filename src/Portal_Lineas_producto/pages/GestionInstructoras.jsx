@@ -107,7 +107,6 @@ const GestionInstructoras = () => {
           "sal",
           "dulce",
           "bebidas",
-          "brunch",
         ].forEach(
           (
             categoria

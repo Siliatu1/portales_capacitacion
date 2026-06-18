@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button, Card, DatePicker, Input, Modal, Select, Space } from 'antd';
-import { DownloadOutlined, FileExcelOutlined, LeftOutlined, PlusOutlined, RightOutlined } from '@ant-design/icons';
+import { DeleteOutlined, DownloadOutlined, FileExcelOutlined, LeftOutlined, PlusOutlined, RightOutlined } from '@ant-design/icons';
 import dayjs from 'dayjs';
 import * as XLSX from 'xlsx';
 import 'antd/dist/reset.css';
@@ -22,10 +22,9 @@ import {
   getWeekRangeLabel,
   INITIAL_MODAL_FORM,
   LINEA_OPTIONS,
-  loadCustomMotivoOptions,
+  loadManagedMotivoOptions,
   MOTIVO_OPTIONS_BASE,
-  MOTIVO_OPTIONS_EXTRA,
-  saveCustomMotivoOptions,
+  saveManagedMotivoOptions,
   shiftWeek,
   toMonday,
   validateHorarioForm,
@@ -43,7 +42,7 @@ function VistaAdministrativa() {
   const [showMoreMotivosModal, setShowMoreMotivosModal] = useState(false);
   const [showCrearMotivoModal, setShowCrearMotivoModal] = useState(false);
   const [nuevoMotivo, setNuevoMotivo] = useState('');
-  const [customMotivoOptions, setCustomMotivoOptions] = useState(loadCustomMotivoOptions);
+  const [managedMotivoOptions, setManagedMotivoOptions] = useState(loadManagedMotivoOptions);
   const { user, logout, puntosVenta, instructoras, horariosTodos, refetch } = useVistaAdministrativaData({ semanaLunes, lineaSeleccionada });
 
   useEffect(() => {
@@ -72,18 +71,16 @@ function VistaAdministrativa() {
     label: pdv.nombre,
   })), [puntosVenta]);
 
-  const allBaseMotivoOptions = useMemo(
-    () => [...MOTIVO_OPTIONS_BASE, ...MOTIVO_OPTIONS_EXTRA],
-    []
-  );
-
   const motivoOptions = useMemo(() => {
-    const baseOptions = showMoreMotivosModal
-      ? allBaseMotivoOptions
-      : MOTIVO_OPTIONS_BASE;
+    if (showMoreMotivosModal) {
+      return managedMotivoOptions;
+    }
 
-    return [...baseOptions, ...customMotivoOptions];
-  }, [allBaseMotivoOptions, customMotivoOptions, showMoreMotivosModal]);
+    const basicValues = new Set(MOTIVO_OPTIONS_BASE.map((option) => option.value));
+    const basicOptions = managedMotivoOptions.filter((option) => basicValues.has(option.value));
+
+    return basicOptions.length ? basicOptions : managedMotivoOptions;
+  }, [managedMotivoOptions, showMoreMotivosModal]);
 
   const datosSemanal = useMemo(
     () => buildWeeklyRows(fechasSemana, horariosFiltered, instructoras),
@@ -118,7 +115,7 @@ function VistaAdministrativa() {
       return;
     }
 
-    const existeMotivo = [...allBaseMotivoOptions, ...customMotivoOptions].some(
+    const existeMotivo = managedMotivoOptions.some(
       (option) => option.label.toLowerCase() === label.toLowerCase()
     );
 
@@ -130,11 +127,11 @@ function VistaAdministrativa() {
       return;
     }
 
-    const nuevoMotivoOption = createCustomMotivoOption(label, customMotivoOptions);
-    const nextOptions = [...customMotivoOptions, nuevoMotivoOption];
+    const nuevoMotivoOption = createCustomMotivoOption(label, managedMotivoOptions);
+    const nextOptions = [...managedMotivoOptions, nuevoMotivoOption];
 
-    setCustomMotivoOptions(nextOptions);
-    saveCustomMotivoOptions(nextOptions);
+    setManagedMotivoOptions(nextOptions);
+    saveManagedMotivoOptions(nextOptions);
 
     if (modalEditar) {
       setFormDataModal((prev) => ({
@@ -151,8 +148,40 @@ function VistaAdministrativa() {
     });
   };
 
+  const handleEliminarMotivo = (motivo) => {
+    Modal.confirm({
+      title: 'Eliminar motivo',
+      content: `¿Quieres eliminar el motivo "${motivo.label}"? Ya no aparecerá en el selector de motivos.`,
+      okText: 'Eliminar',
+      cancelText: 'Cancelar',
+      okButtonProps: { danger: true },
+      centered: true,
+      onOk: () => {
+        const nextOptions = managedMotivoOptions.filter(
+          (option) => option.value !== motivo.value
+        );
+
+        setManagedMotivoOptions(nextOptions);
+        saveManagedMotivoOptions(nextOptions);
+
+        if (formDataModal.motivo === motivo.value) {
+          setFormDataModal((prev) => ({
+            ...prev,
+            motivo: '',
+            detalleOtro: '',
+          }));
+        }
+
+        Modal.success({
+          title: 'Motivo eliminado',
+          content: 'El motivo ya no aparece en el selector.',
+        });
+      },
+    });
+  };
+
   const handleEditarHorario = (horario) => {
-    const { formData, showMoreMotivos } = buildEditFormData(horario, puntosVenta, customMotivoOptions);
+    const { formData, showMoreMotivos } = buildEditFormData(horario, puntosVenta, managedMotivoOptions);
     setFormDataModal(formData);
     setShowMoreMotivosModal(showMoreMotivos);
     setHorarioEditar(horario);
@@ -168,7 +197,7 @@ function VistaAdministrativa() {
       return;
     }
 
-    const { datosAPI } = buildHorarioUpdatePayload(formDataModal, horarioEditar, puntosVenta, customMotivoOptions);
+    const { datosAPI } = buildHorarioUpdatePayload(formDataModal, horarioEditar, puntosVenta, managedMotivoOptions);
 
     try {
       await updateHorario(horarioEditar.id, datosAPI);
@@ -471,6 +500,38 @@ function VistaAdministrativa() {
             <p className="vista-admin-create-motivo__hint">
               Se guarda como prueba en este navegador y queda disponible en el selector de motivos.
             </p>
+
+            <div className="vista-admin-custom-motivos">
+              <div className="vista-admin-custom-motivos__header">
+                <span>Motivos creados</span>
+                <strong>{managedMotivoOptions.length}</strong>
+              </div>
+
+              {managedMotivoOptions.length > 0 ? (
+                <div className="vista-admin-custom-motivos__list">
+                  {managedMotivoOptions.map((motivo) => (
+                    <div
+                      key={motivo.value}
+                      className="vista-admin-custom-motivos__item"
+                    >
+                      <span>{motivo.label}</span>
+                      <Button
+                        danger
+                        type="text"
+                        size="small"
+                        icon={<DeleteOutlined />}
+                        onClick={() => handleEliminarMotivo(motivo)}
+                        aria-label={`Eliminar ${motivo.label}`}
+                      />
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <p className="vista-admin-custom-motivos__empty">
+                  Aún no hay motivos creados.
+                </p>
+              )}
+            </div>
           </div>
         </Modal>
 

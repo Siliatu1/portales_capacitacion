@@ -50,6 +50,19 @@ function HorarioModal({
     }
   };
 
+  const motivoOptionsList = Array.isArray(motivoOptions)
+    ? motivoOptions.filter((option) => option?.value && option?.label)
+    : Object.entries(MOTIVOS_LABELS).map(([value, label]) => ({ value, label }));
+
+  const basicMotivoOptions = motivoOptionsList.filter((option) =>
+    MOTIVOS_BASICOS.includes(option.value)
+  );
+
+  const visibleBasicMotivoOptions =
+    basicMotivoOptions.length > 0
+      ? basicMotivoOptions
+      : motivoOptionsList.slice(0, 3);
+
   // Renderizar selector de punto de venta basado en la variante
   const renderPdvSelector = () => {
     if (variant === 'buttons' && puntosVenta) {
@@ -102,36 +115,36 @@ function HorarioModal({
       // Para DashboardEditModal: botones
       return (
         <Space wrap size="small" className="dashboard-motivos-space">
-          {MOTIVOS_BASICOS.map((motivo) => (
+          {visibleBasicMotivoOptions.map((option) => (
             <Button
-              key={motivo}
-              type={formData.motivo === motivo ? 'primary' : 'default'}
-              onClick={() => handleSelectMotivo(motivo)}
+              key={option.value}
+              type={formData.motivo === option.value ? 'primary' : 'default'}
+              onClick={() => handleSelectMotivo(option.value)}
               className={
-                formData.motivo === motivo
+                formData.motivo === option.value
                   ? 'dashboard-motivo-btn dashboard-motivo-btn--active'
                   : 'dashboard-motivo-btn'
               }
             >
-              {MOTIVOS_LABELS[motivo]}
+              {option.label}
             </Button>
           ))}
 
           {showMoreMotivos &&
-            Object.entries(MOTIVOS_LABELS)
-              .filter(([key]) => !MOTIVOS_BASICOS.includes(key))
-              .map(([key, label]) => (
+            motivoOptionsList
+              .filter((option) => !visibleBasicMotivoOptions.some((basic) => basic.value === option.value))
+              .map((option) => (
                 <Button
-                  key={key}
-                  type={formData.motivo === key ? 'primary' : 'default'}
-                  onClick={() => handleSelectMotivo(key)}
+                  key={option.value}
+                  type={formData.motivo === option.value ? 'primary' : 'default'}
+                  onClick={() => handleSelectMotivo(option.value)}
                   className={
-                    formData.motivo === key
+                    formData.motivo === option.value
                       ? 'dashboard-motivo-btn dashboard-motivo-btn--active'
                       : 'dashboard-motivo-btn'
                   }
                 >
-                  {label}
+                  {option.label}
                 </Button>
               ))}
 
