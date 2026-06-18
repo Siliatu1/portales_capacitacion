@@ -613,17 +613,6 @@ export default function InscripcionesTable({
         ]
       : baseColumns;
 
-  console.log(
-    "RENDER TABLA:",
-    {
-      formType,
-      total:
-        data?.length ||
-        0,
-      data,
-    }
-  );
-
   return (
     <div className="table-container">
 

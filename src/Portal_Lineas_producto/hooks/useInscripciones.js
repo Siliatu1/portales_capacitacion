@@ -189,6 +189,19 @@ export const useInscripciones = ({
       endpoint
     );
 
+  const setInstructora = (
+    id,
+    instructora,
+    endpoint
+  ) =>
+    updateFields(
+      id,
+      {
+        lider: instructora,
+      },
+      endpoint
+    );
+
   useEffect(() => {
     if (fetchedRef.current) {
       return;
@@ -215,5 +228,7 @@ export const useInscripciones = ({
     setEstado,
 
     saveObservacion,
+
+    setInstructora,
   };
 }

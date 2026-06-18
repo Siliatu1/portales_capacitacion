@@ -148,6 +148,13 @@ const FormTodera = () => {
     ) ||
     "";
 
+  const opcionesCargoCategoria =
+    opcionesCargoEvaluar.filter(
+      (grupo) =>
+        grupo.color ===
+        categoria
+    );
+
   const handleBuscarEmpleado =
     async () => {
       if (!String(documento || "").trim()) {
@@ -228,6 +235,7 @@ const FormTodera = () => {
         setInstructora(
           "Error al buscar instructora"
         );
+
       } finally {
         setLoadingInst(
           false
@@ -314,7 +322,11 @@ const FormTodera = () => {
         return;
       }
 
-      if (!String(instructora || "").trim() || instructora === "Sin instructora asignada") {
+      if (
+        !String(instructora || "").trim() ||
+        instructora === "Sin instructora asignada" ||
+        instructora === "Error al buscar instructora"
+      ) {
         await showRequiredFieldAlert("tener una instructora asignada");
         return;
       }
@@ -580,9 +592,6 @@ const FormTodera = () => {
                   Bebidas
                 </option>
 
-                <option value="brunch">
-                  Brunch
-                </option>
               </select>
             </div>
 
@@ -612,7 +621,7 @@ const FormTodera = () => {
                     Seleccione cargo
                   </option>
 
-                  {opcionesCargoEvaluar.map(
+                  {opcionesCargoCategoria.map(
                     (
                       grupo
                     ) => (

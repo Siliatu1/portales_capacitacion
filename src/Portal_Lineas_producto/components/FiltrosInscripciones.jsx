@@ -1,7 +1,25 @@
+import { useMemo } from "react";
 import { Input, Space, Button, Select } from "antd";
 import "../styles/FiltrosInscripciones.css";
 
 const getDateOnly = (value) => String(value || "").split("T")[0];
+
+const toArrayValue = (value) => {
+  if (Array.isArray(value)) {
+    return value;
+  }
+
+  return value ? [value] : [];
+};
+
+const buildOptions = (values) => Array.from(
+  new Set((values || []).map((value) => String(value || "").trim()).filter(Boolean))
+)
+  .sort((a, b) => a.localeCompare(b, "es"))
+  .map((value) => ({
+    label: value,
+    value,
+  }));
 
 export default function FiltrosInscripciones({
   filtros,
@@ -12,33 +30,30 @@ export default function FiltrosInscripciones({
   instructorasDisponibles = [],
   showInstructoraFilter = false,
 }) {
-  const toArrayValue = (value) => {
-    if (Array.isArray(value)) {
-      return value;
-    }
+  const fechaOptions = useMemo(
+    () => Array.from(
+      new Set((fechasDisponibles || []).map(getDateOnly).filter(Boolean))
+    ).map((fecha) => ({
+      label: fecha,
+      value: fecha,
+    })),
+    [fechasDisponibles]
+  );
 
-    return value ? [value] : [];
-  };
+  const puntoVentaOptions = useMemo(
+    () => buildOptions(puntosVentaDisponibles),
+    [puntosVentaDisponibles]
+  );
 
-  const buildOptions = (values) => Array.from(
-    new Set((values || []).map((value) => String(value || "").trim()).filter(Boolean))
-  )
-    .sort((a, b) => a.localeCompare(b, "es"))
-    .map((value) => ({
-      label: value,
-      value,
-    }));
+  const estadoOptions = useMemo(
+    () => buildOptions(estadosDisponibles),
+    [estadosDisponibles]
+  );
 
-  const fechaOptions = Array.from(
-    new Set((fechasDisponibles || []).map(getDateOnly).filter(Boolean))
-  ).map((fecha) => ({
-    label: fecha,
-    value: fecha,
-  }));
-
-  const puntoVentaOptions = buildOptions(puntosVentaDisponibles);
-  const estadoOptions = buildOptions(estadosDisponibles);
-  const instructoraOptions = buildOptions(instructorasDisponibles);
+  const instructoraOptions = useMemo(
+    () => buildOptions(instructorasDisponibles),
+    [instructorasDisponibles]
+  );
 
   return (
     <div className="filtros-container">
@@ -141,7 +156,11 @@ export default function FiltrosInscripciones({
             options={instructoraOptions}
             allowClear
             showSearch
-            maxTagCount="responsive"
+            maxTagCount={1}
+            maxTagTextLength={24}
+            maxTagPlaceholder={(hiddenItems) =>
+              `+${hiddenItems.length}`
+            }
             optionFilterProp="label"
             filterOption={(input, option) =>
               String(option?.label || "")

@@ -11,7 +11,7 @@ import InscripcionesTable from "../components/InscripcionesTable";
 import { useAuth } from "../../auth/hooks/useAuth";
 import { useInscripciones } from "../hooks/useInscripciones";
 import { downloadInscripcionesExcel } from "../utils/exportInscripcionesExcel";
-import { inscripcionEstadoLabel } from "../utils/estadoInscripcion.utils";
+import { ESTADOS_INSCRIPCIONES_TODERA } from "../utils/estadoInscripcion.utils";
 import { filtrarInscripciones } from "../utils/filters";
 import {
   getStoredUser,
@@ -123,15 +123,7 @@ export default function InscripcionesTodera({
     }, [inscripcionesTodera]);
 
   const estadosDisponibles =
-    useMemo(() => {
-      return Array.from(
-        new Set(
-          inscripcionesTodera
-            .map(inscripcionEstadoLabel)
-            .filter(Boolean)
-        )
-      );
-    }, [inscripcionesTodera]);
+    ESTADOS_INSCRIPCIONES_TODERA;
 
   const instructorasDisponibles =
     useMemo(() => {

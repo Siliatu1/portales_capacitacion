@@ -2,8 +2,19 @@
 // TABLA ES PARA LAS INSTRUCTORAS DE TODERAS
 
 
-import { Button, Input, Modal, Popconfirm, Switch, Table, Tag } from "antd";
+import {
+  Button,
+  Input,
+  Modal,
+  Popconfirm,
+  Select,
+  Switch,
+  Table,
+  Tag,
+  message,
+} from "antd";
 import { useState } from "react";
+import { UserRoundCheck } from "lucide-react";
 import { useAuth } from "../../auth/hooks/useAuth";
 import { mapAsistencia } from "../utils/asistencia.utils";
 import "../styles/table.css";
@@ -17,6 +28,8 @@ export default function InscripcionesAttendanceTable({
   onSetAsistencia,
   onSetEstado,
   onSaveObservacion,
+  onSetInstructora,
+  instructorasPorCategoria = {},
   mode = "cafe",
 }) {
   const { hasPermission } = useAuth();
@@ -24,6 +37,7 @@ export default function InscripcionesAttendanceTable({
   const [observacionModalOpen, setObservacionModalOpen] = useState(false);
   const [observacion, setObservacion] = useState("");
   const [selectedRecord, setSelectedRecord] = useState(null);
+  const [reassigningRecordId, setReassigningRecordId] = useState(null);
 
   const parseDate = (d) => {
     if (!d) return 0;
@@ -51,6 +65,56 @@ export default function InscripcionesAttendanceTable({
     if (typeof onSetEstado === "function") {
       await onSetEstado(record.id, value, record.sourceEndpoint);
     }
+  };
+
+  const handleSetInstructora = async (record, value) => {
+    if (typeof onSetInstructora !== "function") {
+      return;
+    }
+
+    setReassigningRecordId(record.id);
+    await onSetInstructora(record.id, value, record.sourceEndpoint);
+    setReassigningRecordId(null);
+    message.success("Instructora reasignada");
+  };
+
+  const confirmSetInstructora = (record, nextValue, currentValue) => {
+    if (!nextValue || nextValue === currentValue) {
+      return;
+    }
+
+    Modal.confirm({
+      title: "Confirmar cambio de instructora",
+      content: (
+        <div className="reassign-confirm-content">
+          <p>
+            Esta evaluación dejará de aparecerle a la instructora actual y
+            pasará a la nueva instructora seleccionada.
+          </p>
+          <div>
+            <span>Actual</span>
+            <strong>{currentValue || "-"}</strong>
+          </div>
+          <div>
+            <span>Nueva</span>
+            <strong>{nextValue}</strong>
+          </div>
+        </div>
+      ),
+      okText: "Confirmar cambio",
+      cancelText: "Cancelar",
+      centered: true,
+      onOk: async () => {
+        try {
+          await handleSetInstructora(record, nextValue);
+        } catch (err) {
+          setReassigningRecordId(null);
+          console.error("Reasignar instructora fallo", err);
+          message.error("No se pudo reasignar la instructora");
+          throw err;
+        }
+      },
+    });
   };
 
   const openObservacionModal = (record) => {
@@ -130,6 +194,49 @@ const renderEstado = (value, record) => {
     </Button>
   );
 
+  const renderInstructora = (value, record) => {
+    const categoriaKey = String(record.categoria || "")
+      .trim()
+      .toLowerCase();
+    const currentValue = String(value || record.lider || "").trim();
+    const instructorasCategoria = instructorasPorCategoria[categoriaKey] || [];
+    const options = Array.from(
+      new Set([
+        currentValue,
+        ...instructorasCategoria,
+      ].filter(Boolean))
+    )
+      .sort((a, b) => a.localeCompare(b, "es"))
+      .map((name) => ({
+        label: name,
+        value: name,
+      }));
+
+    return (
+      <Select
+        size="small"
+        className="instructora-reassign-select"
+        popupClassName="instructora-reassign-dropdown"
+        value={currentValue || undefined}
+        options={options}
+        showSearch
+        optionFilterProp="label"
+        placeholder="Seleccione instructora"
+        disabled={options.length === 0 || reassigningRecordId === record.id}
+        loading={reassigningRecordId === record.id}
+        suffixIcon={<UserRoundCheck size={15} strokeWidth={2.2} />}
+        onChange={(nextValue) =>
+          confirmSetInstructora(record, nextValue, currentValue)
+        }
+        filterOption={(input, option) =>
+          String(option?.label || "")
+            .toLowerCase()
+            .includes(input.toLowerCase())
+        }
+      />
+    );
+  };
+
   const actionColumn = {
     title: "Acciones",
     key: "acciones",
@@ -191,7 +298,7 @@ const renderEstado = (value, record) => {
       dataIndex: "puntoVenta",
       render: (_, r) => r.puntoVenta || r.area_nombre || "-",
     },
-    { title: "Nombre Líder", dataIndex: "lider", render: (value) => value || "-" },
+    { title: "Instructora", dataIndex: "instructora", width: 320, render: renderInstructora },
     { title: "Categoría", dataIndex: "categoria", render: (value) => value || "-" },
     fechaInscripcionColumn,
     { title: "Observación", dataIndex: "observacion", render: renderObservacion },
@@ -221,7 +328,7 @@ const renderEstado = (value, record) => {
             pageSize: 10,
             showSizeChanger: false,
           }}
-          scroll={{ x: mode === "todera" ? 1500 : 1150 }}
+          scroll={{ x: mode === "todera" ? 1650 : 1150 }}
           locale={{
             emptyText: "No hay inscripciones asignadas",
           }}

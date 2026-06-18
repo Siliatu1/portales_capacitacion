@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Navbar from "../components/navbar";
 import { useInscripciones } from "../hooks/useInscripciones";
 import { filtrarInscripciones } from "../utils/filters";
@@ -7,9 +7,21 @@ import InscripcionesAttendanceTable from "../components/InscripcionesAttendanceT
 import FiltrosInscripciones from "../components/FiltrosInscripciones";
 import { useAuth } from "../../auth/hooks/useAuth";
 import { getStoredUser } from "../utils/userPdv.utils";
+import { ESTADOS_INSCRIPCIONES_TODERA } from "../utils/estadoInscripcion.utils";
+import { obtenerInstructorasPorCategoria } from "../services/instructorasService";
 
 
 const CAFE_ATTENDANCE_INSTRUCTOR = "35512822";
+const ESTADOS_CONTROL_ASISTENCIA_CAFE = [
+  "Pendiente",
+  "Asisti\u00f3",
+  "No asisti\u00f3",
+];
+
+const getInstructoraName = (item) =>
+  item?.attributes?.Nombre ||
+  item?.Nombre ||
+  "";
 
 const pickUserDocument = (user) => {
   return String(
@@ -75,15 +87,22 @@ export default function ControlAsistencia({ userData, onLogout }) {
     setAsistencia,
     setEstado,
     saveObservacion,
+    setInstructora,
   } = useInscripciones({
     endpoints,
     instructora: isCafeInstructor ? "" : instructorName,
   });
 
+  const [
+    instructorasPorCategoria,
+    setInstructorasPorCategoria,
+  ] = useState({});
+
   const [filtros, setFiltros] = useState({
     cedula: "",
     puntoVenta: [],
     fecha: [],
+    estado: [],
     formulario: 'todos'
   });
 
@@ -134,6 +153,80 @@ export default function ControlAsistencia({ userData, onLogout }) {
     );
   }, [data]);
 
+  const categoriasDisponibles = useMemo(
+    () =>
+      Array.from(
+        new Set(
+          (data || [])
+            .map((item) =>
+              String(item.categoria || "")
+                .trim()
+                .toLowerCase()
+            )
+            .filter(Boolean)
+        )
+      ),
+    [data]
+  );
+
+  useEffect(() => {
+    if (
+      attendanceMode !== "todera" ||
+      categoriasDisponibles.length === 0
+    ) {
+      setInstructorasPorCategoria({});
+      return;
+    }
+
+    let cancelled = false;
+
+    const cargarInstructoras = async () => {
+      try {
+        const entries = await Promise.all(
+          categoriasDisponibles.map(
+            async (categoriaItem) => {
+              const result =
+                await obtenerInstructorasPorCategoria(
+                  categoriaItem
+                );
+
+              return [
+                categoriaItem,
+                (result?.data || [])
+                  .map(getInstructoraName)
+                  .map((name) =>
+                    String(name || "").trim()
+                  )
+                  .filter(Boolean),
+              ];
+            }
+          )
+        );
+
+        if (!cancelled) {
+          setInstructorasPorCategoria(
+            Object.fromEntries(entries)
+          );
+        }
+      } catch (error) {
+        console.error(
+          "Error cargando instructoras para reasignar",
+          error
+        );
+      }
+    };
+
+    cargarInstructoras();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [attendanceMode, categoriasDisponibles]);
+
+  const estadosDisponibles = isCafeInstructor
+    ? ESTADOS_CONTROL_ASISTENCIA_CAFE
+    : ESTADOS_INSCRIPCIONES_TODERA;
+
   const pageTitle = isCafeInstructor
     ? "Control de asistencia Café"
     : "Control de asistencia Todera";
@@ -168,6 +261,7 @@ export default function ControlAsistencia({ userData, onLogout }) {
           setFiltros={setFiltros}
           fechasDisponibles={fechasDisponibles}
           puntosVentaDisponibles={puntosVentaDisponibles}
+          estadosDisponibles={estadosDisponibles}
         />
 
         <div className="table-card attendance-card">
@@ -181,6 +275,8 @@ export default function ControlAsistencia({ userData, onLogout }) {
             onSetAsistencia={setAsistencia}
             onSetEstado={setEstado}
             onSaveObservacion={saveObservacion}
+            onSetInstructora={setInstructora}
+            instructorasPorCategoria={instructorasPorCategoria}
           />
         </div>
       </div>

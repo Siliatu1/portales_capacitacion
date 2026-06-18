@@ -13,11 +13,11 @@ const includesAny = (value, selectedValues, exact = false) => {
     return true;
   }
 
-  const normalizedValue = String(value || "").toLowerCase();
+  const normalizedValue = String(value || "").trim().toLowerCase();
   const values = Array.isArray(selectedValues) ? selectedValues : [selectedValues];
 
   return values.some((selectedValue) => {
-    const normalizedSelected = String(selectedValue || "").toLowerCase();
+    const normalizedSelected = String(selectedValue || "").trim().toLowerCase();
 
     return exact
       ? normalizedValue === normalizedSelected
@@ -34,7 +34,7 @@ export const filtrarInscripciones = (data, filtros) => {
       (!filtros.cedula || item.cedula?.includes(filtros.cedula)) &&
       includesAny(puntoVenta, filtros.puntoVenta) &&
       includesAny(getDateOnly(item.dia), filtros.fecha, true) &&
-      includesAny(instructora, filtros.instructora) &&
+      includesAny(instructora, filtros.instructora, true) &&
       includesAny(inscripcionEstadoLabel(item), filtros.estado, true) &&
       (!filtros.lider || item.lider?.toLowerCase().includes(filtros.lider.toLowerCase())) &&
       (!filtros.formulario || filtros.formulario === 'todos' || (item.tipo_formulario || '').toLowerCase() === filtros.formulario.toLowerCase())

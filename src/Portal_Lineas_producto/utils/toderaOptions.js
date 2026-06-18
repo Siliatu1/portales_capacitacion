@@ -26,6 +26,22 @@ export const opcionesCargoEvaluar =
           label:
             "Pitas y Ensaladas",
         },
+
+        {
+          value:
+            "Brunch - Plancha Sal (Solo 1 Punto)",
+
+          label:
+            "Brunch - Plancha Sal (Solo 1 Punto)",
+        },
+
+        {
+          value:
+            "Brunch - Cocina (Solo 1 Punto)",
+
+          label:
+            "Brunch - Cocina (Solo 1 Punto)",
+        },
       ],
     },
 
@@ -40,6 +56,14 @@ export const opcionesCargoEvaluar =
 
           label:
             "Postres y Helados",
+        },
+
+        {
+          value:
+            "Brunch - Postres y Helados (Solo 1 Punto)",
+
+          label:
+            "Brunch - Postres y Helados (Solo 1 Punto)",
         },
       ],
     },
@@ -56,46 +80,13 @@ export const opcionesCargoEvaluar =
           label:
             "Bebidas Frias y Calientes",
         },
-      ],
-    },
-
-    {
-      label:
-        "BRUNCH (SOLO 1 PUNTO)",
-
-      color: "brunch",
-
-      options: [
-        {
-          value:
-            "Plancha Sal Brunch",
-
-          label:
-            "Plancha Sal Brunch",
-        },
 
         {
           value:
-            "Cocina Brunch",
+            "Brunch - Bebidas (Solo 1 Punto)",
 
           label:
-            "Cocina Brunch",
-        },
-
-        {
-          value:
-            "Postres y Helados Brunch",
-
-          label:
-            "Postres y Helados Brunch",
-        },
-
-        {
-          value:
-            "Bebidas Brunch",
-
-          label:
-            "Bebidas Brunch",
+            "Brunch - Bebidas (Solo 1 Punto)",
         },
       ],
     },

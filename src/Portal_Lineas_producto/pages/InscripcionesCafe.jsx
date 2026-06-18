@@ -11,7 +11,7 @@ import InscripcionesTable from "../components/InscripcionesTable";
 import { useAuth } from "../../auth/hooks/useAuth";
 import { useInscripciones } from "../hooks/useInscripciones";
 import { downloadInscripcionesExcel } from "../utils/exportInscripcionesExcel";
-import { inscripcionEstadoLabel } from "../utils/estadoInscripcion.utils";
+import { ESTADOS_INSCRIPCIONES_CAFE } from "../utils/estadoInscripcion.utils";
 import { filtrarInscripciones } from "../utils/filters";
 import {
   getStoredUser,
@@ -157,15 +157,7 @@ export default function InscripcionesCafe({
     }, [inscripcionesCafe]);
 
   const estadosDisponibles =
-    useMemo(() => {
-      return Array.from(
-        new Set(
-          inscripcionesCafe
-            .map(inscripcionEstadoLabel)
-            .filter(Boolean)
-        )
-      );
-    }, [inscripcionesCafe]);
+    ESTADOS_INSCRIPCIONES_CAFE;
 
   const handleExportExcel = () => {
     downloadInscripcionesExcel({

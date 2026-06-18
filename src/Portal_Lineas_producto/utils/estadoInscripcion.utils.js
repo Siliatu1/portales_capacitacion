@@ -1,5 +1,15 @@
 import { asistenciaLabel } from "./asistencia.utils";
 
+export const ESTADOS_INSCRIPCIONES_CAFE = [
+  asistenciaLabel(true),
+  asistenciaLabel(false),
+];
+
+export const ESTADOS_INSCRIPCIONES_TODERA = [
+  "Aprobado",
+  "Pendiente",
+];
+
 export const evaluacionEstadoLabel = (value) => {
   if (value === true || value === 1) {
     return "Aprobado";
