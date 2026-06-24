@@ -5,10 +5,10 @@
 @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap');
 
 /* =========================
-   VARIABLES GLOBALES
+   VARIABLES DEL COMPONENTE
 ========================= */
 
-:root {
+.validacion-usuario-wrapper {
   --color-bg: #f3efeb;
   --color-card: rgba(255, 255, 255, 0.78);
 
@@ -32,33 +32,25 @@
 }
 
 /* =========================
-   RESET GLOBAL
+   BASE DEL COMPONENTE
 ========================= */
 
-* {
+.validacion-usuario-wrapper,
+.validacion-usuario-wrapper * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
-html,
-body,
-#root {
-  width: 100%;
+/* =========================
+   VALIDACION USUARIO WRAPPER
+========================= */
+
+.validacion-usuario-wrapper {
   min-height: 100vh;
 
   font-family: "Inter", sans-serif;
-
-  background: var(--color-bg);
   color: var(--color-text);
-}
-
-/* =========================
-   LOGIN WRAPPER
-========================= */
-
-.login-wrapper {
-  min-height: 100vh;
 
   display: flex;
   align-items: center;
@@ -82,7 +74,7 @@ body,
    CONTAINER
 ========================= */
 
-.login-container {
+.validacion-usuario-container {
   width: 100%;
   max-width: 480px;
 }
@@ -91,7 +83,7 @@ body,
    CARD
 ========================= */
 
-.login-card {
+.validacion-usuario-card {
   width: 100%;
 
   padding: 52px 42px;
@@ -106,14 +98,14 @@ body,
 
   box-shadow: var(--shadow-main);
 
-  animation: fadeIn 0.6s ease;
+  animation: validacionUsuarioFadeIn 0.6s ease;
 }
 
 /* =========================
    TITLE
 ========================= */
 
-.login-card h3 {
+.validacion-usuario-card h3 {
   text-align: center;
 
   color: var(--color-primary);
@@ -135,7 +127,7 @@ body,
    INPUT GROUP
 ========================= */
 
-.input-group {
+.validacion-usuario-input-group {
   display: flex;
   flex-direction: column;
 
@@ -144,7 +136,7 @@ body,
   margin-bottom: 28px;
 }
 
-.input-group label {
+.validacion-usuario-input-group label {
   font-size: 0.9rem;
   font-weight: 600;
 
@@ -155,7 +147,7 @@ body,
   text-transform: uppercase;
 }
 
-.input-group input {
+.validacion-usuario-input-group input {
   width: 100%;
   height: 54px;
 
@@ -178,18 +170,18 @@ body,
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.03);
 }
 
-.input-group input::placeholder {
+.validacion-usuario-input-group input::placeholder {
   color: #9b9b9b;
 }
 
-.input-group input:focus {
+.validacion-usuario-input-group input:focus {
   border-color: var(--color-primary);
 
   box-shadow:
     0 0 0 4px rgba(91, 57, 40, 0.10);
 }
 
-.input-error {
+.validacion-usuario-input-error {
   border-color: var(--color-error) !important;
 }
 
@@ -197,7 +189,7 @@ body,
    BUTTON
 ========================= */
 
-.btn-ingresar {
+.validacion-usuario-btn-ingresar {
   width: 100%;
   height: 56px;
 
@@ -231,7 +223,7 @@ body,
     0 10px 20px rgba(91, 57, 40, 0.25);
 }
 
-.btn-ingresar:hover {
+.validacion-usuario-btn-ingresar:hover {
   transform: translateY(-2px);
 
   background: linear-gradient(
@@ -241,11 +233,11 @@ body,
   );
 }
 
-.btn-ingresar:active {
+.validacion-usuario-btn-ingresar:active {
   transform: scale(0.98);
 }
 
-.btn-ingresar:disabled {
+.validacion-usuario-btn-ingresar:disabled {
   opacity: 0.8;
   cursor: not-allowed;
 }
@@ -254,7 +246,7 @@ body,
    ERROR MESSAGE
 ========================= */
 
-.error-message {
+.validacion-usuario-error-message {
   margin-top: 18px;
 
   text-align: center;
@@ -269,7 +261,7 @@ body,
    LOADER
 ========================= */
 
-.loader {
+.validacion-usuario-loader {
   width: 22px;
   height: 22px;
 
@@ -278,20 +270,20 @@ body,
 
   border-radius: 50%;
 
-  animation: spin 0.8s linear infinite;
+  animation: validacionUsuarioSpin 0.8s linear infinite;
 }
 
 /* =========================
    ANIMATIONS
 ========================= */
 
-@keyframes spin {
+@keyframes validacionUsuarioSpin {
   to {
     transform: rotate(360deg);
   }
 }
 
-@keyframes fadeIn {
+@keyframes validacionUsuarioFadeIn {
   from {
     opacity: 0;
     transform: translateY(15px);
@@ -308,11 +300,11 @@ body,
 ========================= */
 
 @media (max-width: 768px) {
-  .login-card {
+  .validacion-usuario-card {
     padding: 42px 30px;
   }
 
-  .login-card h3 {
+  .validacion-usuario-card h3 {
     font-size: 1.8rem;
     letter-spacing: 2px;
   }
@@ -323,21 +315,21 @@ body,
 ========================= */
 
 @media (max-width: 480px) {
-  .login-wrapper {
+  .validacion-usuario-wrapper {
     padding: 16px;
   }
 
-  .login-container {
+  .validacion-usuario-container {
     max-width: 100%;
   }
 
-  .login-card {
+  .validacion-usuario-card {
     padding: 34px 22px;
 
     border-radius: 22px;
   }
 
-  .login-card h3 {
+  .validacion-usuario-card h3 {
     font-size: 1.45rem;
 
     letter-spacing: 2px;
@@ -347,15 +339,15 @@ body,
     margin-bottom: 32px;
   }
 
-  .input-group {
+  .validacion-usuario-input-group {
     margin-bottom: 22px;
   }
 
-  .input-group label {
+  .validacion-usuario-input-group label {
     font-size: 0.82rem;
   }
 
-  .input-group input {
+  .validacion-usuario-input-group input {
     height: 48px;
 
     font-size: 0.95rem;
@@ -363,13 +355,13 @@ body,
     padding: 0 14px;
   }
 
-  .btn-ingresar {
+  .validacion-usuario-btn-ingresar {
     height: 50px;
 
     font-size: 0.92rem;
   }
 
-  .error-message {
+  .validacion-usuario-error-message {
     font-size: 0.85rem;
   }
 }

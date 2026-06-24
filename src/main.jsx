@@ -1,13 +1,13 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
+import { HashRouter } from 'react-router-dom'
 import 'antd/dist/reset.css'
 import App from './App.jsx'
-import { AuthProvider } from './auth/context/AuthContext.jsx'
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    <AuthProvider>
+    <HashRouter>
       <App />
-    </AuthProvider>
+    </HashRouter>
   </StrictMode>,
 )

@@ -1,12 +1,24 @@
-import { useContext } from "react";
-import { AuthContext } from "../context/auth-context";
+import { useMemo, useSyncExternalStore } from "react";
+import { authSession } from "../services/authSession";
 
 export const useAuth = () => {
-  const context = useContext(AuthContext);
+  const user = useSyncExternalStore(
+    authSession.subscribe,
+    authSession.getSnapshot,
+    authSession.getServerSnapshot
+  );
 
-  if (!context) {
-    throw new Error("useAuth debe usarse dentro de AuthProvider");
-  }
-
-  return context;
+  return useMemo(
+    () => ({
+      user,
+      validarUsuario: authSession.validarUsuario,
+      logout: authSession.logout,
+      canAccessView: authSession.canAccessView,
+      hasPermission: authSession.hasPermission,
+      getDefaultRouteForUser: authSession.getDefaultRouteForUser,
+      getDefaultPortalInstructorasRoute:
+        authSession.getDefaultPortalInstructorasRoute,
+    }),
+    [user]
+  );
 };
