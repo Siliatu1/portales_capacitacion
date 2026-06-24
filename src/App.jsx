@@ -1,6 +1,5 @@
 import { Navigate, Route, Routes } from "react-router-dom";
 import ValidacionUsuario from "./auth/ValidacionUsuario/ValidacionUsuario";
-import ProtectedViewRoute from "./auth/components/ProtectedViewRoute";
 import { useAuth } from "./auth/hooks/useAuth";
 
 import MenuPrincipal from "./Menu_principal/componente/MenuPrincipal";
@@ -17,6 +16,22 @@ import PanelInstructoras from "./Portal_Lineas_producto/pages/PanelInstructoras"
 import Dashboard from "./Portal_Instructoras/components/Dashboard";
 import ProgramacionHorarios from "./Portal_Instructoras/components/ProgramacionHorarios";
 import VistaAdministrativa from "./Portal_Instructoras/components/VistaAdministrativa";
+
+const renderViewByProfile = (
+  { user, canAccessView, getDefaultRouteForUser },
+  view,
+  element
+) => {
+  if (!user) {
+    return <Navigate to="/" replace />;
+  }
+
+  if (!canAccessView(view)) {
+    return <Navigate to={getDefaultRouteForUser()} replace />;
+  }
+
+  return element;
+};
 
 const PortalInstructorasRedirect = () => {
   const { getDefaultPortalInstructorasRoute } = useAuth();
@@ -40,138 +55,121 @@ const DefaultRedirect = () => {
   );
 };
 
-const AppRoutes = () => (
-  <Routes>
-    <Route path="/" element={<ValidacionUsuario />} />
-    <Route path="/menu" element={<MenuPrincipal />} />
-    <Route path="/dashboard" element={<DefaultRedirect />} />
+const AppRoutes = () => {
+  const auth = useAuth();
+
+  return (
+    <Routes>
+      <Route path="/" element={<ValidacionUsuario />} />
+      <Route path="/menu" element={<MenuPrincipal />} />
+      <Route path="/dashboard" element={<DefaultRedirect />} />
 
     <Route
       path="/lineas-producto"
-      element={
-        <ProtectedViewRoute view="PANEL">
-          <Panel />
-        </ProtectedViewRoute>
-      }
+      element={renderViewByProfile(auth, "PANEL", <Panel />)}
     />
 
     <Route
       path="/lineas-producto/form-heladeria"
-      element={
-        <ProtectedViewRoute view="FORM_HELADERIA">
-          <FormHeladeria />
-        </ProtectedViewRoute>
-      }
+      element={renderViewByProfile(auth, "FORM_HELADERIA", <FormHeladeria />)}
     />
 
     <Route
       path="/lineas-producto/form-restaurante"
-      element={
-        <ProtectedViewRoute view="FORM_RESTAURANTE">
-          <FormRestaurante />
-        </ProtectedViewRoute>
-      }
+      element={renderViewByProfile(
+        auth,
+        "FORM_RESTAURANTE",
+        <FormRestaurante />
+      )}
     />
 
     <Route
       path="/lineas-producto/control-asistencia"
-      element={
-        <ProtectedViewRoute view="CONTROL_ASISTENCIA">
-          <ControlAsistencia />
-        </ProtectedViewRoute>
-      }
+      element={renderViewByProfile(
+        auth,
+        "CONTROL_ASISTENCIA",
+        <ControlAsistencia />
+      )}
     />
 
     <Route
       path="/lineas-producto/control-asistencia/todera"
-      element={
-        <ProtectedViewRoute view="CONTROL_ASISTENCIA">
-          <ControlAsistencia forcedMode="todera" />
-        </ProtectedViewRoute>
-      }
+      element={renderViewByProfile(
+        auth,
+        "CONTROL_ASISTENCIA",
+        <ControlAsistencia forcedMode="todera" />
+      )}
     />
 
     <Route
       path="/lineas-producto/form-todera"
-      element={
-        <ProtectedViewRoute view="FORM_TODERA">
-          <FormTodera />
-        </ProtectedViewRoute>
-      }
+      element={renderViewByProfile(auth, "FORM_TODERA", <FormTodera />)}
     />
 
     <Route
       path="/lineas-producto/gestion-instructoras"
-      element={
-        <ProtectedViewRoute view="GESTION_INSTRUCTORAS">
-          <GestionInstructoras />
-        </ProtectedViewRoute>
-      }
+      element={renderViewByProfile(
+        auth,
+        "GESTION_INSTRUCTORAS",
+        <GestionInstructoras />
+      )}
     />
 
     <Route
       path="/lineas-producto/panel-instructora"
-      element={
-        <ProtectedViewRoute view="PANELINSTRUCTORA">
-          <PanelInstructoras />
-        </ProtectedViewRoute>
-      }
+      element={renderViewByProfile(
+        auth,
+        "PANELINSTRUCTORA",
+        <PanelInstructoras />
+      )}
     />
 
     <Route
       path="/lineas-producto/inscripciones/cafe"
-      element={
-        <ProtectedViewRoute view="INSCRIPCIONES_CAFE">
-          <InscripcionesCafe />
-        </ProtectedViewRoute>
-      }
+      element={renderViewByProfile(
+        auth,
+        "INSCRIPCIONES_CAFE",
+        <InscripcionesCafe />
+      )}
     />
 
     <Route
       path="/lineas-producto/inscripciones/todera"
-      element={
-        <ProtectedViewRoute view="INSCRIPCIONES_TODERA">
-          <InscripcionesTodera />
-        </ProtectedViewRoute>
-      }
+      element={renderViewByProfile(
+        auth,
+        "INSCRIPCIONES_TODERA",
+        <InscripcionesTodera />
+      )}
     />
 
     <Route path="/portal-instructoras" element={<PortalInstructorasRedirect />} />
 
     <Route
       path="/portal/horarios-instructoras/instructor"
-      element={
-        <ProtectedViewRoute view="PROGRAMACION">
-          <Dashboard />
-        </ProtectedViewRoute>
-      }
+      element={renderViewByProfile(auth, "PROGRAMACION", <Dashboard />)}
     />
 
     <Route
       path="/portal/horarios-instructoras/admin"
-      element={
-        <ProtectedViewRoute view="ADMINISTRATIVO">
-          <VistaAdministrativa />
-        </ProtectedViewRoute>
-      }
+      element={renderViewByProfile(
+        auth,
+        "ADMINISTRATIVO",
+        <VistaAdministrativa />
+      )}
     />
 
     <Route
       path="/portal-instructoras/dashboard"
-      element={
-        <ProtectedViewRoute view="PROGRAMACION">
-          <Dashboard />
-        </ProtectedViewRoute>
-      }
+      element={renderViewByProfile(auth, "PROGRAMACION", <Dashboard />)}
     />
 
     <Route
       path="/portal-instructoras/programacion"
-      element={
-        <ProtectedViewRoute view="PROGRAMACION">
-          <ProgramacionHorarios />
-        </ProtectedViewRoute>
-      }
+      element={renderViewByProfile(
+        auth,
+        "PROGRAMACION",
+        <ProgramacionHorarios />
+      )}
     />
 
     <Route
@@ -186,16 +184,17 @@ const AppRoutes = () => (
 
     <Route
       path="/portal-instructoras/vista-administrativa"
-      element={
-        <ProtectedViewRoute view="ADMINISTRATIVO">
-          <VistaAdministrativa />
-        </ProtectedViewRoute>
-      }
+      element={renderViewByProfile(
+        auth,
+        "ADMINISTRATIVO",
+        <VistaAdministrativa />
+      )}
     />
 
-    <Route path="*" element={<DefaultRedirect />} />
-  </Routes>
-);
+      <Route path="*" element={<DefaultRedirect />} />
+    </Routes>
+  );
+};
 
 function App() {
   return <AppRoutes />;
