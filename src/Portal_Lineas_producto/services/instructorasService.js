@@ -5,19 +5,35 @@ export const obtenerGestionInstructoras =
   async () => {
     let response =
       await fetch(
-        `${API}/cap-pdvs?populate=cap_instructoras`
+        `${API}/cap-pdvs?populate=*`
       );
 
     if (!response.ok) {
       response =
         await fetch(
-          `${API}/cap-pdvs?populate=*`
+          `${API}/cap-pdvs?populate=cap_instructoras`
         );
     }
 
     if (!response.ok) {
       throw new Error(
         "No fue posible cargar puntos de venta"
+      );
+    }
+
+    return response.json();
+  };
+
+export const obtenerPdvIps =
+  async () => {
+    const response =
+      await fetch(
+        `${API}/pdv-Ips?populate=*&pagination[pageSize]=1000`
+      );
+
+    if (!response.ok) {
+      throw new Error(
+        "No fue posible cargar catalogo de puntos de venta"
       );
     }
 

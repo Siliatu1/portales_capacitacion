@@ -16,6 +16,7 @@ import {
   loadManagedMotivoOptions,
 } from '../components/vistaAdministrativa.helpers';
 import { useHorariosQuery, usePdvIpsQuery } from './useHorariosInstructorasQueries';
+import { isCrepesSaPdv } from '../../shared/utils/pdvFilters';
 
 export function useDashboardController() {
   const { user: userData, logout } = useAuth();
@@ -36,6 +37,7 @@ export function useDashboardController() {
   const puntosVentaQuery = usePdvIpsQuery('populate=*&pagination[pageSize]=1000', Boolean(user.documento));
   const puntosVenta = useMemo(
     () => (puntosVentaQuery.data || [])
+      .filter(isCrepesSaPdv)
       .map((pdv) => ({ id: pdv.id, nombre: pdv.attributes?.pdv || pdv.attributes?.nombre || '' }))
       .filter((pdv) => pdv.nombre)
       .sort((a, b) => a.nombre.localeCompare(b.nombre)),

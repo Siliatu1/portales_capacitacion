@@ -5,11 +5,9 @@ import {
   message,
 } from "antd";
 
-import { ArrowLeft } from "lucide-react";
-
-import { useNavigate } from "react-router-dom";
-
 import { useGestionInstructoras } from "../hooks/useGestionInstructoras";
+
+import Navbar from "../components/navbar";
 
 import TablaGestionInstructoras from "../components/TablaGestionInstructoras";
 
@@ -26,8 +24,6 @@ import {
 import "../styles/gestionInstructoras.css";
 
 const GestionInstructoras = () => {
-  const navigate = useNavigate();
-
   const {
     dataFiltradaGestionInstructoras,
     loadingGestionInstructoras,
@@ -151,21 +147,12 @@ const GestionInstructoras = () => {
     };
 
   return (
-    <div className="gestion-page">
+    <>
+      <Navbar />
+
+      <div className="gestion-page gestion-page--with-navbar">
       {/* HEADER */}
       <div className="gestion-header">
-        <button
-          className="back-button"
-          onClick={() =>
-            navigate(
-              "/lineas-producto"
-            )
-          }
-        >
-          <ArrowLeft size={16} />
-          Volver
-        </button>
-
         <h1>
           Gestión de Instructoras
         </h1>
@@ -254,7 +241,8 @@ const GestionInstructoras = () => {
           cargarGestionInstructoras
         }
       />
-    </div>
+      </div>
+    </>
   );
 };
 

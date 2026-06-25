@@ -13,9 +13,10 @@ import InscripcionesCafe from "./Portal_Lineas_producto/pages/InscripcionesCafe"
 import InscripcionesTodera from "./Portal_Lineas_producto/pages/InscripcionesTodera";
 import GestionInstructoras from "./Portal_Lineas_producto/pages/GestionInstructoras";
 import PanelInstructoras from "./Portal_Lineas_producto/pages/PanelInstructoras";
-import Dashboard from "./Portal_Instructoras/components/Dashboard";
-import ProgramacionHorarios from "./Portal_Instructoras/components/ProgramacionHorarios";
-import VistaAdministrativa from "./Portal_Instructoras/components/VistaAdministrativa";
+import DashboardPage from "./Portal_Instructoras/pages/DashboardPage";
+import ProgramacionHorariosPage from "./Portal_Instructoras/pages/ProgramacionHorariosPage";
+import VistaAdministrativaPage from "./Portal_Instructoras/pages/VistaAdministrativaPage";
+import GestionLineasInstructorasPage from "./Portal_Instructoras/pages/GestionLineasInstructorasPage";
 
 const renderViewByProfile = (
   { user, canAccessView, getDefaultRouteForUser },
@@ -146,7 +147,7 @@ const AppRoutes = () => {
 
     <Route
       path="/portal/horarios-instructoras/instructor"
-      element={renderViewByProfile(auth, "PROGRAMACION", <Dashboard />)}
+      element={renderViewByProfile(auth, "PROGRAMACION", <DashboardPage />)}
     />
 
     <Route
@@ -154,13 +155,13 @@ const AppRoutes = () => {
       element={renderViewByProfile(
         auth,
         "ADMINISTRATIVO",
-        <VistaAdministrativa />
+        <VistaAdministrativaPage />
       )}
     />
 
     <Route
       path="/portal-instructoras/dashboard"
-      element={renderViewByProfile(auth, "PROGRAMACION", <Dashboard />)}
+      element={renderViewByProfile(auth, "PROGRAMACION", <DashboardPage />)}
     />
 
     <Route
@@ -168,7 +169,7 @@ const AppRoutes = () => {
       element={renderViewByProfile(
         auth,
         "PROGRAMACION",
-        <ProgramacionHorarios />
+        <ProgramacionHorariosPage />
       )}
     />
 
@@ -187,7 +188,16 @@ const AppRoutes = () => {
       element={renderViewByProfile(
         auth,
         "ADMINISTRATIVO",
-        <VistaAdministrativa />
+        <VistaAdministrativaPage />
+      )}
+    />
+
+    <Route
+      path="/portal-instructoras/gestion-lineas-instructoras"
+      element={renderViewByProfile(
+        auth,
+        "GESTION_LINEAS_INSTRUCTORAS",
+        <GestionLineasInstructorasPage />
       )}
     />
 

@@ -8,6 +8,7 @@ import {
 } from '../components/programacionHorarios.helpers';
 import { loadManagedMotivoOptions } from '../components/vistaAdministrativa.helpers';
 import { useHorariosQuery, usePdvIpsQuery } from './useHorariosInstructorasQueries';
+import { isCrepesSaPdv } from '../../shared/utils/pdvFilters';
 
 const buildUser = (userData) => ({
   documento: userData?.document_number || '',
@@ -19,6 +20,7 @@ const buildUser = (userData) => ({
 });
 
 const mapPdvIps = (items) => items
+  .filter(isCrepesSaPdv)
   .map((pdv) => ({
     id: pdv.id,
     nombre: pdv.attributes?.pdv || pdv.attributes?.nombre || pdv.pdv || pdv.nombre || '',

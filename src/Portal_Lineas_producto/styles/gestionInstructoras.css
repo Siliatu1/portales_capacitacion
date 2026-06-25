@@ -8,6 +8,12 @@
   min-height: 100vh;
 }
 
+.gestion-page--with-navbar {
+  margin-left: 270px;
+
+  width: calc(100% - 270px);
+}
+
 /* HEADER */
 
 .gestion-header {
@@ -103,21 +109,37 @@
   border-radius: 18px;
 }
 
-.categoria-cell {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 10px;
-  min-width: 150px;
-}
-
 .pdv-text,
 .nombre-instructora,
 .sin-asignar {
   overflow-wrap: anywhere;
 }
 
+.nombre-instructora,
+.sin-asignar {
+  display: inline-block;
+  line-height: 1.35;
+}
+
+.tabla-container-custom .ant-table-thead > tr > th {
+  text-align: left;
+}
+
+.tabla-container-custom .ant-table-thead > tr:first-child > th:not(:first-child) {
+  text-align: center;
+}
+
+.tabla-container-custom .ant-table-tbody > tr > td {
+  vertical-align: middle;
+}
+
 @media (max-width: 900px) {
+  .gestion-page--with-navbar {
+    margin-left: 0;
+
+    width: 100%;
+  }
+
   .gestion-page {
     padding: 24px 18px;
   }

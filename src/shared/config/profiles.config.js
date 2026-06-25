@@ -1,3 +1,5 @@
+// configuracion de perfiles y permisos de acceso a vistas de los usuarios.
+
 export const PROFILE_CONFIG = {
   TEAM_LEAD: {
     views: ["FORM_HELADERIA", "PANEL", "INSCRIPCIONES_CAFE"],
@@ -53,6 +55,7 @@ export const PROFILE_CONFIG = {
       "PANELINSTRUCTORA",
       "PROGRAMACION",
       "ADMINISTRATIVO",
+      "GESTION_LINEAS_INSTRUCTORAS",
       "GESTION_INSTRUCTORAS",
     ],
 
@@ -106,6 +109,9 @@ export const VIEW_ROUTES = {
 
   ADMINISTRATIVO:
     "/portal-instructoras/vista-administrativa",
+
+  GESTION_LINEAS_INSTRUCTORAS:
+    "/portal-instructoras/gestion-lineas-instructoras",
 
   GESTION_INSTRUCTORAS:
     "/lineas-producto/gestion-instructoras",

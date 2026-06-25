@@ -1,3 +1,0 @@
-getFechasSemana()
-formatearFecha()
-formatearFechaCompleta()

@@ -1,5 +1,7 @@
 import {
+  useCallback,
   useEffect,
+  useMemo,
   useState,
 } from "react";
 
@@ -9,18 +11,19 @@ import {
 
 import {
   obtenerGestionInstructoras,
+  obtenerPdvIps,
 } from "../services/instructorasService";
+
+import {
+  buildCrepesSaPdvNameSet,
+  isPdvNameInSet,
+} from "../../shared/utils/pdvFilters";
 
 export const useGestionInstructoras =
   () => {
     const [
       gestionInstructoras,
       setGestionInstructoras,
-    ] = useState([]);
-
-    const [
-      dataFiltradaGestionInstructoras,
-      setDataFiltradaGestionInstructoras,
     ] = useState([]);
 
     const [
@@ -36,6 +39,7 @@ export const useGestionInstructoras =
     });
 
     const cargarGestionInstructoras =
+      useCallback(
       async () => {
         setLoadingGestionInstructoras(
           true
@@ -44,6 +48,11 @@ export const useGestionInstructoras =
         try {
           const result =
             await obtenerGestionInstructoras();
+          const pdvIpsResult =
+            await obtenerPdvIps()
+              .catch(() => ({
+                data: [],
+              }));
 
           const data =
             Array.isArray(
@@ -51,10 +60,27 @@ export const useGestionInstructoras =
             )
               ? result.data
               : [];
+          const pdvIpsData =
+            Array.isArray(
+              pdvIpsResult?.data
+            )
+              ? pdvIpsResult.data
+              : [];
+          const crepesSaPdvNames =
+            buildCrepesSaPdvNameSet(
+              pdvIpsData
+            );
 
           const filas = [];
 
-          data.forEach(
+          data
+            .filter((pdvItem) =>
+              isPdvNameInSet(
+                pdvItem,
+                crepesSaPdvNames
+              )
+            )
+            .forEach(
             (pdvItem) => {
               const pdvId =
                 pdvItem?.id;
@@ -148,11 +174,7 @@ export const useGestionInstructoras =
           setGestionInstructoras(
             filas
           );
-
-          setDataFiltradaGestionInstructoras(
-            filas
-          );
-        } catch (error) {
+        } catch {
           message.error(
             "Error al cargar instructoras"
           );
@@ -161,13 +183,26 @@ export const useGestionInstructoras =
             false
           );
         }
-      };
+      },
+      []
+      );
 
     useEffect(() => {
-      cargarGestionInstructoras();
-    }, []);
+      const timer =
+        window.setTimeout(() => {
+          cargarGestionInstructoras();
+        }, 0);
 
-    useEffect(() => {
+      return () =>
+        window.clearTimeout(
+          timer
+        );
+    }, [
+      cargarGestionInstructoras,
+    ]);
+
+    const dataFiltradaGestionInstructoras =
+      useMemo(() => {
       let dataTemp = [
         ...gestionInstructoras,
       ];
@@ -186,9 +221,7 @@ export const useGestionInstructoras =
           );
       }
 
-      setDataFiltradaGestionInstructoras(
-        dataTemp
-      );
+      return dataTemp;
     }, [
       filtrosGestionInstructoras,
       gestionInstructoras,

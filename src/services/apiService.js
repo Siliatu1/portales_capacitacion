@@ -1,3 +1,4 @@
+// servicio para realizar peticiones a la API
 const API_URL = "https://macfer.crepesywaffles.com/api";
 
 const buildUrl = (endpoint, query = "") => {
@@ -46,6 +47,15 @@ const deleteRecord = (endpoint, id) =>
   });
 
 export const getCapInstructoras = (query = "") => getCollection("cap-instructoras", query);
+
+export const createCapInstructora = (payload) =>
+  createRecord("cap-instructoras", payload);
+
+export const updateCapInstructora = (id, payload) =>
+  updateRecord("cap-instructoras", id, payload);
+
+export const deleteCapInstructora = (id) =>
+  deleteRecord("cap-instructoras", id);
 
 export const getCapPdvs = (query = "") => getCollection("cap-pdvs", query);
 

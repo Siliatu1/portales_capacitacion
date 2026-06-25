@@ -15,6 +15,7 @@ import {
   CalendarOutlined,
   ArrowRightOutlined,
   EditOutlined,
+  TeamOutlined,
 } from '@ant-design/icons';
 
 import 'antd/dist/reset.css';
@@ -48,6 +49,8 @@ function Dashboard() {
     canAccessView('ADMINISTRATIVO');
   const canAccessProgramacion =
     canAccessView('PROGRAMACION');
+  const canAccessGestionLineas =
+    canAccessView('GESTION_LINEAS_INSTRUCTORAS');
 
   const {
     puntosVenta,
@@ -350,7 +353,7 @@ function Dashboard() {
           </h2>
         </div>
 
-        {(canAccessProgramacion || canAccessAdministrativo) && (
+        {(canAccessProgramacion || canAccessAdministrativo || canAccessGestionLineas) && (
           <div className="dashboard-cards">
             {canAccessProgramacion && (
               <button
@@ -397,6 +400,32 @@ function Dashboard() {
 
                   <p className="card-description">
                     Consulta horarios de instructoras
+                  </p>
+                </div>
+
+                <ArrowRightOutlined className="card-arrow" />
+              </button>
+            )}
+
+            {canAccessGestionLineas && (
+              <button
+                type="button"
+                className="dashboard-card"
+                onClick={() =>
+                  navigate('/portal-instructoras/gestion-lineas-instructoras')
+                }
+              >
+                <div className="card-icon">
+                  <TeamOutlined />
+                </div>
+
+                <div className="card-content">
+                  <h3 className="card-title">
+                    Gestion lineas instructora
+                  </h3>
+
+                  <p className="card-description">
+                    Administra instructoras y linea activa
                   </p>
                 </div>
 

@@ -8,6 +8,9 @@ import {
   message,
 } from "antd";
 import {
+  DeleteOutlined,
+} from "@ant-design/icons";
+import {
   AlertTriangle,
   UserRoundCheck,
 } from "lucide-react";
@@ -533,9 +536,13 @@ export default function InscripcionesTable({
         okText="Si"
         cancelText="No"
       >
-        <Button danger>
-          Eliminar
-        </Button>
+        <Button
+          danger
+          shape="circle"
+          icon={<DeleteOutlined />}
+          aria-label="Eliminar inscripcion"
+          title="Eliminar"
+        />
       </Popconfirm>
     ),
   };

@@ -9,7 +9,23 @@ import {
   PlusOutlined,
 } from "@ant-design/icons";
 
-const renderCategoria = (
+const renderInstructora = (
+  categoria
+) => (
+  <span
+    className={
+      categoria
+        ? "nombre-instructora"
+        : "sin-asignar"
+    }
+  >
+    {categoria
+      ? categoria.instructoraNombre
+      : "Sin asignar"}
+  </span>
+);
+
+const renderAccionCategoria = (
   categoria,
   pdvId,
   categoriaKey,
@@ -18,11 +34,7 @@ const renderCategoria = (
 ) => {
   if (!categoria) {
     return (
-      <div className="categoria-cell">
-        <span className="sin-asignar">
-          Sin asignar
-        </span>
-
+      <Tooltip title="Asignar instructora">
         <Button
           type="primary"
           shape="circle"
@@ -35,33 +47,58 @@ const renderCategoria = (
             )
           }
         />
-      </div>
+      </Tooltip>
     );
   }
 
   return (
-    <div className="categoria-cell">
-      <span className="nombre-instructora">
-        {categoria.instructoraNombre}
-      </span>
-
-      <Tooltip title="Eliminar">
-        <Button
-          danger
-          size="small"
-          shape="circle"
-          icon={<DeleteOutlined />}
-          onClick={() =>
-            eliminarAsignacion(
-              pdvId,
-              categoria.instructoraId
-            )
-          }
-        />
-      </Tooltip>
-    </div>
+    <Tooltip title="Eliminar">
+      <Button
+        danger
+        size="small"
+        shape="circle"
+        icon={<DeleteOutlined />}
+        onClick={() =>
+          eliminarAsignacion(
+            pdvId,
+            categoria.instructoraId
+          )
+        }
+      />
+    </Tooltip>
   );
 };
+
+const buildLineaColumns = (
+  title,
+  dataIndex,
+  abrirModal,
+  eliminarAsignacion
+) => ({
+  title,
+  children: [
+    {
+      title: "Instructora",
+      dataIndex,
+      key: `${dataIndex}-instructora`,
+      render: renderInstructora,
+    },
+    {
+      title: "Acciones",
+      key: `${dataIndex}-acciones`,
+      align: "center",
+      width: 96,
+      render: (_, record) =>
+        renderAccionCategoria(
+          record[dataIndex],
+          record.pdvId,
+          dataIndex,
+          abrirModal,
+          eliminarAsignacion
+        ),
+    },
+  ],
+});
 
 const TablaGestionInstructoras = ({
   data,
@@ -84,50 +121,26 @@ const TablaGestionInstructoras = ({
       ),
     },
 
-    {
-      title: "SAL",
+    buildLineaColumns(
+      "SAL",
+      "sal",
+      abrirModal,
+      eliminarAsignacion
+    ),
 
-      dataIndex: "sal",
+    buildLineaColumns(
+      "DULCE",
+      "dulce",
+      abrirModal,
+      eliminarAsignacion
+    ),
 
-      render: (value, record) =>
-        renderCategoria(
-          value,
-          record.pdvId,
-          "sal",
-          abrirModal,
-          eliminarAsignacion
-        ),
-    },
-
-    {
-      title: "DULCE",
-
-      dataIndex: "dulce",
-
-      render: (value, record) =>
-        renderCategoria(
-          value,
-          record.pdvId,
-          "dulce",
-          abrirModal,
-          eliminarAsignacion
-        ),
-    },
-
-    {
-      title: "BEBIDAS",
-
-      dataIndex: "bebidas",
-
-      render: (value, record) =>
-        renderCategoria(
-          value,
-          record.pdvId,
-          "bebidas",
-          abrirModal,
-          eliminarAsignacion
-        ),
-    },
+    buildLineaColumns(
+      "BEBIDAS",
+      "bebidas",
+      abrirModal,
+      eliminarAsignacion
+    ),
   ];
 
   return (
@@ -143,7 +156,7 @@ const TablaGestionInstructoras = ({
           "fila-tabla"
         }
         scroll={{
-          x: 900,
+          x: 1100,
         }}
       />
     </div>

@@ -1,0 +1,229 @@
+.gestion-lineas-container {
+  min-height: 100vh;
+  background: #fbf9f3;
+  display: flex;
+  flex-direction: column;
+  font-family: Optima, sans-serif;
+}
+
+.gestion-lineas-container .navbar {
+  background: #ffffff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.gestion-lineas-container .navbar-content {
+  background: #ffffff;
+  padding: 20px 40px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+}
+
+.gestion-lineas-container .navbar-left,
+.gestion-lineas-container .navbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.gestion-lineas-container .navbar-actions {
+  justify-content: flex-end;
+  flex-wrap: wrap;
+}
+
+.gestion-lineas-container .navbar-titles {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.gestion-lineas-container .navbar-title {
+  font-size: 28px;
+  font-weight: 700;
+  color: #4e3416;
+  margin: 0;
+}
+
+.gestion-lineas-container .navbar-subtitle {
+  font-size: 13px;
+  color: #7a6048;
+  font-weight: 600;
+}
+
+.gestion-lineas-container .dashboard-main {
+  flex: 1;
+  width: 100%;
+}
+
+.gestion-lineas-container .welcome-section {
+  background: #f5f5f5;
+  padding: 30px 40px;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.gestion-lineas-container .welcome-greeting {
+  color: #4e3416;
+  font-size: 26px;
+  font-weight: 700;
+  margin: 0 0 8px;
+}
+
+.gestion-lineas-container .welcome-description {
+  color: #626262;
+  font-size: 15px;
+  margin: 0;
+}
+
+.gestion-lineas-hero {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  width: 100%;
+}
+
+.gestion-lineas-filters,
+.gestion-lineas-table-card {
+  margin: 20px 40px !important;
+}
+
+.gestion-lineas-filters__layout {
+  width: 100%;
+  justify-content: space-between;
+}
+
+.gestion-lineas-search {
+  min-width: 320px;
+  max-width: 520px;
+}
+
+.gestion-lineas-name-cell {
+  display: grid;
+  gap: 4px;
+}
+
+.gestion-lineas-name-cell strong {
+  color: #3f2b16;
+  font-size: 14px;
+  line-height: 1.25;
+}
+
+.gestion-lineas-name-cell span {
+  color: #75665a;
+  font-size: 12px;
+}
+
+.gestion-lineas-form {
+  margin-top: 12px;
+}
+
+.gestion-lineas-form-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 14px;
+}
+
+.gestion-lineas-radio {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.gestion-lineas-radio .ant-radio-button-wrapper {
+  border-inline-start-width: 1px;
+  border-radius: 6px;
+  min-width: 92px;
+  text-align: center;
+}
+
+.gestion-lineas-radio .ant-radio-button-wrapper::before {
+  display: none;
+}
+
+.gestion-lineas-audit {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 4px;
+  padding-top: 16px;
+  border-top: 1px solid #eee2d6;
+}
+
+.gestion-lineas-container .ant-btn-primary {
+  background: #7b6048;
+  border-color: #7b6048;
+}
+
+.gestion-lineas-container .ant-btn-primary:hover,
+.gestion-lineas-container .ant-btn-primary:focus {
+  background: #604934 !important;
+  border-color: #604934 !important;
+}
+
+@media (max-width: 768px) {
+  .gestion-lineas-container .navbar-content {
+    padding: 16px 20px;
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .gestion-lineas-container .navbar-left {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .gestion-lineas-container .navbar-actions {
+    justify-content: flex-start;
+  }
+
+  .gestion-lineas-container .navbar-title {
+    font-size: 22px;
+  }
+
+  .gestion-lineas-container .welcome-section {
+    padding: 20px;
+  }
+
+  .gestion-lineas-hero {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .gestion-lineas-filters,
+  .gestion-lineas-table-card {
+    margin: 12px 20px !important;
+  }
+
+  .gestion-lineas-filters__layout,
+  .gestion-lineas-search {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .gestion-lineas-form-grid,
+  .gestion-lineas-audit {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+}
+
+@media (max-width: 480px) {
+  .gestion-lineas-container .navbar-content,
+  .gestion-lineas-container .welcome-section {
+    padding: 14px;
+  }
+
+  .gestion-lineas-filters,
+  .gestion-lineas-table-card {
+    margin: 10px 12px !important;
+  }
+
+  .gestion-lineas-radio .ant-radio-button-wrapper {
+    flex: 1 1 calc(50% - 8px);
+    min-width: 0;
+  }
+}

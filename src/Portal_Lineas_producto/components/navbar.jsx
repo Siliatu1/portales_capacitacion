@@ -7,6 +7,16 @@ import {
   useState,
 } from "react";
 
+import {
+  BookOpen,
+  ClipboardCheck,
+  Coffee,
+  FileText,
+  LogOut,
+  UserRound,
+  UsersRound,
+} from "lucide-react";
+
 import "../styles/navbar.css";
 
 import { useAuth } from "../../auth/hooks/useAuth";
@@ -17,6 +27,7 @@ const NAV_ITEMS = [
     label: "Formulario Inscripción Heladería",
     route:
       "/lineas-producto/form-heladeria",
+    icon: FileText,
   },
 
   {
@@ -24,6 +35,7 @@ const NAV_ITEMS = [
     label: "Formulario Inscripción Restaurante",
     route:
       "/lineas-producto/form-restaurante",
+    icon: BookOpen,
   },
 
   {
@@ -32,6 +44,7 @@ const NAV_ITEMS = [
     route:
       "/lineas-producto/control-asistencia",
     hidden: true,
+    icon: ClipboardCheck,
   },
 
   {
@@ -40,6 +53,7 @@ const NAV_ITEMS = [
     route:
       "/lineas-producto/control-asistencia/todera",
     hidden: true,
+    icon: ClipboardCheck,
   },
 
   {
@@ -47,6 +61,7 @@ const NAV_ITEMS = [
     label: "Formulario Inscripción Todera",
     route:
       "/lineas-producto/form-todera",
+    icon: UserRound,
   },
 
   // NUEVO ITEM
@@ -59,6 +74,7 @@ const NAV_ITEMS = [
 
     route:
       "/lineas-producto/gestion-instructoras",
+    icon: UsersRound,
   },
 ];
 
@@ -72,6 +88,7 @@ const INSCRIPCIONES_ITEMS = [
 
     route:
       "/lineas-producto/inscripciones/cafe",
+    icon: Coffee,
   },
 
   {
@@ -82,8 +99,22 @@ const INSCRIPCIONES_ITEMS = [
 
     route:
       "/lineas-producto/inscripciones/todera",
+    icon: UserRound,
   },
 ];
+
+const getInitials = (name = "") => {
+  const words = String(name)
+    .trim()
+    .split(/\s+/)
+    .filter(Boolean);
+
+  if (words.length >= 2) {
+    return `${words[0][0]}${words[1][0]}`.toUpperCase();
+  }
+
+  return words[0]?.[0]?.toUpperCase() || "U";
+};
 
 const Navbar = ({
   visibleViews,
@@ -100,7 +131,7 @@ const Navbar = ({
     setOpenSubmenu,
   ] = useState(true);
 
-  const { canAccessView } =
+  const { canAccessView, user } =
     useAuth();
 
   const visibleViewSet =
@@ -130,6 +161,31 @@ const Navbar = ({
             Líneas de
             Producto
           </p>
+        </div>
+
+        <div className="sidebar-user">
+          {user?.foto ? (
+            <img
+              src={user.foto}
+              alt="Perfil"
+              className="sidebar-user-avatar"
+            />
+          ) : (
+            <div className="sidebar-user-initials">
+              {getInitials(user?.nombre)}
+            </div>
+          )}
+
+          <div className="sidebar-user-text">
+            <strong>
+              {user?.nombre || "Usuario"}
+            </strong>
+            <span>
+              {user?.cargo ||
+                user?.perfil ||
+                "Lineas de Producto"}
+            </span>
+          </div>
         </div>
       </div>
 
@@ -174,9 +230,15 @@ const Navbar = ({
                 )
               }
             >
+              <item.icon
+                size={18}
+                strokeWidth={2.2}
+              />
+              <span>
               {
                 item.label
               }
+              </span>
             </button>
           );
         })}
@@ -236,9 +298,15 @@ const Navbar = ({
                           )
                         }
                       >
-                        {
-                          item.label
-                        }
+                        <item.icon
+                          size={16}
+                          strokeWidth={2.2}
+                        />
+                        <span>
+                          {
+                            item.label
+                          }
+                        </span>
                       </button>
                     );
                   }
@@ -257,7 +325,13 @@ const Navbar = ({
             handleLogout
           }
         >
-          Salir
+          <LogOut
+            size={18}
+            strokeWidth={2.2}
+          />
+          <span>
+            Salir
+          </span>
         </button>
       </div>
     </aside>

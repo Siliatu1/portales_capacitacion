@@ -13,6 +13,9 @@ import {
   Tag,
   message,
 } from "antd";
+import {
+  DeleteOutlined,
+} from "@ant-design/icons";
 import { useState } from "react";
 import { UserRoundCheck } from "lucide-react";
 import { useAuth } from "../../auth/hooks/useAuth";
@@ -253,7 +256,13 @@ const renderEstado = (value, record) => {
         okText="Si"
         cancelText="No"
       >
-        <Button danger>Eliminar</Button>
+        <Button
+          danger
+          shape="circle"
+          icon={<DeleteOutlined />}
+          aria-label="Eliminar inscripcion"
+          title="Eliminar"
+        />
       </Popconfirm>
     ),
   };

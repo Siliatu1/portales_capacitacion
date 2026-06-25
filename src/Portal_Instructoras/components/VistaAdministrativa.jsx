@@ -7,6 +7,7 @@ import * as XLSX from 'xlsx';
 import 'antd/dist/reset.css';
 import '../styles/VistaAdministrativa.css';
 import { updateHorario } from '../services/horariosInstructoras.service';
+import { useAuth } from '../../auth/hooks/useAuth';
 import { useVistaAdministrativaData } from '../hooks/useAdministrativaData';
 import HorarioModal from './HorarioModal';
 import VistaAdministrativaTable from './VistaAdministrativaTable';
@@ -32,7 +33,8 @@ import {
 
 function VistaAdministrativa() {
   const navigate = useNavigate();
-  const [instructoraSeleccionada, setInstructoraSeleccionada] = useState('todas');
+  const { canAccessView } = useAuth();
+  const [instructorasSeleccionadas, setInstructorasSeleccionadas] = useState([]);
   const [lineaSeleccionada, setLineaSeleccionada] = useState('todas');
   const [showProfileModal, setShowProfileModal] = useState(false);
   const [semanaLunes, setSemanaLunes] = useState(getDefaultLunes);
@@ -44,6 +46,7 @@ function VistaAdministrativa() {
   const [nuevoMotivo, setNuevoMotivo] = useState('');
   const [managedMotivoOptions, setManagedMotivoOptions] = useState(loadManagedMotivoOptions);
   const { user, logout, puntosVenta, instructoras, horariosTodos, refetch } = useVistaAdministrativaData({ semanaLunes, lineaSeleccionada });
+  const canAccessGestionLineas = canAccessView('GESTION_LINEAS_INSTRUCTORAS');
 
   useEffect(() => {
     if (user && !user.isAdmin) {
@@ -56,14 +59,18 @@ function VistaAdministrativa() {
   const weekRangeLabel = useMemo(() => getWeekRangeLabel(semanaLunes), [semanaLunes]);
 
   const horariosFiltered = useMemo(() => (
-    instructoraSeleccionada === 'todas'
+    instructorasSeleccionadas.length === 0
       ? horariosTodos
-      : horariosTodos.filter((horario) => horario.documento === instructoraSeleccionada)
-  ), [horariosTodos, instructoraSeleccionada]);
+      : horariosTodos.filter((horario) =>
+        instructorasSeleccionadas.includes(String(horario.documento).trim())
+      )
+  ), [horariosTodos, instructorasSeleccionadas]);
 
   const instructoraOptions = useMemo(() => ([
-    { value: 'todas', label: 'Todas las Instructoras' },
-    ...instructoras.map((inst) => ({ value: inst.documento, label: inst.nombre }))
+    ...instructoras.map((inst) => ({
+      value: String(inst.documento).trim(),
+      label: inst.nombre,
+    }))
   ]), [instructoras]);
 
   const pdvOptions = useMemo(() => puntosVenta.map((pdv) => ({
@@ -357,6 +364,15 @@ function VistaAdministrativa() {
             </div>
           </div>
           <div className="navbar-actions">
+            {canAccessGestionLineas && (
+              <button
+                className="btn-back"
+                onClick={() => navigate('/portal-instructoras/gestion-lineas-instructoras')}
+                title="Gestion lineas instructora"
+              >
+                <span>Gestion lineas</span>
+              </button>
+            )}
             <button
               className="btn-back"
               onClick={() => navigate('/menu')}
@@ -401,7 +417,7 @@ function VistaAdministrativa() {
                   value={lineaSeleccionada}
                   onChange={(value) => {
                     setLineaSeleccionada(value);
-                    setInstructoraSeleccionada('todas');
+                    setInstructorasSeleccionadas([]);
                   }}
                   placeholder="Selecciona una línea"
                   options={LINEA_OPTIONS}
@@ -411,9 +427,12 @@ function VistaAdministrativa() {
                 <label className="vista-admin-filter-label">Filtrar por Instructora:</label>
                 <Select
                   className="vista-admin-select vista-admin-select--instructora"
-                  value={instructoraSeleccionada}
-                  onChange={setInstructoraSeleccionada}
-                  placeholder="Selecciona una instructora"
+                  mode="multiple"
+                  allowClear
+                  maxTagCount="responsive"
+                  value={instructorasSeleccionadas}
+                  onChange={setInstructorasSeleccionadas}
+                  placeholder="Todas las instructoras"
                   options={instructoraOptions}
                 />
               </Space>

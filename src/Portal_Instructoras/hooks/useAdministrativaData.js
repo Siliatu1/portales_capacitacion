@@ -13,6 +13,7 @@ import {
   useInstructorasQuery,
   usePdvIpsQuery,
 } from './useHorariosInstructorasQueries';
+import { isCrepesSaPdv } from '../../shared/utils/pdvFilters';
 
 const buildUser = (userData) => {
   const cargo = userData?.cargo || '';
@@ -121,11 +122,15 @@ export function useVistaAdministrativaData({ semanaLunes, lineaSeleccionada }) {
   );
 
   const puntosVenta = useMemo(() => (pdvsQuery.data || [])
+    .filter(isCrepesSaPdv)
     .map((pdv) => ({ id: pdv.id, nombre: pdv.attributes?.pdv || pdv.attributes?.nombre || '' }))
     .filter((pdv) => pdv.nombre)
     .sort((a, b) => a.nombre.localeCompare(b.nombre)), [pdvsQuery.data]);
 
-  const instructorasData = instructorasQuery.data || [];
+  const instructorasData = useMemo(
+    () => instructorasQuery.data || [],
+    [instructorasQuery.data]
+  );
   const documentosInstructoras = useMemo(() => instructorasData
     .map(getInstructoraDocumento)
     .filter(Boolean), [instructorasData]);
