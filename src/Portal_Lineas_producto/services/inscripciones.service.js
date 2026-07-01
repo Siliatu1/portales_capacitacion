@@ -177,11 +177,6 @@ const fetchCollection =
         page: 1,
       });
 
-    console.log(
-      "CONSULTANDO:",
-      firstUrl
-    );
-
     const firstRes =
       await fetch(firstUrl);
 
@@ -283,11 +278,6 @@ export const getInscripciones =
       const merged =
         responses.flat();
 
-      console.log(
-        "INSCRIPCIONES UNIDAS:",
-        merged
-      );
-
       const filtered =
         merged.filter(
           (inscripcion) => {
@@ -329,16 +319,6 @@ export const getInscripciones =
             );
           }
         );
-
-      console.log(
-        "PDV USUARIO:",
-        pdv
-      );
-
-      console.log(
-        "FILTRADAS:",
-        filtered
-      );
 
       return filtered;
     } catch (error) {

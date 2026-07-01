@@ -41,11 +41,6 @@ export const useInscripciones = ({
 
         setError(null);
 
-        console.log(
-          "CONSULTANDO INSCRIPCIONES PDV:",
-          pdv
-        );
-
         const response =
           await getInscripciones({
             pdv,
@@ -59,11 +54,6 @@ export const useInscripciones = ({
         ) {
           return;
         }
-
-        console.log(
-          "RESPUESTA INSCRIPCIONES:",
-          response
-        );
 
         setData(
           Array.isArray(response)
@@ -109,11 +99,6 @@ export const useInscripciones = ({
     try {
       setLoading(true);
 
-      console.log(
-        "ELIMINANDO INSCRIPCION:",
-        id
-      );
-
       await deleteInscripcion(
         id,
         endpoint
@@ -137,14 +122,6 @@ export const useInscripciones = ({
   ) => {
     try {
       setLoading(true);
-
-      console.log(
-        "ACTUALIZANDO ASISTENCIA:",
-        {
-          id,
-          confirmado,
-        }
-      );
 
       await updateAsistencia(
         id,

@@ -37,20 +37,10 @@ export const useInstructoras =
 
             setError(null);
 
-            console.log(
-              "CONSULTANDO INSTRUCTORA:",
-              nombreInstructora
-            );
-
             const response =
               await getEstudiantesInstructora(
                 nombreInstructora
               );
-
-            console.log(
-              "ESTUDIANTES INSTRUCTORA:",
-              response
-            );
 
             setData(
               Array.isArray(

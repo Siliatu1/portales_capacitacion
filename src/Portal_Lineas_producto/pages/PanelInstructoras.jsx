@@ -31,16 +31,6 @@ export default function PanelInstructoras({
     nombreInstructora,
   });
 
-  console.log(
-    "USUARIO INSTRUCTORA:",
-    nombreInstructora
-  );
-
-  console.log(
-    "ESTUDIANTES:",
-    data
-  );
-
   const total = data.length;
 
   return (

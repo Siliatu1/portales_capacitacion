@@ -29,7 +29,7 @@ export const useInstructora = ({
 
       } catch (error) {
 
-        console.log("ERROR INSTRUCTORA", error);
+        console.error("ERROR INSTRUCTORA", error);
         setInstructora("");
 
       } finally {

@@ -17,7 +17,6 @@ const ValidacionUsuario = () => {
     setError("");
 
     const empleados = await getEmpleados(documento);
-    console.log("Empleados obtenidos:", empleados);
     if (empleados?.ok && empleados?.data) {
       validarUsuario(empleados.data);
       navigate("/menu");

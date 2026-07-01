@@ -98,16 +98,6 @@ export const getEstudiantesInstructora =
           mapEstudiante
         );
 
-      console.log(
-        "ESTUDIANTES:",
-        mapped
-      );
-
-      console.log(
-        "INSTRUCTORA LOGIN:",
-        nombreInstructora
-      );
-
       const filtrados =
         mapped.filter(
           (item) => {
@@ -121,14 +111,6 @@ export const getEstudiantesInstructora =
                 nombreInstructora
               );
 
-            console.log(
-              "COMPARANDO:",
-              {
-                lider,
-                instructora,
-              }
-            );
-
             return (
               lider.includes(
                 instructora
@@ -139,11 +121,6 @@ export const getEstudiantesInstructora =
             );
           }
         );
-
-      console.log(
-        "FILTRADOS:",
-        filtrados
-      );
 
       return filtrados;
     } catch (error) {
