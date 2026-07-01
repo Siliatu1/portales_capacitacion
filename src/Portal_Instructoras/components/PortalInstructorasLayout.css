@@ -161,6 +161,7 @@
 
 .portal-instructoras-content {
   min-height: 100vh;
+  min-width: 0;
   margin-left: 260px;
   background: #fbf9f3;
 }
@@ -201,5 +202,33 @@
   .portal-instructoras-menu {
     grid-template-columns: 1fr;
     margin-top: 18px;
+  }
+
+  .portal-instructoras-menu__item,
+  .portal-instructoras-logout {
+    min-height: 44px;
+    padding: 11px 12px;
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 380px) {
+  .portal-instructoras-sidebar {
+    padding: 14px 12px;
+  }
+
+  .portal-instructoras-user {
+    grid-template-columns: 40px minmax(0, 1fr);
+    padding: 10px;
+  }
+
+  .portal-instructoras-user__image,
+  .portal-instructoras-user__initials {
+    width: 40px;
+    height: 40px;
+  }
+
+  .portal-instructoras-brand h2 {
+    font-size: 1.35rem;
   }
 }

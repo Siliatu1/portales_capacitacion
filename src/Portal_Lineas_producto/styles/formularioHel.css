@@ -314,39 +314,43 @@
   }
 
   .fecha-card.no-disponible {
-    background: #f1f5f9;
-    opacity: 0.7;
+    background: linear-gradient(180deg, #fbfaf8 0%, #f3f0ec 100%);
+    opacity: 1;
     cursor: not-allowed;
-    border-style: dashed;
+    border: 1px solid rgba(101, 72, 56, 0.14);
+    box-shadow: 0 8px 18px rgba(80, 54, 41, 0.06);
   }
 
   .fecha-card.bloqueada {
-    background: #fff7ed;
-    border-color: #fed7aa;
+    background: linear-gradient(180deg, #fff8f1 0%, #fff1e6 100%);
+    border-color: #f4c7a3;
     opacity: 1;
   }
 
   .fecha-no-disponible-label {
-    position: absolute;
-    top: 8px;
-    left: 10px;
-    right: 10px;
-    font-size: 0.76rem;
+    position: static;
+    width: fit-content;
+    max-width: 100%;
+    font-size: 0.68rem;
     font-weight: 800;
-    padding: 4px 8px;
-    border-radius: 7px;
-    background: #64748b;
+    padding: 5px 11px;
+    border-radius: 999px;
+    background: #8d7b70;
     color: white;
     text-align: center;
-    line-height: 1;
+    line-height: 1.1;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    margin-bottom: 0.75rem;
+    box-shadow: 0 5px 12px rgba(80, 54, 41, 0.12);
   }
 
   .fecha-card.bloqueada .fecha-no-disponible-label {
-    background: #fb7185;
+    background: #c97273;
   }
 
   .fecha-lock-toggle + .fecha-no-disponible-label {
-    right: 64px;
+    margin-right: 54px;
   }
 
   .fecha-lock-toggle {
@@ -414,6 +418,21 @@
     background: #f1f5f9;
     padding: 4px 12px;
     border-radius: 999px;
+  }
+
+  .fecha-card.no-disponible .fecha-mes,
+  .fecha-card.no-disponible .fecha-texto {
+    color: rgba(80, 54, 41, 0.48);
+  }
+
+  .fecha-card.no-disponible .fecha-dia {
+    color: rgba(60, 31, 28, 0.68);
+  }
+
+  .fecha-card.no-disponible .fecha-contador {
+    background: rgba(255, 255, 255, 0.72);
+    color: rgba(60, 31, 28, 0.68);
+    border: 1px solid rgba(80, 54, 41, 0.08);
   }
 
   .selected .fecha-contador {

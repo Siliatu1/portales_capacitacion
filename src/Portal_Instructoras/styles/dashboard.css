@@ -586,6 +586,11 @@
 
 .dashboard-table-card {
   margin: 20px 40px;
+  overflow: hidden;
+}
+
+.dashboard-table-card .ant-card-body {
+  overflow-x: auto;
 }
 
 .dashboard-week-summary,
@@ -918,6 +923,18 @@
   .horarios-table-section {
     margin: 20px;
     padding: 20px;
+  }
+
+  .dashboard-table-card {
+    margin: 16px 0 0;
+  }
+
+  .dashboard-table-card .ant-card-body {
+    padding: 12px;
+  }
+
+  .horarios-table-section .ant-table-wrapper {
+    max-width: 100%;
   }
 
   .table-header {
@@ -1692,12 +1709,47 @@
 
 @media (max-width: 480px) {
   .horarios-table-section {
-    margin: 16px;
-    padding: 16px;
+    margin: 12px;
+    padding: 14px;
+    border-radius: 10px;
   }
 
   .table-title {
     font-size: 16px;
+  }
+
+  .table-period-text {
+    font-size: 12px;
+  }
+
+  .table-stats {
+    gap: 8px;
+    align-items: stretch;
+  }
+
+  .table-stats .ant-btn {
+    min-height: 36px;
+  }
+
+  .dashboard-table-card {
+    margin-top: 12px;
+  }
+
+  .dashboard-table-card .ant-card-body {
+    padding: 8px;
+  }
+
+  .horarios-table-section .ant-table {
+    font-size: 12px;
+  }
+
+  .horarios-table-section .ant-table-thead > tr > th,
+  .horarios-table-section .ant-table-tbody > tr > td {
+    padding: 10px 8px !important;
+  }
+
+  .dashboard-week-detail {
+    padding: 10px;
   }
 
   .custom-table {
@@ -1738,8 +1790,8 @@
   }
 
   .horarios-table-section {
-    margin: 16px;
-    padding: 16px;
+    margin: 12px;
+    padding: 14px;
   }
 
   .table-title {

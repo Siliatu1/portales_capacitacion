@@ -10,12 +10,8 @@ import {
 } from 'antd';
 
 import {
-  EyeOutlined,
   DownloadOutlined,
-  CalendarOutlined,
-  ArrowRightOutlined,
   EditOutlined,
-  TeamOutlined,
 } from '@ant-design/icons';
 
 import 'antd/dist/reset.css';
@@ -23,8 +19,6 @@ import 'antd/dist/reset.css';
 import '../styles/Dashboard.css';
 
 import HorarioModal from './HorarioModal';
-
-import { useAuth } from '../../auth/hooks/useAuth';
 
 import {
   formatearFecha,
@@ -40,17 +34,8 @@ import { useDashboardController } from '../hooks/useDashboardController';
 function Dashboard() {
   const navigate = useNavigate();
 
-  const { canAccessView } = useAuth();
-
   const { user, data, ui, actions } =
     useDashboardController();
-
-  const canAccessAdministrativo =
-    canAccessView('ADMINISTRATIVO');
-  const canAccessProgramacion =
-    canAccessView('PROGRAMACION');
-  const canAccessGestionLineas =
-    canAccessView('GESTION_LINEAS_INSTRUCTORAS');
 
   const {
     puntosVenta,
@@ -90,6 +75,7 @@ function Dashboard() {
         rowKey={(record) => String(record.apiId)}
         pagination={false}
         size="small"
+        scroll={{ x: 640 }}
         columns={[
           {
             title: 'Fecha',
@@ -345,96 +331,6 @@ function Dashboard() {
       {/* MAIN */}
       <main className="dashboard-main">
 
-        <div className="welcome-section">
-          <h2 className="welcome-greeting">
-            ¡Hola, {
-              user?.nombre?.split(' ')[0]
-            }!
-          </h2>
-        </div>
-
-        {(canAccessProgramacion || canAccessAdministrativo || canAccessGestionLineas) && (
-          <div className="dashboard-cards">
-            {canAccessProgramacion && (
-              <button
-                type="button"
-                className="dashboard-card"
-                onClick={() =>
-                  navigate('/portal-instructoras/programacion')
-                }
-              >
-                <div className="card-icon">
-                  <CalendarOutlined />
-                </div>
-
-                <div className="card-content">
-                  <h3 className="card-title">
-                    Programar Horarios
-                  </h3>
-
-                  <p className="card-description">
-                    Programa tu disponibilidad semanal
-                  </p>
-                </div>
-
-                <ArrowRightOutlined className="card-arrow" />
-              </button>
-            )}
-
-            {canAccessAdministrativo && (
-              <button
-                type="button"
-                className="dashboard-card"
-                onClick={() =>
-                  navigate('/portal-instructoras/vista-administrativa')
-                }
-              >
-                <div className="card-icon">
-                  <EyeOutlined />
-                </div>
-
-                <div className="card-content">
-                  <h3 className="card-title">
-                    Vista Administrativa
-                  </h3>
-
-                  <p className="card-description">
-                    Consulta horarios de instructoras
-                  </p>
-                </div>
-
-                <ArrowRightOutlined className="card-arrow" />
-              </button>
-            )}
-
-            {canAccessGestionLineas && (
-              <button
-                type="button"
-                className="dashboard-card"
-                onClick={() =>
-                  navigate('/portal-instructoras/gestion-lineas-instructoras')
-                }
-              >
-                <div className="card-icon">
-                  <TeamOutlined />
-                </div>
-
-                <div className="card-content">
-                  <h3 className="card-title">
-                    Gestion lineas instructora
-                  </h3>
-
-                  <p className="card-description">
-                    Administra instructoras y linea activa
-                  </p>
-                </div>
-
-                <ArrowRightOutlined className="card-arrow" />
-              </button>
-            )}
-          </div>
-        )}
-
         {/* TABLA */}
         <div className="horarios-table-section">
 
@@ -492,6 +388,7 @@ function Dashboard() {
               rowKey={(record) => record.key}
               pagination={false}
               bordered
+              scroll={{ x: 760 }}
               columns={[
                 {
                   title: 'Semana',
