@@ -3,6 +3,34 @@ import { getEmpleado } from '../services/empleado.service';
 
 const empleadosCache = {};
 
+const normalizeValue = (value) =>
+  String(value || "")
+    .trim()
+    .toLowerCase();
+
+const getEmpleadoSource = (empleado) => empleado?.attributes || empleado || {};
+
+const getDocumentoEmpleado = (empleado) => {
+  const src = getEmpleadoSource(empleado);
+
+  return String(
+    src.document_number ||
+      src.documento ||
+      src.document ||
+      src.documento_identidad ||
+      ""
+  ).trim();
+};
+
+const empleadoCoincideActivo = (empleado, documento) => {
+  const src = getEmpleadoSource(empleado);
+
+  return (
+    getDocumentoEmpleado(empleado) === String(documento || "").trim() &&
+    normalizeValue(src.status) === "activo"
+  );
+};
+
 export default function useEmpleado() {
   const [documento, setDocumento] = useState('');
   const [empleado, setEmpleado] = useState(null);
@@ -37,9 +65,12 @@ export default function useEmpleado() {
     try {
       const data = await getEmpleado(docTrim);
       const empleados = data?.data || data;
-      const empleadoData = Array.isArray(empleados)
-        ? empleados.find(emp => String(emp.document_number) === docTrim)
-        : null;
+      const empleadosLista = Array.isArray(empleados)
+        ? empleados
+        : empleados
+          ? [empleados]
+          : [];
+      const empleadoData = empleadosLista.find(emp => empleadoCoincideActivo(emp, docTrim));
 
       if (empleadoData) {
         empleadosCache[docTrim] = empleadoData;
@@ -49,11 +80,16 @@ export default function useEmpleado() {
       }
 
       setEmpleado(null);
-      setMensaje({ texto: 'No se encontró empleado con ese documento', tipo: 'error' });
+      setMensaje({ texto: 'No se encontró empleado activo con ese documento', tipo: 'error' });
       return null;
-    } catch {
+    } catch (error) {
       setEmpleado(null);
-      setMensaje({ texto: 'Error de conexión con la API', tipo: 'error' });
+      setMensaje({
+        texto: error?.status
+          ? 'No se encontró empleado activo con ese documento'
+          : 'Error de conexión con la API',
+        tipo: 'error',
+      });
       return null;
     } finally {
       setLoading(false);
@@ -79,10 +115,15 @@ export const useEmpleadoForm = (setFormData) => {
   const [loading, setLoading] = useState(false);
 
   const buscarEmpleado = async (documento) => {
-    if (!documento) return;
+    const docTrim = String(documento || "").trim();
 
-    if (cache[documento]) {
-      const emp = cache[documento];
+    if (!docTrim) {
+      setEmpleado(null);
+      return null;
+    }
+
+    if (cache[docTrim]) {
+      const emp = cache[docTrim];
       setEmpleado(emp);
 
       // llenar campos en el formulario con mapeo defensivo
@@ -92,13 +133,13 @@ export const useEmpleadoForm = (setFormData) => {
         area_nombre: prev.area_nombre || emp.area_nombre || emp.pdv || emp.puntoVenta || emp.pdv_nombre || "",
       }));
 
-      return;
+      return emp;
     }
 
     try {
       setLoading(true);
 
-      const data = await getEmpleado(documento);
+      const data = await getEmpleado(docTrim);
 
       const responseData = data?.data || data || [];
       const raw = Array.isArray(responseData)
@@ -109,8 +150,8 @@ export const useEmpleadoForm = (setFormData) => {
 
       // intentar encontrar por distintos campos de documento
       const empRaw = raw.find(
-        (e) => String(e.document_number || e.documento || e.document || e.documento_identidad) === String(documento)
-      ) || raw[0];
+        (e) => empleadoCoincideActivo(e, docTrim)
+      );
 
       // mapear a un objeto consistente (soporta Strapi-style attributes)
       const src = empRaw ? (empRaw.attributes || empRaw) : null;
@@ -142,16 +183,21 @@ export const useEmpleadoForm = (setFormData) => {
       setEmpleado(emp || null);
 
       if (emp) {
-        cache[documento] = emp;
+        cache[docTrim] = emp;
 
         setFormData((prev) => ({
           ...prev,
           telefono: emp.telefono || emp.celular || "",
           area_nombre: prev.area_nombre || emp.area_nombre || emp.pdv || "",
         }));
+
+        return emp;
       }
+
+      return null;
     } catch {
       setEmpleado(null);
+      return null;
     } finally {
       setLoading(false);
     }

@@ -121,7 +121,9 @@ export default function InscripcionesTodera({
     if (
       !canReassignInstructora
     ) {
-      setInstructorasPorCategoria({});
+      queueMicrotask(() => {
+        setInstructorasPorCategoria({});
+      });
       return;
     }
 

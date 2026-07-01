@@ -86,10 +86,15 @@ const FormHeladeria = () => {
     }
 
     try {
-      await buscarEmpleado(formData.documento);
+      const empleadoEncontrado = await buscarEmpleado(formData.documento);
 
-      if (localStorage.getItem("lastEmpleado")) {
-        // algunos hooks pueden guardar datos
+      if (!empleadoEncontrado) {
+        setMessage({
+          type: "error",
+          text: "No se encontró empleado activo con ese documento",
+        });
+
+        return;
       }
 
       setMessage({

@@ -183,6 +183,11 @@ const FormTodera = () => {
             ) ||
               ""
           );
+        } else {
+          setTelefono("");
+          setCategoria("");
+          setCargoEvaluar("");
+          setInstructora("");
         }
       } catch (error) {
         console.error(

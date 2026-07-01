@@ -228,7 +228,7 @@ export const useInscripciones = ({
     );
 
   useEffect(() => {
-    fetchData();
+    queueMicrotask(fetchData);
   }, [fetchData]);
 
   return {

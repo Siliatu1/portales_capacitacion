@@ -15,9 +15,13 @@ export const HORARIOS_QUERY_KEYS = {
 };
 
 const STALE_TIME = 5 * 60 * 1000;
+const queryCache = new Map();
+const inFlightRequests = new Map();
 
-function useAsyncQuery({ queryKey, queryFn, enabled = true, select }) {
+function useAsyncQuery({ queryKey, queryFn, enabled = true, select, staleTime = STALE_TIME }) {
   const requestIdRef = useRef(0);
+  const queryFnRef = useRef(queryFn);
+  const selectRef = useRef(select);
   const [state, setState] = useState({
     data: undefined,
     error: null,
@@ -26,8 +30,10 @@ function useAsyncQuery({ queryKey, queryFn, enabled = true, select }) {
   });
 
   const cacheKey = JSON.stringify(queryKey);
+  queryFnRef.current = queryFn;
+  selectRef.current = select;
 
-  const refetch = useCallback(async () => {
+  const fetchData = useCallback(async (force = false) => {
     if (!enabled) {
       setState((prev) => ({
         ...prev,
@@ -35,6 +41,20 @@ function useAsyncQuery({ queryKey, queryFn, enabled = true, select }) {
         isLoading: false,
       }));
       return undefined;
+    }
+
+    const cached = queryCache.get(cacheKey);
+    const isFresh = cached && Date.now() - cached.updatedAt < staleTime;
+
+    if (!force && isFresh) {
+      setState({
+        data: cached.data,
+        error: null,
+        isFetching: false,
+        isLoading: false,
+      });
+
+      return cached.data;
     }
 
     const requestId = requestIdRef.current + 1;
@@ -47,8 +67,24 @@ function useAsyncQuery({ queryKey, queryFn, enabled = true, select }) {
     }));
 
     try {
-      const response = await queryFn();
-      const data = select ? select(response) : response;
+      const request =
+        !force && inFlightRequests.get(cacheKey)
+          ? inFlightRequests.get(cacheKey)
+          : queryFnRef.current().finally(() => {
+              inFlightRequests.delete(cacheKey);
+            });
+
+      if (!force && !inFlightRequests.has(cacheKey)) {
+        inFlightRequests.set(cacheKey, request);
+      }
+
+      const response = await request;
+      const data = selectRef.current ? selectRef.current(response) : response;
+
+      queryCache.set(cacheKey, {
+        data,
+        updatedAt: Date.now(),
+      });
 
       if (requestIdRef.current === requestId) {
         setState({
@@ -72,15 +108,15 @@ function useAsyncQuery({ queryKey, queryFn, enabled = true, select }) {
 
       return undefined;
     }
-  }, [cacheKey, enabled]);
+  }, [cacheKey, enabled, staleTime]);
 
   useEffect(() => {
-    refetch();
-  }, [refetch]);
+    fetchData(false);
+  }, [fetchData]);
 
   return {
     ...state,
-    refetch,
+    refetch: () => fetchData(true),
   };
 }
 

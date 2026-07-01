@@ -45,9 +45,21 @@ export const getInscripcionesCapCafe = async () => {
 export const getCuposFechaCapCafe = async (fecha) => {
   if (!fecha) return 0;
 
-  const inscripciones = await getInscripcionesCapCafe();
+  const params = new URLSearchParams();
+  params.set("filters[fecha][$eq]", fecha);
+  params.set("pagination[page]", "1");
+  params.set("pagination[pageSize]", "1");
 
-  return inscripciones.filter((item) => item.fecha === fecha).length;
+  const res = await fetch(`${API}/cap-cafes?${params.toString()}`);
+
+  if (!res.ok) {
+    const text = await res.text();
+    throw new Error(`Error consultando cupos: ${res.status} ${text}`);
+  }
+
+  const json = await res.json();
+
+  return json?.meta?.pagination?.total ?? (json?.data || []).length;
 };
 
 export const guardarInscripcion = async (data) => {

@@ -140,7 +140,7 @@ export const useInstructoras =
         return;
       }
 
-      fetchData();
+      queueMicrotask(fetchData);
     }, [
       fetchData,
       nombreInstructora,

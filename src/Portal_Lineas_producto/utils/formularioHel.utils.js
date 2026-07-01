@@ -40,7 +40,7 @@ export const buildInscripcionAttributes = (formData, empleado) => {
         try {
           const u = JSON.parse(localStorage.getItem('user'));
           return u?.nombre || '';
-        } catch (e) {
+        } catch {
           return '';
         }
       })() ||

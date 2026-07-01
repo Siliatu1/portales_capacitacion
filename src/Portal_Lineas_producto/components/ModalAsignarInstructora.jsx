@@ -5,6 +5,7 @@ import {
 } from "antd";
 
 import {
+  useCallback,
   useEffect,
   useState,
 } from "react";
@@ -36,18 +37,8 @@ const ModalAsignarInstructora = ({
     setInstructoraSeleccionada,
   ] = useState(null);
 
-  useEffect(() => {
-    if (
-      !open ||
-      !categoria
-    )
-      return;
-
-    cargarInstructoras();
-  }, [open, categoria]);
-
   const cargarInstructoras =
-    async () => {
+    useCallback(async () => {
       try {
         setLoading(true);
 
@@ -70,7 +61,17 @@ const ModalAsignarInstructora = ({
       } finally {
         setLoading(false);
       }
-    };
+    }, [categoria]);
+
+  useEffect(() => {
+    if (
+      !open ||
+      !categoria
+    )
+      return;
+
+    queueMicrotask(cargarInstructoras);
+  }, [open, categoria, cargarInstructoras]);
 
   const handleAsignar =
     async () => {

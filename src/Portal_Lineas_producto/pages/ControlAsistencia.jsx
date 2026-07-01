@@ -51,28 +51,6 @@ const getInstructoraName = (item) =>
   item?.nombre ||
   "";
 
-const isEvaluado = (value) => {
-  const normalized = String(value || "").trim().toLowerCase();
-
-  return (
-    value === true ||
-    normalized === "evaluado" ||
-    normalized === "true" ||
-    normalized === "si"
-  );
-};
-
-const isNoEvaluado = (value) => {
-  const normalized = String(value || "").trim().toLowerCase();
-
-  return (
-    value === false ||
-    normalized === "no evaluado" ||
-    normalized === "false" ||
-    normalized === "no"
-  );
-};
-
 export default function ControlAsistencia({
   userData,
   onLogout,
@@ -110,7 +88,9 @@ export default function ControlAsistencia({
       !isCafeInstructor ||
       !userDocument
     ) {
-      setCafeToderaInstructorName("");
+      queueMicrotask(() => {
+        setCafeToderaInstructorName("");
+      });
       return;
     }
 
@@ -181,32 +161,6 @@ export default function ControlAsistencia({
     [data, filtros]
   );
 
-  const resumen = useMemo(() => {
-    const total = dataFiltrada.length;
-
-    if (attendanceMode !== "cafe") {
-      const evaluados = dataFiltrada.filter((item) => isEvaluado(item.estado)).length;
-      const noEvaluados = dataFiltrada.filter((item) => isNoEvaluado(item.estado)).length;
-
-      return {
-        total,
-        completados: evaluados,
-        rechazados: noEvaluados,
-        pendientes: total - evaluados - noEvaluados,
-      };
-    }
-
-    const asistieron = dataFiltrada.filter((item) => item.asistencia === true).length;
-    const noAsistieron = dataFiltrada.filter((item) => item.asistencia === false).length;
-
-    return {
-      total,
-      completados: asistieron,
-      rechazados: noAsistieron,
-      pendientes: total - asistieron - noAsistieron,
-    };
-  }, [dataFiltrada, attendanceMode]);
-
   const fechasDisponibles = useMemo(() => {
     return Array.from(new Set((data || []).map((i) => i.dia).filter(Boolean))).sort((a, b) =>
       String(b).localeCompare(String(a))
@@ -239,15 +193,6 @@ export default function ControlAsistencia({
           "CONTROL_ASISTENCIA_TODERA",
         ]
       : ["CONTROL_ASISTENCIA"];
-
-  const completedLabel =
-    attendanceMode === "cafe"
-      ? "Asistieron"
-      : "Evaluados";
-  const rejectedLabel =
-    attendanceMode === "cafe"
-      ? "No asistieron"
-      : "No evaluados";
 
   return (
     <>

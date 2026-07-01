@@ -163,12 +163,27 @@ const FormRestaurante = () => {
   };
 
   const onSearch = async () => {
+    setMessage(null);
+
     if (!String(formData.documento || "").trim()) {
       await showDocumentRequiredAlert();
       return;
     }
 
-    buscarEmpleado(formData.documento);
+    const empleadoEncontrado = await buscarEmpleado(formData.documento);
+
+    if (!empleadoEncontrado) {
+      setMessage({
+        type: "error",
+        text: "No se encontró empleado activo con ese documento",
+      });
+      return;
+    }
+
+    setMessage({
+      type: "success",
+      text: "✓ Empleado encontrado",
+    });
   };
 
   const onToggleFechaBloqueada = (event, f) => {

@@ -43,16 +43,6 @@ export default function PanelInstructoras({
 
   const total = data.length;
 
-  const evaluados =
-    data.filter(
-      (item) =>
-        item.estado === true ||
-        item.estado === 1
-    ).length;
-
-  const pendientes =
-    total - evaluados;
-
   return (
     <>
       <Navbar
