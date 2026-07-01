@@ -15,7 +15,7 @@ import Swal from "sweetalert2";
 import "../styles/formularioHel.css";
 import "../styles/formLayout.css";
 
-const MAX_CUPOS_POR_FECHA = 3;
+const MAX_CUPOS_POR_FECHA = 2;
 
 const FormRestaurante = () => {
   const navigate = useNavigate();
@@ -28,7 +28,7 @@ const FormRestaurante = () => {
   const { empleado, buscarEmpleado, clearEmpleado } = useEmpleadoForm(setFormData);
 
   // martes(2), miércoles(3), jueves(4)
-  const { fechas, toggleFechaBloqueada, refreshFechas } = useFechas([2, 3, 4]);
+  const { fechas, toggleFechaBloqueada, refreshFechas } = useFechas([2, 3, 4], MAX_CUPOS_POR_FECHA);
 
   // paginación fechas
   const [page, setPage] = useState(0);
@@ -110,7 +110,7 @@ const FormRestaurante = () => {
       const cuposActuales = await getCuposFechaCapCafe(formData.fecha);
 
       if (cuposActuales >= MAX_CUPOS_POR_FECHA) {
-        const text = "La fecha seleccionada ya completo los 3 cupos";
+        const text = `La fecha seleccionada ya completo los ${MAX_CUPOS_POR_FECHA} cupos`;
         setMessage({ type: "error", text });
         window.alert(text);
         refreshFechas();
@@ -313,7 +313,7 @@ const FormRestaurante = () => {
               <div className="fecha-mes">{f.mes ? f.mes.toUpperCase() : ''}</div>
               <div className="fecha-dia">{f.dia}</div>
               <div className="fecha-texto">{f.texto}</div>
-              <div className="fecha-contador">{f.inscripciones || 0}/3</div>
+              <div className="fecha-contador">{f.inscripciones || 0}/{MAX_CUPOS_POR_FECHA}</div>
             </div>
           ))}
         </div>

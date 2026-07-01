@@ -84,7 +84,8 @@ export const obtenerFechasPorDias = (
   festivosColombianos = [],
   fechasBloqueadas = [],
   inscripcionesPorFecha = {},
-  rangoDias = {}
+  rangoDias = {},
+  maxCuposPorFecha = 3
 ) => {
   const fechas = [];
   const ultimoDia = new Date(year, month + 1, 0).getDate();
@@ -108,7 +109,7 @@ export const obtenerFechasPorDias = (
       const esFestivo = festivosColombianos.includes(fechaStr);
       const estaBloqueada = fechasBloqueadas.includes(fechaStr);
       const numInscripciones = inscripcionesPorFecha[fechaStr] || 0;
-      const disponible = numInscripciones < 3 && !esFestivo && !estaBloqueada;
+      const disponible = numInscripciones < maxCuposPorFecha && !esFestivo && !estaBloqueada;
       const estado = disponible ? 'disponible' : estaBloqueada ? 'bloqueada' : 'completo';
       
       fechas.push({
@@ -118,6 +119,7 @@ export const obtenerFechasPorDias = (
         texto: `${diasSemana[diaSemana]} ${dia} de ${meses[month]}`,
         disponible,
         inscripciones: numInscripciones,
+        maxCupos: maxCuposPorFecha,
         esFestivo,
         estaBloqueada,
         estado

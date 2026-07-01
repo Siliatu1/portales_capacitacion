@@ -8,13 +8,13 @@ import {
 } from "react";
 
 import {
-  BookOpen,
+  ClipboardList,
   ClipboardCheck,
   Coffee,
-  FileText,
-  LogOut,
-  UserRound,
-  UsersRound,
+  House,
+  IceCreamBowl,
+  UtensilsCrossed,
+  UserCog,
 } from "lucide-react";
 
 import "../styles/navbar.css";
@@ -27,7 +27,7 @@ const NAV_ITEMS = [
     label: "Formulario Inscripción Heladería",
     route:
       "/lineas-producto/form-heladeria",
-    icon: FileText,
+    icon: IceCreamBowl,
   },
 
   {
@@ -35,7 +35,7 @@ const NAV_ITEMS = [
     label: "Formulario Inscripción Restaurante",
     route:
       "/lineas-producto/form-restaurante",
-    icon: BookOpen,
+    icon: UtensilsCrossed,
   },
 
   {
@@ -61,7 +61,7 @@ const NAV_ITEMS = [
     label: "Formulario Inscripción Todera",
     route:
       "/lineas-producto/form-todera",
-    icon: UserRound,
+    icon: ClipboardList,
   },
 
   // NUEVO ITEM
@@ -74,7 +74,7 @@ const NAV_ITEMS = [
 
     route:
       "/lineas-producto/gestion-instructoras",
-    icon: UsersRound,
+    icon: UserCog,
   },
 ];
 
@@ -99,7 +99,7 @@ const INSCRIPCIONES_ITEMS = [
 
     route:
       "/lineas-producto/inscripciones/todera",
-    icon: UserRound,
+    icon: ClipboardCheck,
   },
 ];
 
@@ -325,12 +325,12 @@ const Navbar = ({
             handleLogout
           }
         >
-          <LogOut
+          <House
             size={18}
             strokeWidth={2.2}
           />
           <span>
-            Salir
+            Menu principal
           </span>
         </button>
       </div>

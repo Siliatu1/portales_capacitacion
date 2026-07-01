@@ -24,7 +24,7 @@ const guardarFechasBloqueadas = (fechas) => {
   window.dispatchEvent(new Event(FECHAS_BLOQUEADAS_EVENT));
 };
 
-export const useFechas = (diasPermitidos = [1, 5]) => {
+export const useFechas = (diasPermitidos = [1, 5], maxCuposPorFecha = 3) => {
   const [fechas, setFechas] = useState([]);
   const [fechasBloqueadas, setFechasBloqueadas] = useState(leerFechasBloqueadas);
   const [reloadKey, setReloadKey] = useState(0);
@@ -119,7 +119,8 @@ export const useFechas = (diasPermitidos = [1, 5]) => {
             festivos,
             fechasBloqueadas,
             inscripcionesPorFecha,
-            { diaInicio, diaFin }
+            { diaInicio, diaFin },
+            maxCuposPorFecha
           );
           result = [...result, ...fechasMes];
         });
@@ -132,7 +133,7 @@ export const useFechas = (diasPermitidos = [1, 5]) => {
     };
 
     cargarFechas();
-  }, [diasPermitidosNormalizados, fechasBloqueadas, reloadKey]);
+  }, [diasPermitidosNormalizados, fechasBloqueadas, maxCuposPorFecha, reloadKey]);
 
   return { fechas, fechasBloqueadas, setFechaBloqueada, toggleFechaBloqueada, refreshFechas };
 };
