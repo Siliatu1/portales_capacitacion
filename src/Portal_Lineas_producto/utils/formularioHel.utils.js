@@ -19,6 +19,25 @@ export const getInitialFormState = () => ({
   nombreLider: "",
 });
 
+const getStoredLeaderName = () => {
+  try {
+    const user = JSON.parse(localStorage.getItem('user'));
+    return user?.nombre || '';
+  } catch {
+    return '';
+  }
+};
+
+const normalizeLeader = (value) => {
+  if (value === null || value === undefined) return '';
+
+  if (typeof value === 'object') {
+    return value?.nombre || value?.name || value?.Nombre || '';
+  }
+
+  return String(value).trim();
+};
+
 /**
  * Construye los atributos que se enviarán a la API para la inscripción
  * @param {Object} formData
@@ -26,6 +45,13 @@ export const getInitialFormState = () => ({
  * @returns {Object} attributes
  */
 export const buildInscripcionAttributes = (formData, empleado) => {
+  const lider = normalizeLeader(
+    formData.lider ||
+      formData.nombreLider ||
+      getStoredLeaderName() ||
+      empleado?.lider
+  );
+
   return {
     documento: formData.documento || empleado?.raw?.document_number || '',
     nombre: formData.nombres || empleado?.nombre || '',
@@ -33,18 +59,7 @@ export const buildInscripcionAttributes = (formData, empleado) => {
     cargo: empleado?.cargo_general || formData.cargo || '',
     pdv: formData.area_nombre || formData.puntoVenta || empleado?.area_nombre || empleado?.pdv || '',
     fecha: formData.fecha || null,
-    lider:
-      formData.lider ||
-      empleado?.lider ||
-      (() => {
-        try {
-          const u = JSON.parse(localStorage.getItem('user'));
-          return u?.nombre || '';
-        } catch {
-          return '';
-        }
-      })() ||
-      formData.nombreLider || '',
+    lider,
     tipo_formulario: 'heladeria',
   };
 };

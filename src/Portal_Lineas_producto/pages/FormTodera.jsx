@@ -136,6 +136,9 @@ const FormTodera = () => {
   const [loading, setLoading] =
     useState(false);
 
+  const [saveMessage, setSaveMessage] =
+    useState(null);
+
   const pdvEfectivo =
     pdvLogin ||
     getEmpleadoValue(
@@ -157,6 +160,8 @@ const FormTodera = () => {
 
   const handleBuscarEmpleado =
     async () => {
+      setSaveMessage(null);
+
       if (!String(documento || "").trim()) {
         await showDocumentRequiredAlert();
         return;
@@ -287,6 +292,8 @@ const FormTodera = () => {
       if (
         askConfirmation
       ) {
+        setSaveMessage(null);
+
         Swal.fire(
           "Cancelado",
           "Reserva cancelada correctamente",
@@ -297,6 +304,8 @@ const FormTodera = () => {
 
   const handleSubmit =
     async () => {
+      setSaveMessage(null);
+
       if (!String(documento || "").trim()) {
         await showDocumentRequiredAlert();
         return;
@@ -400,6 +409,12 @@ const FormTodera = () => {
           "Evaluación registrada"
         );
 
+        setSaveMessage({
+          tipo: "success",
+          texto:
+            "Reserva guardada correctamente",
+        });
+
         Swal.fire(
           "¡Reserva confirmada!",
           "La evaluación fue registrada correctamente",
@@ -415,6 +430,12 @@ const FormTodera = () => {
         message.error(
           "Error al guardar la evaluación"
         );
+
+        setSaveMessage({
+          tipo: "error",
+          texto:
+            "Error al guardar la evaluación",
+        });
 
         Swal.fire(
           "Error",
@@ -710,6 +731,14 @@ const FormTodera = () => {
                 : "Registrar Evaluacion"}
             </button>
           </div>
+        </div>
+      )}
+
+      {saveMessage && (
+        <div
+          className={`mensaje-busqueda mensaje-${saveMessage.tipo} save-message`}
+        >
+          {saveMessage.texto}
         </div>
       )}
         </div>

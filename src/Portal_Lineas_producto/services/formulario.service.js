@@ -1,6 +1,19 @@
 const API = "https://macfer.crepesywaffles.com/api";
 const PAGE_SIZE = 100;
 
+const getApiErrorMessage = (status, text) => {
+  try {
+    const parsed = JSON.parse(text);
+    const message = parsed?.error?.message || parsed?.message;
+
+    return message
+      ? `${status} ${message}`
+      : `${status} ${text}`;
+  } catch {
+    return `${status} ${text}`;
+  }
+};
+
 const normalizeCapCafeItem = (item) => {
   const attributes = item?.attributes || item || {};
 
@@ -86,7 +99,7 @@ export const guardarInscripcion = async (data) => {
 
   if (!res.ok) {
     const text = await res.text();
-    throw new Error(`Error al guardar inscripcion: ${res.status} ${text}`);
+    throw new Error(`Error al guardar inscripcion: ${getApiErrorMessage(res.status, text)}`);
   }
 
   return res.json();

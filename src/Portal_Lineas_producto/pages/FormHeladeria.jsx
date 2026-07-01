@@ -66,6 +66,7 @@ const FormHeladeria = () => {
   const [showDetails, setShowDetails] = useState(true);
 
   const [message, setMessage] = useState(null);
+  const [saveMessage, setSaveMessage] = useState(null);
 
   const [lider] = useState(() => {
     try {
@@ -79,6 +80,7 @@ const FormHeladeria = () => {
 
   const onSearch = async () => {
     setMessage(null);
+    setSaveMessage(null);
 
     if (!String(formData.documento || "").trim()) {
       await showDocumentRequiredAlert();
@@ -131,6 +133,7 @@ const FormHeladeria = () => {
     }
 
     setMessage(null);
+    setSaveMessage(null);
 
     setPage(0);
 
@@ -144,6 +147,7 @@ const FormHeladeria = () => {
 
   const onSubmit = async () => {
     setMessage(null);
+    setSaveMessage(null);
 
     try {
       if (!String(formData.documento || "").trim()) {
@@ -208,6 +212,10 @@ const FormHeladeria = () => {
           type: "error",
           text,
         });
+        setSaveMessage({
+          type: "error",
+          text,
+        });
 
         Swal.fire({
           title: "Sin cupos",
@@ -229,6 +237,10 @@ const FormHeladeria = () => {
         setMessage({
           type: "success",
           text: "Inscripción guardada correctamente",
+        });
+        setSaveMessage({
+          type: "success",
+          text: "Reserva guardada correctamente",
         });
 
         Swal.fire({
@@ -253,6 +265,10 @@ const FormHeladeria = () => {
           type: "error",
           text: "Error al guardar la inscripción",
         });
+        setSaveMessage({
+          type: "error",
+          text: "Error al guardar la inscripción",
+        });
 
         Swal.fire({
           title: "Error",
@@ -263,6 +279,10 @@ const FormHeladeria = () => {
       }
     } catch {
       setMessage({
+        type: "error",
+        text: "Error de conexión al guardar",
+      });
+      setSaveMessage({
         type: "error",
         text: "Error de conexión al guardar",
       });
@@ -624,6 +644,18 @@ const FormHeladeria = () => {
             Inscribir
           </button>
         </div>
+
+        {saveMessage && (
+          <div
+            className={`mensaje save-message ${
+              saveMessage.type === "success"
+                ? "success"
+                : "error"
+            }`}
+          >
+            {saveMessage.text}
+          </div>
+        )}
       </div>
         </div>
       </div>

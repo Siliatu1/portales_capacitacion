@@ -19,6 +19,10 @@
   max-width: 1160px;
 }
 
+.save-message {
+  margin-top: 1rem;
+}
+
 @media (max-width: 900px) {
   .lineas-form-content {
     width: 100%;

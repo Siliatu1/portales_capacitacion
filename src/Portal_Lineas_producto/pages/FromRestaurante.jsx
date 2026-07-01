@@ -21,7 +21,7 @@ const FormRestaurante = () => {
   const navigate = useNavigate();
   const { hasPermission } = useAuth();
   const canBlockDates = hasPermission("canBlockDates");
-  const { formData, handleChange, setFormData, setLoading } = useFormulario({
+  const { formData, handleChange, setFormData, loading, setLoading } = useFormulario({
     initialState: getInitialFormState(),
   });
 
@@ -50,6 +50,7 @@ const FormRestaurante = () => {
   }, [fechas, formData.fecha, setFormData]);
 
   const [message, setMessage] = useState(null);
+  const [saveMessage, setSaveMessage] = useState(null);
   const [lider] = useState(() => {
     try {
       const user = JSON.parse(localStorage.getItem("user"));
@@ -61,8 +62,11 @@ const FormRestaurante = () => {
   const [showDetails, setShowDetails] = useState(true);
 
   const onSubmit = async () => {
+    if (loading) return;
+
     try {
       setMessage(null);
+      setSaveMessage(null);
       if (!String(formData.documento || "").trim()) {
         await showDocumentRequiredAlert();
         return;
@@ -112,6 +116,7 @@ const FormRestaurante = () => {
       if (cuposActuales >= MAX_CUPOS_POR_FECHA) {
         const text = `La fecha seleccionada ya completo los ${MAX_CUPOS_POR_FECHA} cupos`;
         setMessage({ type: "error", text });
+        setSaveMessage({ type: "error", text });
         window.alert(text);
         refreshFechas();
         return;
@@ -124,15 +129,26 @@ const FormRestaurante = () => {
         setFormData(getInitialFormState());
         if (typeof clearEmpleado === 'function') clearEmpleado();
         setMessage({ type: 'success', text: 'Inscripción guardada correctamente' });
-        window.alert("Reserva confirmada!");
+        setSaveMessage({ type: 'success', text: 'Reserva guardada correctamente' });
+        Swal.fire({
+          title: "¡Reserva confirmada!",
+          text: "La reserva fue guardada correctamente",
+          icon: "success",
+          confirmButtonColor: "#3085d6",
+        });
         refreshFechas();
       } else {
         setMessage({ type: 'error', text: 'Error al guardar la inscripción' });
+        setSaveMessage({ type: 'error', text: 'Error al guardar la inscripción' });
         window.alert("No se pudo confirmar la reserva");
       }
-    } catch {
-      setMessage({ type: 'error', text: 'Error de conexión al guardar' });
-      window.alert("Error de conexion al guardar la reserva");
+    } catch (error) {
+      const errorText = error?.message || "Error de conexión al guardar";
+
+      console.error("Error guardando inscripción restaurante:", error);
+      setMessage({ type: 'error', text: errorText });
+      setSaveMessage({ type: 'error', text: errorText });
+      window.alert(errorText);
     } finally {
       setLoading(false);
     }
@@ -154,6 +170,7 @@ const FormRestaurante = () => {
 
     setFormData(getInitialFormState());
     if (typeof clearEmpleado === 'function') clearEmpleado();
+    setSaveMessage(null);
     window.alert("Reserva cancelada");
   };
 
@@ -164,6 +181,7 @@ const FormRestaurante = () => {
 
   const onSearch = async () => {
     setMessage(null);
+    setSaveMessage(null);
 
     if (!String(formData.documento || "").trim()) {
       await showDocumentRequiredAlert();
@@ -341,8 +359,16 @@ const FormRestaurante = () => {
 
         <div className="form-actions">
           <button className="cancel-button" onClick={onClear}>Limpiar</button>
-          <button className="submit-button" onClick={onSubmit}>Inscribir</button>
+          <button className="submit-button" onClick={onSubmit} disabled={loading}>
+            {loading ? "Guardando..." : "Inscribir"}
+          </button>
         </div>
+
+        {saveMessage && (
+          <div className={`mensaje save-message ${saveMessage.type === 'success' ? 'success' : 'error'}`}>
+            {saveMessage.text}
+          </div>
+        )}
 
       </div>
         </div>
