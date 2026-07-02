@@ -79,7 +79,7 @@ export const LINEA_OPTIONS = [
   { value: 'sal', label: 'Sal' },
   { value: 'dulce', label: 'Dulce' },
   { value: 'bebidas', label: 'Bebidas' },
-  { value: 'Brunch', label: 'Brunch' },
+  { value: 'Brunch', label: 'Especiales' },
 ];
 
 export const MOTIVO_OPTIONS_BASE = [

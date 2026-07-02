@@ -226,6 +226,19 @@
   border-color: #735138 !important;
 }
 
+.vista-admin-btn--refresh {
+  color: #6B4E3D;
+  border-color: #C9A984;
+  font-weight: 700;
+}
+
+.vista-admin-btn--refresh:hover,
+.vista-admin-btn--refresh:focus {
+  color: #4e3416 !important;
+  border-color: #8f684d !important;
+  background: #fff7ee !important;
+}
+
 .vista-admin-create-motivo {
   display: grid;
   gap: 10px;

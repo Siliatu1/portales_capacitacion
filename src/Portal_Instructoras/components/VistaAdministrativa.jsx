@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button, Card, DatePicker, Input, Modal, Select, Space } from 'antd';
-import { DeleteOutlined, DownloadOutlined, FileExcelOutlined, LeftOutlined, PlusOutlined, RightOutlined } from '@ant-design/icons';
+import { DeleteOutlined, DownloadOutlined, FileExcelOutlined, LeftOutlined, PlusOutlined, ReloadOutlined, RightOutlined } from '@ant-design/icons';
 import dayjs from 'dayjs';
 import * as XLSX from 'xlsx';
 import 'antd/dist/reset.css';
@@ -45,7 +45,7 @@ function VistaAdministrativa() {
   const [showCrearMotivoModal, setShowCrearMotivoModal] = useState(false);
   const [nuevoMotivo, setNuevoMotivo] = useState('');
   const [managedMotivoOptions, setManagedMotivoOptions] = useState(loadManagedMotivoOptions);
-  const { user, logout, puntosVenta, instructoras, horariosTodos, refetch } = useVistaAdministrativaData({ semanaLunes, lineaSeleccionada });
+  const { user, logout, puntosVenta, instructoras, horariosTodos, loading, refetch } = useVistaAdministrativaData({ semanaLunes, lineaSeleccionada });
   const canAccessGestionLineas = canAccessView('GESTION_LINEAS_INSTRUCTORAS');
 
   useEffect(() => {
@@ -467,11 +467,24 @@ function VistaAdministrativa() {
           </Space>
         </Card>
 
-        <Card>
+        <Card
+          title="Horarios semanales"
+          extra={(
+            <Button
+              icon={<ReloadOutlined />}
+              onClick={refetch}
+              loading={loading}
+              className="vista-admin-btn--refresh"
+            >
+              Actualizar
+            </Button>
+          )}
+        >
           <VistaAdministrativaTable
             dataSource={datosSemanal}
             fechasSemana={fechasSemana}
             onEditHorario={handleEditarHorario}
+            loading={loading}
           />
         </Card>
 

@@ -2,7 +2,7 @@ import { Button, Empty, Table } from 'antd';
 import { EditOutlined } from '@ant-design/icons';
 import { DIAS_NOMBRES, ROW_COLORS } from './vistaAdministrativa.helpers';
 
-function VistaAdministrativaTable({ dataSource, fechasSemana, onEditHorario }) {
+function VistaAdministrativaTable({ dataSource, fechasSemana, onEditHorario, loading = false }) {
   const columns = [
     {
       title: 'No.',
@@ -90,6 +90,7 @@ function VistaAdministrativaTable({ dataSource, fechasSemana, onEditHorario }) {
       pagination={false}
       scroll={{ x: 'max-content', y: 580 }}
       bordered
+      loading={loading}
       size="small"
       onRow={(record) => ({
         className: `vista-admin-row vista-admin-row--${record.rowIndex % ROW_COLORS.length}`

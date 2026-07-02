@@ -33,7 +33,7 @@ const LINE_OPTIONS = [
   { value: 'sal', label: 'Sal', color: 'green' },
   { value: 'dulce', label: 'Dulce', color: 'magenta' },
   { value: 'bebidas', label: 'Bebidas', color: 'blue' },
-  { value: 'Brunch', label: 'Brunch', color: 'gold' },
+  { value: 'Brunch', label: 'Especiales', color: 'gold' },
 ];
 
 const SEARCH_FIELDS = ['Nombre', 'documento', 'correo', 'telefono'];
